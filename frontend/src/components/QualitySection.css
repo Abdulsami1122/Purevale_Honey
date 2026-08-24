@@ -1,0 +1,46 @@
+.bg-white {
+  background-color: var(--color-white);
+}
+
+.quality-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 3rem;
+  margin-top: 4rem;
+}
+
+.quality-card {
+  text-align: center;
+  padding: 3rem 2rem;
+  background-color: var(--color-cream);
+  border-radius: 8px;
+  transition: transform var(--transition-fast);
+}
+
+.quality-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.03);
+}
+
+.quality-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1.5rem;
+  background-color: var(--color-green);
+  color: var(--color-gold);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quality-card h3 {
+  margin-bottom: 1rem;
+}
+
+.quality-card p {
+  color: var(--color-text);
+  opacity: 0.9;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}

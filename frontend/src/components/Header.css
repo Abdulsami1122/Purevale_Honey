@@ -1,0 +1,103 @@
+.header {
+  background-color: var(--color-cream);
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-green);
+  letter-spacing: 2px;
+}
+
+.logo-leaf {
+  font-size: 1.2rem;
+}
+
+.nav {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav a {
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.nav a:hover {
+  color: var(--color-gold);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.currency-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.currency-selector select {
+  background: transparent;
+  border: none;
+  font-family: var(--font-body);
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+}
+
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-green);
+}
+
+@media (max-width: 900px) {
+  .nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: var(--color-cream);
+    flex-direction: column;
+    padding: 2rem;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
+    text-align: center;
+  }
+
+  .nav-open {
+    display: flex;
+  }
+
+  .mobile-menu-btn {
+    display: block;
+  }
+}
