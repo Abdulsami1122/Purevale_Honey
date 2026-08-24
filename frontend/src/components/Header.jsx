@@ -8,10 +8,10 @@ const Header = () => {
   return (
     <header className="header">
       <div className="container header-content">
-        <div className="logo">
+        <a href="#home" className="logo">
+          <img src="/logo.jpeg" alt="Purevale Natural" className="logo-img" />
           <span className="logo-text">PUREVALE</span>
-          <span className="logo-leaf">🌿</span>
-        </div>
+        </a>
 
         <nav className={`nav ${isMenuOpen ? 'nav-open' : ''}`}>
           <a href="#home">Home</a>

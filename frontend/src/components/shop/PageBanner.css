@@ -1,0 +1,32 @@
+.page-banner {
+  background-color: #0c0c0c;
+  padding: 4.5rem 0;
+  text-align: center;
+}
+
+.page-banner-inner h1 {
+  color: var(--color-gold-light);
+  font-size: clamp(2.2rem, 4vw, 3rem);
+  margin-bottom: 1rem;
+}
+
+.page-banner-crumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 600;
+}
+
+.page-banner-crumb a {
+  color: #ffffff;
+}
+
+.page-banner-crumb svg {
+  color: var(--color-gold-light);
+}
+
+.page-banner-crumb span {
+  color: var(--color-gold-light);
+}

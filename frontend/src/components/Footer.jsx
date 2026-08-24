@@ -9,8 +9,8 @@ const Footer = () => {
         <div className="footer-grid">
           <div className="footer-brand">
             <div className="logo footer-logo">
+              <img src="/logo.jpeg" alt="Purevale Natural" className="logo-img-footer" />
               <span className="logo-text text-white">PUREVALE</span>
-              <span className="logo-leaf">🌿</span>
             </div>
             <p className="footer-desc">
               Premium natural products from Pakistan, delivered to the world. Sourced with integrity, verified by science.

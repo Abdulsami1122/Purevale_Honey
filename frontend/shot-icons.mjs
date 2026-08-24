@@ -1,0 +1,10 @@
+import { chromium } from 'playwright'
+const browser = await chromium.launch()
+const page = await browser.newPage({ viewport: { width: 1440, height: 260 } })
+await page.goto('http://localhost:5174', { waitUntil: 'networkidle' })
+await page.waitForTimeout(300)
+const el = await page.$('.nav-actions')
+await el.screenshot({ path: 'shot-icons.png' })
+const html = await el.innerHTML()
+console.log(html)
+await browser.close()

@@ -1,0 +1,11 @@
+import { chromium } from 'playwright'
+const browser = await chromium.launch()
+const page = await browser.newPage({ viewport: { width: 1440, height: 1400 } })
+await page.goto('http://localhost:5174', { waitUntil: 'networkidle' })
+await page.waitForTimeout(300)
+const el = await page.$('#honey-collection')
+const box = await el.boundingBox()
+await page.evaluate((y) => window.scrollTo(0, y - 40), box.y)
+await page.waitForTimeout(200)
+await page.screenshot({ path: 'shot-toolbar.png', clip: { x: 0, y: 200, width: 1440, height: 600 } })
+await browser.close()

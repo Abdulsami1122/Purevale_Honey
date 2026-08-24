@@ -1,0 +1,10 @@
+import { chromium } from 'playwright'
+const browser = await chromium.launch()
+const page = await browser.newPage({ viewport: { width: 1440, height: 1100 } })
+await page.goto('http://localhost:5174', { waitUntil: 'networkidle' })
+await page.waitForTimeout(300)
+const el = await page.$('#honey-collection')
+await el.scrollIntoViewIfNeeded()
+await page.waitForTimeout(200)
+await el.screenshot({ path: 'shot-honey.png' })
+await browser.close()
