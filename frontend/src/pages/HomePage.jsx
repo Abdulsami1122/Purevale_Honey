@@ -5,6 +5,7 @@ import CollectionSection from '../components/shop/CollectionSection'
 import QualitySection from '../components/QualitySection'
 import WholesaleExport from '../components/WholesaleExport'
 import AboutOrigin from '../components/AboutOrigin'
+import NetworkSection from '../components/NetworkSection'
 import { honeyProducts, datesProducts, jaggeryProducts, shilajitProducts, cosmeticsProducts } from '../data/products'
 
 const HomePage = () => {
@@ -45,6 +46,9 @@ const HomePage = () => {
       <AboutOrigin />
       <QualitySection />
       <WholesaleExport />
+      
+      {/* Handcrafted Our Network: World & Domestic Destinations */}
+      <NetworkSection />
     </div>
   )
 }
