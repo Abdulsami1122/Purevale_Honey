@@ -20,7 +20,7 @@ import { FacebookIcon, InstagramIcon, TiktokIcon, YoutubeIcon } from './BrandIco
 import { useShop } from './ShopContext'
 import './ShopHeader.css'
 
-// 1. Home -> 2. Shop -> 3. Pure Honey [premium] -> 4. Dates [Fresh] -> 5. Jaggery (Gur) [Natural] -> 6. Shilajit [Gold] -> 7. Cosmetics [new]
+// 1. Home -> 2. Shop -> 3. Pure Honney [premium] -> 4. Dates [Fresh] -> 5. Jaggery (Gur) [Natural] -> 6. Shilajit [Gold] -> 7. Cosmetics [new]
 const NAV_ITEMS = [
   { label: 'Home', icon: Home, href: '/' },
   { label: 'Shop', icon: ShoppingBag, href: '/shop' },
