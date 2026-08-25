@@ -1,8 +1,7 @@
 /*
  * Shop catalogue, grouped by collection.
  *
- * `image` points at /public — swap these paths for the real product photos
- * (drop them in frontend/public/products/) without touching any component.
+ * `image` points at /public
  */
 
 export const honeyProducts = [
@@ -150,8 +149,8 @@ export const honeyProducts = [
 export const datesProducts = [
   {
     id: 'ajwa-dates-premium',
-    title: 'Ajwa Dates Premium',
-    image: '/jaggery.jpg',
+    title: 'Ajwa Dates Premium (Madinah)',
+    image: '/dates.jpg',
     priceMin: 2800,
     priceMax: 5200,
     rating: 5,
@@ -162,8 +161,8 @@ export const datesProducts = [
   },
   {
     id: 'medjool-dates',
-    title: 'Medjool Dates',
-    image: '/jaggery.jpg',
+    title: 'Medjool Jumbo Dates',
+    image: '/dates.jpg',
     priceMin: 1900,
     compareAt: 2300,
     rating: 4.5,
@@ -174,8 +173,8 @@ export const datesProducts = [
   },
   {
     id: 'kalmi-dates',
-    title: 'Kalmi Dates',
-    image: '/jaggery.jpg',
+    title: 'Organic Kalmi Dates',
+    image: '/dates.jpg',
     priceMin: 900,
     rating: 4,
     reviews: 5,
@@ -186,7 +185,7 @@ export const datesProducts = [
   {
     id: 'khudri-dates-box',
     title: 'Khudri Dates Gift Box',
-    image: '/jaggery.jpg',
+    image: '/dates.jpg',
     priceMin: 3400,
     rating: 4.5,
     reviews: 9,
@@ -196,8 +195,8 @@ export const datesProducts = [
   },
   {
     id: 'stuffed-dates-almond',
-    title: 'Stuffed Dates with Almond',
-    image: '/jaggery.jpg',
+    title: 'Stuffed Dates with Almond & Honey',
+    image: '/dates.jpg',
     priceMin: 2200,
     compareAt: 2600,
     rating: 5,
@@ -208,8 +207,8 @@ export const datesProducts = [
   },
   {
     id: 'date-syrup',
-    title: 'Natural Date Syrup',
-    image: '/jaggery.jpg',
+    title: 'Natural Organic Date Syrup',
+    image: '/dates.jpg',
     priceMin: 1300,
     rating: 4,
     reviews: 3,
@@ -217,6 +216,67 @@ export const datesProducts = [
     featured: 6,
     variants: ['350ml'],
   },
+]
+
+export const jaggeryProducts = [
+  {
+    id: 'traditional-gur-cubes',
+    title: 'Traditional Desi Jaggery (Gur) Cubes',
+    image: '/jaggery.jpg',
+    priceMin: 650,
+    priceMax: 1200,
+    rating: 5,
+    reviews: 18,
+    available: true,
+    featured: 1,
+    variants: ['500g', '1kg'],
+  },
+  {
+    id: 'dry-fruit-masala-gur',
+    title: 'Dry Fruit & Almond Masala Gur',
+    image: '/jaggery.jpg',
+    priceMin: 1250,
+    compareAt: 1500,
+    rating: 4.9,
+    reviews: 24,
+    available: true,
+    featured: 2,
+    variants: ['500g', '1kg'],
+  },
+  {
+    id: 'organic-shakkar-powder',
+    title: 'Pure Organic Shakkar (Jaggery Powder)',
+    image: '/jaggery.jpg',
+    priceMin: 550,
+    priceMax: 1000,
+    rating: 4.8,
+    reviews: 12,
+    available: true,
+    featured: 3,
+    variants: ['500g', '1kg'],
+  },
+  {
+    id: 'ginger-fennel-herbal-gur',
+    title: 'Ginger & Fennel Herbal Detox Gur',
+    image: '/jaggery.jpg',
+    priceMin: 750,
+    rating: 4.7,
+    reviews: 8,
+    available: true,
+    featured: 4,
+    variants: ['500g'],
+  },
+  {
+    id: 'raw-sugarcane-gur-block',
+    title: 'Raw Unrefined Sugarcane Gur Block',
+    image: '/jaggery.jpg',
+    priceMin: 800,
+    rating: 5,
+    reviews: 15,
+    available: true,
+    featured: 5,
+    variants: ['1kg Block'],
+  }
 ]
 
 export const shilajitProducts = [

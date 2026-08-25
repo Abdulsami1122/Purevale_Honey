@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import CollectionSection from '../components/shop/CollectionSection'
-import { honeyProducts, datesProducts, shilajitProducts } from '../data/products'
+import { honeyProducts, datesProducts, jaggeryProducts, shilajitProducts } from '../data/products'
 import './Pages.css'
 
 const ShopPage = () => {
@@ -13,7 +13,7 @@ const ShopPage = () => {
         </div>
         <h1 className="page-hero-title">Purevale Complete Store</h1>
         <p className="page-hero-subtitle">
-          Explore our range of 100% natural, lab-tested raw honey, fresh dates, and mountain shilajit.
+          Explore our range of 100% natural, lab-tested raw honey, fresh dates, organic jaggery (gur), and mountain shilajit.
         </p>
       </div>
 
@@ -27,8 +27,15 @@ const ShopPage = () => {
       <CollectionSection
         id="dates-collection"
         title="Organic Dates Collection"
-        subtitle="Hand-selected fresh premium dates"
+        subtitle="Hand-selected fresh premium dates from trusted orchards"
         products={datesProducts}
+      />
+
+      <CollectionSection
+        id="jaggery-collection"
+        title="Organic Jaggery (Gur) Collection"
+        subtitle="Pure unrefined desi jaggery cubes, dry fruit masala gur & shakkar"
+        products={jaggeryProducts}
       />
 
       <CollectionSection

@@ -1,45 +1,46 @@
 import React from 'react'
 
-/* Brand marks are not part of lucide-react, so they live here as inline SVG. */
+/* Brand marks with uniform visual weight and perfect baseline alignment */
 
-export const FacebookIcon = ({ size = 20 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-    <path d="M14.5 8.5h2.2V5.6c-.4-.05-1.7-.17-3.2-.17-3.2 0-5.3 1.9-5.3 5.4v2.6H5.5v3.3h2.7V25h3.3v-8.27h2.7l.4-3.3h-3.1v-2.3c0-.95.26-1.63 1.6-1.63z" />
+export const FacebookIcon = ({ size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style={{ display: 'block' }}>
+    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
   </svg>
 )
 
-export const InstagramIcon = ({ size = 20 }) => (
+export const InstagramIcon = ({ size = 18 }) => (
   <svg
     width={size}
     height={size}
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    strokeWidth="1.9"
+    strokeWidth="2.3"
     strokeLinecap="round"
     strokeLinejoin="round"
     aria-hidden="true"
+    style={{ display: 'block' }}
   >
-    <rect x="2.5" y="2.5" width="19" height="19" rx="5.5" />
-    <circle cx="12" cy="12" r="4" />
-    <circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none" />
+    <rect x="2" y="2" width="20" height="20" rx="5.5" />
+    <circle cx="12" cy="12" r="4.2" strokeWidth="2.3" />
+    <circle cx="17.6" cy="6.4" r="1.2" fill="currentColor" stroke="none" />
   </svg>
 )
 
-export const YoutubeIcon = ({ size = 20 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-    <path d="M22.5 7.6a2.9 2.9 0 0 0-2-2.05C18.7 5.05 12 5.05 12 5.05s-6.7 0-8.5.5a2.9 2.9 0 0 0-2 2.05A30.4 30.4 0 0 0 1 12a30.4 30.4 0 0 0 .5 4.4 2.9 2.9 0 0 0 2 2.05c1.8.5 8.5.5 8.5.5s6.7 0 8.5-.5a2.9 2.9 0 0 0 2-2.05A30.4 30.4 0 0 0 23 12a30.4 30.4 0 0 0-.5-4.4ZM9.9 15.3V8.7L15.4 12l-5.5 3.3Z" />
+export const YoutubeIcon = ({ size = 19 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style={{ display: 'block' }}>
+    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
   </svg>
 )
 
-export const TiktokIcon = ({ size = 20 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-    <path d="M16.1 2h-3.2v13.1a2.6 2.6 0 1 1-2.2-2.57V9.24a5.85 5.85 0 1 0 5.4 5.83V8.9a6.6 6.6 0 0 0 3.9 1.26V6.93A3.75 3.75 0 0 1 16.1 3.9V2Z" />
+export const TiktokIcon = ({ size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style={{ display: 'block' }}>
+    <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-1.01-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.24 1.07-.14 1.61.24 1.14 1.16 2.05 2.29 2.29.64.13 1.3.09 1.92-.12.87-.29 1.57-.96 1.88-1.82.2-.55.26-1.13.25-1.71l-.03-17.57z" />
   </svg>
 )
 
 export const WhatsappIcon = ({ size = 34 }) => (
-  <svg width={size} height={size} viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+  <svg width={size} height={size} viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" style={{ display: 'block' }}>
     <path d="M16.04 3.2c-7.1 0-12.86 5.76-12.86 12.86 0 2.27.6 4.48 1.73 6.43L3.07 29.2l6.9-1.8a12.8 12.8 0 0 0 6.06 1.54h.01c7.09 0 12.85-5.77 12.85-12.87 0-3.43-1.34-6.66-3.76-9.09a12.77 12.77 0 0 0-9.09-3.78Zm0 23.1a10.7 10.7 0 0 1-5.44-1.49l-.39-.23-4.09 1.07 1.09-3.99-.25-.41a10.65 10.65 0 0 1-1.64-5.69c0-5.9 4.8-10.7 10.72-10.7 2.86 0 5.55 1.12 7.57 3.14a10.62 10.62 0 0 1 3.13 7.57c0 5.9-4.8 10.73-10.7 10.73Zm5.87-8.02c-.32-.16-1.9-.94-2.2-1.04-.3-.11-.51-.16-.72.16-.22.32-.83 1.04-1.02 1.26-.19.21-.38.24-.7.08-.32-.16-1.36-.5-2.59-1.6-.96-.85-1.6-1.91-1.79-2.23-.19-.32-.02-.5.14-.66.15-.14.32-.38.48-.57.16-.19.21-.32.32-.53.11-.21.05-.4-.03-.56-.08-.16-.72-1.73-.99-2.37-.26-.62-.52-.54-.72-.55l-.61-.01c-.21 0-.56.08-.85.4-.29.32-1.11 1.09-1.11 2.65s1.14 3.08 1.3 3.29c.16.21 2.24 3.42 5.43 4.8.76.32 1.35.52 1.81.67.76.24 1.45.21 2 .13.61-.09 1.9-.78 2.16-1.53.27-.75.27-1.39.19-1.53-.08-.13-.29-.21-.61-.37Z" />
   </svg>
 )

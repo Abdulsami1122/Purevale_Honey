@@ -10,6 +10,7 @@ import ShopPage from './pages/ShopPage'
 import HoneyPage from './pages/HoneyPage'
 import DatesPage from './pages/DatesPage'
 import ShilajitPage from './pages/ShilajitPage'
+import JaggeryPage from './pages/JaggeryPage'
 import HeartHealthPage from './pages/HeartHealthPage'
 import WholesalePage from './pages/WholesalePage'
 import AboutPage from './pages/AboutPage'
@@ -18,6 +19,7 @@ import FaqPage from './pages/FaqPage'
 import ReturnPolicyPage from './pages/ReturnPolicyPage'
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage'
 import TermsPage from './pages/TermsPage'
+import CosmeticsPage from './pages/CosmeticsPage'
 
 import './App.css'
 
@@ -45,6 +47,7 @@ function App() {
               <Route path="/shop" element={<ShopPage />} />
               <Route path="/honey" element={<HoneyPage />} />
               <Route path="/dates" element={<DatesPage />} />
+              <Route path="/jaggery" element={<JaggeryPage />} />
               <Route path="/shilajit" element={<ShilajitPage />} />
               <Route path="/heart-health" element={<HeartHealthPage />} />
               <Route path="/wholesale" element={<WholesalePage />} />
@@ -54,6 +57,7 @@ function App() {
               <Route path="/return-policy" element={<ReturnPolicyPage />} />
               <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
               <Route path="/terms" element={<TermsPage />} />
+              <Route path="/cosmetics" element={<CosmeticsPage />} />
               {/* Fallback */}
               <Route path="*" element={<HomePage />} />
             </Routes>

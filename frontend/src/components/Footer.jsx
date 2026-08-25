@@ -81,14 +81,13 @@ const Footer = () => {
               <h3 className="ih-footer-heading">Categories</h3>
               <ul className="ih-footer-links">
                 <li><Link to="/honey">Honey Collection</Link></li>
+                <li><Link to="/dates">Dates Collection</Link></li>
+                <li><Link to="/jaggery">Jaggery (Gur)</Link></li>
+                <li><Link to="/shilajit">Himalayan Shilajit</Link></li>
+                <li><Link to="/cosmetics">Natural Cosmetics</Link></li>
                 <li><Link to="/heart-health">Heart Health</Link></li>
-                <li><Link to="/shilajit">Herbal Products</Link></li>
-                <li><Link to="/honey">Jams</Link></li>
-                <li><Link to="/shop">Sauces</Link></li>
-                <li><Link to="/dates">Dates</Link></li>
-                <li><Link to="/shilajit">Fat Burner</Link></li>
-                <li><Link to="/wholesale">Oils</Link></li>
-                <li><Link to="/shop">Pickles</Link></li>
+                <li><Link to="/wholesale">Wholesale & Export</Link></li>
+                <li><Link to="/shop">All Products</Link></li>
               </ul>
             </div>
 

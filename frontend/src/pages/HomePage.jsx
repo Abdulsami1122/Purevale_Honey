@@ -6,7 +6,7 @@ import CollectionSection from '../components/shop/CollectionSection'
 import QualitySection from '../components/QualitySection'
 import WholesaleExport from '../components/WholesaleExport'
 import AboutOrigin from '../components/AboutOrigin'
-import { honeyProducts, datesProducts, shilajitProducts } from '../data/products'
+import { honeyProducts, datesProducts, jaggeryProducts, shilajitProducts } from '../data/products'
 
 const HomePage = () => {
   return (
@@ -17,14 +17,20 @@ const HomePage = () => {
       <CollectionSection
         id="honey-collection"
         title="Honey Collection"
-        subtitle="100% pure and natural honey"
+        subtitle="100% pure and natural raw honey"
         products={honeyProducts}
       />
       <CollectionSection
         id="dates"
         title="Dates Collection"
-        subtitle="Hand-picked, naturally sweet dates"
+        subtitle="Hand-picked, naturally sweet fresh dates"
         products={datesProducts}
+      />
+      <CollectionSection
+        id="jaggery"
+        title="Jaggery (Gur) Collection"
+        subtitle="100% organic, unrefined desi jaggery & shakkar"
+        products={jaggeryProducts}
       />
       <CollectionSection
         id="shilajit"
