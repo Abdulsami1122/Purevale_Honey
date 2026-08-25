@@ -30,10 +30,66 @@
   margin-bottom: 2.5rem;
 }
 
+/* Active Filter Chips */
+.collection-active-chips {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem 1rem;
+  background-color: #F8F9FA;
+  border-radius: 8px;
+  border: 1px solid #ECECEC;
+}
+
+.collection-chips-label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #333333;
+}
+
+.collection-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background-color: #FFFFFF;
+  border: 1px solid #D5D8DC;
+  border-radius: 50px;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #133827;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.collection-chip:hover {
+  background-color: #133827;
+  color: #FFFFFF;
+  border-color: #133827;
+}
+
+.collection-chip-clear {
+  background: none;
+  border: none;
+  color: #888888;
+  font-size: 0.82rem;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  padding: 0;
+}
+
+.collection-chip-clear:hover {
+  color: #133827;
+}
+
 .collection-load-row {
   display: flex;
   justify-content: center;
-  margin-bottom: 2.5rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .collection-load-btn {
@@ -46,17 +102,50 @@
   font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
-  transition: background-color var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
+  transition: background-color var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast), transform var(--transition-fast);
 }
 
 .collection-load-btn:hover:not(:disabled) {
   background-color: var(--color-gold);
   color: #ffffff;
+  transform: translateY(-2px);
 }
 
 .collection-load-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+.collection-empty-filter {
+  text-align: center;
+  padding: 4rem 1.5rem;
+  background: #FDFBF7;
+  border-radius: 12px;
+  border: 1px dashed #DDD8CB;
+  margin: 1.5rem 0;
+}
+
+.collection-empty-filter p {
+  color: #666666;
+  font-size: 1.05rem;
+  margin-bottom: 1.25rem;
+}
+
+.collection-reset-btn {
+  background-color: #133827;
+  color: #FFFFFF;
+  border: none;
+  padding: 0.75rem 1.75rem;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.collection-reset-btn:hover {
+  background-color: #2A5A44;
+  transform: translateY(-2px);
 }
 
 .collection-section + .collection-section {

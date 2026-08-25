@@ -11,11 +11,16 @@ const VIEW_MODES = [
   { id: '6', label: '6 columns', Icon: Grid3x3, cols: 6 },
 ]
 
-const Toolbar = ({ activeView, onViewChange, sort, onSortChange }) => (
+const Toolbar = ({ activeView, onViewChange, sort, onSortChange, onOpenFilter, hasActiveFilter }) => (
   <div className="toolbar">
-    <button type="button" className="toolbar-filter">
+    <button
+      type="button"
+      className={`toolbar-filter ${hasActiveFilter ? 'is-filtering' : ''}`}
+      onClick={onOpenFilter}
+    >
       <SlidersHorizontal size={18} strokeWidth={1.8} />
-      Filter
+      <span>Filter</span>
+      {hasActiveFilter && <span className="toolbar-filter-dot" />}
     </button>
 
     <div className="toolbar-views">

@@ -25,6 +25,19 @@
   color: var(--color-gold);
 }
 
+.toolbar-filter.is-filtering {
+  color: var(--color-green);
+  font-weight: 700;
+}
+
+.toolbar-filter-dot {
+  width: 7px;
+  height: 7px;
+  background-color: var(--color-gold);
+  border-radius: 50%;
+  display: inline-block;
+}
+
 .toolbar-views {
   display: flex;
   align-items: center;

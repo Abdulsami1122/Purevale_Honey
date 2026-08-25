@@ -1,0 +1,260 @@
+/* ==========================================================================
+   FILTER DRAWER STYLES - EXACT MATCH TO REFERENCE DESIGN
+   ========================================================================== */
+
+.filter-drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(2px);
+  z-index: 99999;
+  display: flex;
+  justify-content: flex-start;
+  animation: overlayFadeIn 0.25s ease-out;
+}
+
+@keyframes overlayFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.filter-drawer {
+  width: 330px;
+  max-width: 85vw;
+  height: 100%;
+  background: #FFFFFF;
+  box-shadow: 4px 0 25px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  animation: drawerSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto;
+  font-family: var(--font-body, 'Inter', sans-serif);
+}
+
+@keyframes drawerSlideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Header */
+.filter-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #ECECEC;
+}
+
+.filter-drawer-title {
+  font-family: var(--font-heading, sans-serif);
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #111111;
+  margin: 0;
+}
+
+.filter-drawer-close {
+  background: none;
+  border: none;
+  color: #222222;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.filter-drawer-close:hover {
+  transform: rotate(90deg);
+  color: #000000;
+}
+
+/* Body */
+.filter-drawer-body {
+  padding: 1.75rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.25rem;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Section Underlined Title */
+.filter-group-header {
+  margin-bottom: 1.35rem;
+}
+
+.filter-underlined-title {
+  font-family: var(--font-heading, sans-serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1A1A1A;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 4px;
+  border-bottom: 2px solid #111111;
+}
+
+/* Checkboxes */
+.filter-checkbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.filter-checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.filter-checkbox-custom {
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #CCCCCC;
+  background-color: #FFFFFF;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.filter-checkbox-item.is-selected .filter-checkbox-custom {
+  background-color: #111111;
+  border-color: #111111;
+}
+
+.filter-check-mark {
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.filter-checkbox-text {
+  font-size: 0.95rem;
+  color: #555555;
+  transition: color 0.15s ease;
+}
+
+.filter-checkbox-item:hover .filter-checkbox-text {
+  color: #111111;
+}
+
+/* Price Slider */
+.filter-price-slider-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-slider-track-container {
+  position: relative;
+  width: 100%;
+  margin-bottom: 1.35rem;
+  display: flex;
+  align-items: center;
+}
+
+.filter-range-input {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.filter-range-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 18px;
+  background: #EAA82C;
+  border-radius: 2px;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.filter-range-input::-webkit-slider-thumb:hover {
+  transform: scale(1.18);
+  background: #DF9B20;
+}
+
+.filter-range-input::-moz-range-thumb {
+  width: 14px;
+  height: 18px;
+  background: #EAA82C;
+  border-radius: 2px;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+/* Price Label */
+.filter-price-label {
+  font-size: 0.95rem;
+  color: #444444;
+  margin-bottom: 1.5rem;
+}
+
+.filter-price-label strong {
+  font-weight: 700;
+  color: #111111;
+}
+
+/* Filter Pill Button */
+.filter-apply-pill-btn {
+  background: transparent;
+  border: 1.5px solid #111111;
+  border-radius: 50px;
+  padding: 0.65rem 2rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #111111;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: all 0.2s ease;
+}
+
+.filter-apply-pill-btn:hover {
+  background: #111111;
+  color: #FFFFFF;
+  transform: translateY(-1px);
+}
+
+.filter-reset-text-btn {
+  background: none;
+  border: none;
+  color: #888888;
+  font-size: 0.82rem;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-top: 1rem;
+  align-self: flex-start;
+  padding: 0;
+}
+
+.filter-reset-text-btn:hover {
+  color: #111111;
+}
