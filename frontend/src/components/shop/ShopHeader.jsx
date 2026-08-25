@@ -45,6 +45,7 @@ const ShopHeader = () => {
   const [announcementOpen, setAnnouncementOpen] = useState(true)
   const [currentMsgIndex, setCurrentMsgIndex] = useState(0)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const [scrollState, setScrollState] = useState('top') // 'top' | 'down' | 'up'
   const { wishlist, cartCount } = useShop()
   const location = useLocation()
 
@@ -57,8 +58,41 @@ const ShopHeader = () => {
     return () => clearInterval(timer)
   }, [announcementOpen])
 
+  // Smart Scroll Handler:
+  // - Scrolling Down: Hides header completely
+  // - Scrolling Up: Reveals ONLY the Nav Bar
+  // - At Top: Shows full header
+  useEffect(() => {
+    let lastScrollY = window.pageYOffset
+
+    const handleScroll = () => {
+      const scrollY = window.pageYOffset
+
+      if (scrollY <= 60) {
+        setScrollState('top')
+        lastScrollY = scrollY
+        return
+      }
+
+      const diff = scrollY - lastScrollY
+
+      if (Math.abs(diff) < 8) return
+
+      if (diff > 0 && scrollY > 120) {
+        setScrollState('down')
+      } else if (diff < 0) {
+        setScrollState('up')
+      }
+
+      lastScrollY = scrollY > 0 ? scrollY : 0
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('handleScroll', handleScroll)
+  }, [])
+
   return (
-    <header className="shop-header">
+    <header className={`shop-header header-scroll-${scrollState}`}>
       {/* 1. Top Announcement Bar */}
       {announcementOpen && (
         <div className="announcement-bar">
