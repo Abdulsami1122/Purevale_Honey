@@ -351,6 +351,78 @@ export const shilajitProducts = [
   },
 ]
 
+export const cosmeticsProducts = [
+  {
+    id: 'beeswax-repair-cream',
+    title: 'Beeswax Repair Cream (Royal Jelly & Propolis)',
+    image: '/cosmetics.jpg',
+    priceMin: 1850,
+    compareAt: 2200,
+    rating: 5,
+    reviews: 19,
+    available: true,
+    featured: 1,
+    variants: ['50ml', '100ml'],
+  },
+  {
+    id: 'propolis-renewal-serum',
+    title: 'Propolis Renewal Serum (Honey & Botanicals)',
+    image: '/cosmetics.jpg',
+    priceMin: 2400,
+    rating: 4.9,
+    reviews: 28,
+    available: true,
+    featured: 2,
+    variants: ['30ml'],
+  },
+  {
+    id: 'raw-honey-face-glow-mask',
+    title: 'Pure Sidr Honey Face Glow & Detox Mask',
+    image: '/cosmetics.jpg',
+    priceMin: 1650,
+    priceMax: 2900,
+    rating: 4.8,
+    reviews: 14,
+    available: true,
+    featured: 3,
+    variants: ['100g', '200g'],
+  },
+  {
+    id: 'honey-beeswax-lip-balm',
+    title: 'Natural Honey & Vitamin E Beeswax Lip Balm',
+    image: '/cosmetics.jpg',
+    priceMin: 550,
+    rating: 5,
+    reviews: 32,
+    available: true,
+    featured: 4,
+    variants: ['15g'],
+  },
+  {
+    id: 'organic-black-seed-hair-elixir',
+    title: 'Organic Black Seed & Honey Hair Elixir',
+    image: '/cosmetics.jpg',
+    priceMin: 1450,
+    compareAt: 1800,
+    rating: 4.7,
+    reviews: 11,
+    available: true,
+    featured: 5,
+    variants: ['100ml', '200ml'],
+  },
+  {
+    id: 'propolis-healing-salve',
+    title: 'Bee Propolis Intensive Skin Healing Salve',
+    image: '/cosmetics.jpg',
+    priceMin: 1250,
+    rating: 5,
+    reviews: 9,
+    available: true,
+    featured: 6,
+    variants: ['50g'],
+  }
+]
+
 export const formatPrice = (value) =>
   `Rs.${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 

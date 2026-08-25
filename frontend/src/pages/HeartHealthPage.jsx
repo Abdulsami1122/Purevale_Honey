@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import QualitySection from '../components/QualitySection'
-import ProductHighlight from '../components/ProductHighlight'
 import './Pages.css'
 
 const HeartHealthPage = () => {
@@ -37,7 +36,6 @@ const HeartHealthPage = () => {
         </div>
       </div>
 
-      <ProductHighlight />
       <QualitySection />
     </div>
   )

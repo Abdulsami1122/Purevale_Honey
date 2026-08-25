@@ -6,6 +6,7 @@ import {
   Gem,
   Gift,
   Cookie,
+  Mountain,
   Sparkles,
   Menu,
   Phone,
@@ -19,13 +20,14 @@ import { FacebookIcon, InstagramIcon, TiktokIcon, YoutubeIcon } from './BrandIco
 import { useShop } from './ShopContext'
 import './ShopHeader.css'
 
-// 1. Home -> 2. Shop -> 3. Pure Honey [premium] -> 4. Dates [Fresh] -> 5. Jaggery (Gur) [Natural] -> 6. Cosmetics [new]
+// 1. Home -> 2. Shop -> 3. Pure Honey [premium] -> 4. Dates [Fresh] -> 5. Jaggery (Gur) [Natural] -> 6. Shilajit [Gold] -> 7. Cosmetics [new]
 const NAV_ITEMS = [
   { label: 'Home', icon: Home, href: '/' },
   { label: 'Shop', icon: ShoppingBag, href: '/shop' },
   { label: 'Pure Honey', icon: Gem, badge: 'premium', badgeTone: 'cyan', href: '/honey' },
   { label: 'Dates', icon: Gift, badge: 'Fresh', badgeTone: 'green', href: '/dates' },
   { label: 'Jaggery (Gur)', icon: Cookie, badge: 'Natural', badgeTone: 'amber', href: '/jaggery' },
+  { label: 'Shilajit', icon: Mountain, badge: 'Gold', badgeTone: 'cyan', href: '/shilajit' },
   { label: 'Cosmetics', icon: Sparkles, badge: 'new', badgeTone: 'amber', href: '/cosmetics' },
 ]
 

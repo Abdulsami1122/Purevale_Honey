@@ -1,23 +1,24 @@
 .collection-section {
-  padding-top: var(--spacing-lg);
-  padding-bottom: var(--spacing-lg);
+  padding-top: 1.25rem;
+  padding-bottom: 1.75rem;
 }
 
 .collection-heading {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1.5rem;
-  margin-bottom: 0.75rem;
+  gap: 1.25rem;
+  margin-bottom: 0.4rem;
 }
 
 .collection-heading h2 {
   margin: 0;
   white-space: nowrap;
+  font-size: clamp(1.4rem, 2.5vw, 1.9rem);
 }
 
 .collection-heading-line {
-  width: 60px;
+  width: 50px;
   height: 2px;
   background-color: var(--color-green);
   display: inline-block;
@@ -27,7 +28,8 @@
   text-align: center;
   font-style: italic;
   color: #8a8a8a;
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.35rem;
+  font-size: 0.92rem;
 }
 
 /* Active Filter Chips */
@@ -35,16 +37,16 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.65rem;
-  margin-bottom: 1.5rem;
-  padding: 0.75rem 1rem;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem 0.85rem;
   background-color: #F8F9FA;
   border-radius: 8px;
   border: 1px solid #ECECEC;
 }
 
 .collection-chips-label {
-  font-size: 0.88rem;
+  font-size: 0.82rem;
   font-weight: 700;
   color: #333333;
 }
@@ -52,12 +54,12 @@
 .collection-chip {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.3rem;
   background-color: #FFFFFF;
   border: 1px solid #D5D8DC;
   border-radius: 50px;
-  padding: 0.3rem 0.75rem;
-  font-size: 0.82rem;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.78rem;
   font-weight: 600;
   color: #133827;
   cursor: pointer;
@@ -74,10 +76,10 @@
   background: none;
   border: none;
   color: #888888;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   text-decoration: underline;
   cursor: pointer;
-  margin-left: 0.5rem;
+  margin-left: 0.4rem;
   padding: 0;
 }
 
@@ -88,19 +90,19 @@
 .collection-load-row {
   display: flex;
   justify-content: center;
-  margin-top: 2.5rem;
-  margin-bottom: 1.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .collection-load-btn {
-  padding: 0.85rem 2.2rem;
+  padding: 0.65rem 1.8rem;
   border-radius: 999px;
   border: 1.5px solid var(--color-gold);
   background: transparent;
   color: var(--color-gold);
   font-family: var(--font-heading);
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: background-color var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast), transform var(--transition-fast);
 }
@@ -118,27 +120,27 @@
 
 .collection-empty-filter {
   text-align: center;
-  padding: 4rem 1.5rem;
+  padding: 2.5rem 1.5rem;
   background: #FDFBF7;
   border-radius: 12px;
   border: 1px dashed #DDD8CB;
-  margin: 1.5rem 0;
+  margin: 1.25rem 0;
 }
 
 .collection-empty-filter p {
   color: #666666;
-  font-size: 1.05rem;
-  margin-bottom: 1.25rem;
+  font-size: 0.98rem;
+  margin-bottom: 1rem;
 }
 
 .collection-reset-btn {
   background-color: #133827;
   color: #FFFFFF;
   border: none;
-  padding: 0.75rem 1.75rem;
+  padding: 0.6rem 1.5rem;
   border-radius: 50px;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.2s ease;
 }
@@ -149,5 +151,5 @@
 }
 
 .collection-section + .collection-section {
-  padding-top: 0;
+  padding-top: 0.5rem;
 }

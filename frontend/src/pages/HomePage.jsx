@@ -1,18 +1,16 @@
 import React from 'react'
 import HeroSection from '../components/HeroSection'
-import ProductHighlight from '../components/ProductHighlight'
 import PageBanner from '../components/shop/PageBanner'
 import CollectionSection from '../components/shop/CollectionSection'
 import QualitySection from '../components/QualitySection'
 import WholesaleExport from '../components/WholesaleExport'
 import AboutOrigin from '../components/AboutOrigin'
-import { honeyProducts, datesProducts, jaggeryProducts, shilajitProducts } from '../data/products'
+import { honeyProducts, datesProducts, jaggeryProducts, shilajitProducts, cosmeticsProducts } from '../data/products'
 
 const HomePage = () => {
   return (
     <div className="home-page">
       <HeroSection />
-      <ProductHighlight />
       <PageBanner title="Our Collections" crumb="Shop" />
       <CollectionSection
         id="honey-collection"
@@ -37,6 +35,12 @@ const HomePage = () => {
         title="Shilajit Collection"
         subtitle="Pure Himalayan shilajit for daily vitality"
         products={shilajitProducts}
+      />
+      <CollectionSection
+        id="cosmetics"
+        title="Natural Cosmetics Collection"
+        subtitle="Beeswax & propolis infused botanical skincare"
+        products={cosmeticsProducts}
       />
       <AboutOrigin />
       <QualitySection />

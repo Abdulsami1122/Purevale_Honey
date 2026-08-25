@@ -13,12 +13,12 @@
   --font-heading: 'Outfit', 'Inter', system-ui, sans-serif;
   --font-body: 'Inter', system-ui, sans-serif;
   
-  /* Spacing */
-  --spacing-xs: 0.5rem;
-  --spacing-sm: 1rem;
-  --spacing-md: 2rem;
-  --spacing-lg: 4rem;
-  --spacing-xl: 8rem;
+  /* Compact Refined Spacing */
+  --spacing-xs: 0.4rem;
+  --spacing-sm: 0.85rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2.25rem;
+  --spacing-xl: 3.5rem;
   
   /* Transitions */
   --transition-fast: 0.2s ease;
@@ -35,7 +35,7 @@ body {
   font-family: var(--font-body);
   background-color: var(--color-cream);
   color: var(--color-text);
-  line-height: 1.6;
+  line-height: 1.55;
   overflow-x: hidden;
 }
 
@@ -47,15 +47,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
 }
 
 h2 {
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: clamp(1.6rem, 3.2vw, 2.4rem);
 }
 
 h3 {
-  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
 }
 
 a {
@@ -81,11 +81,11 @@ ul {
 
 .btn {
   display: inline-block;
-  padding: 1rem 2rem;
+  padding: 0.75rem 1.6rem;
   font-family: var(--font-heading);
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
   border: none;
   cursor: pointer;
   transition: all var(--transition-normal);
@@ -127,16 +127,16 @@ ul {
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(15px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.8s ease forwards;
+  animation: fadeIn 0.6s ease forwards;
 }
 
 .section {
-  padding: var(--spacing-xl) 0;
+  padding: 2.25rem 0;
 }
 
 img {

@@ -13,32 +13,32 @@
 .wholesale-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4rem;
+  gap: 2.25rem;
   align-items: center;
 }
 
 .wholesale-title {
   color: var(--color-gold);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .wholesale-desc {
-  font-size: 1.1rem;
-  line-height: 1.8;
-  margin-bottom: 3rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1.75rem;
   opacity: 0.9;
 }
 
 .wholesale-features {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.25rem;
 }
 
 .feature-item {
   display: flex;
   align-items: flex-start;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .feature-icon {
@@ -48,41 +48,44 @@
 
 .feature-item h4 {
   color: var(--color-white);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
+  font-size: 1.05rem;
 }
 
 .feature-item p {
-  opacity: 0.8;
-  font-size: 0.95rem;
+  opacity: 0.85;
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
 
 .wholesale-form-card {
   background-color: var(--color-white);
-  padding: 3rem;
+  padding: 2rem 1.75rem;
   border-radius: 8px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
 }
 
 .wholesale-form-card h3 {
-  margin-bottom: 2rem;
+  margin-bottom: 1.25rem;
   text-align: center;
+  font-size: 1.3rem;
 }
 
 .export-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
   width: 100%;
-  padding: 1rem;
+  padding: 0.8rem 0.9rem;
   border: 1px solid var(--color-cream-dark);
   border-radius: 4px;
   font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   background-color: var(--color-cream);
   color: var(--color-text);
   transition: border-color var(--transition-fast);
@@ -98,9 +101,10 @@
 @media (max-width: 992px) {
   .wholesale-layout {
     grid-template-columns: 1fr;
+    gap: 1.75rem;
   }
   
   .wholesale-form-card {
-    padding: 2rem;
+    padding: 1.5rem;
   }
 }
