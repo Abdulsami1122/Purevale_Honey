@@ -1,51 +1,67 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { ShopProvider } from './components/shop/ShopContext'
 import ShopHeader from './components/shop/ShopHeader'
-import PageBanner from './components/shop/PageBanner'
-import CollectionSection from './components/shop/CollectionSection'
-import HeroSection from './components/HeroSection'
-import ProductHighlight from './components/ProductHighlight'
-import QualitySection from './components/QualitySection'
-import WholesaleExport from './components/WholesaleExport'
-import AboutOrigin from './components/AboutOrigin'
 import Footer from './components/Footer'
-import { honeyProducts, datesProducts, shilajitProducts } from './data/products'
+
+// Dedicated Pages
+import HomePage from './pages/HomePage'
+import ShopPage from './pages/ShopPage'
+import HoneyPage from './pages/HoneyPage'
+import DatesPage from './pages/DatesPage'
+import ShilajitPage from './pages/ShilajitPage'
+import HeartHealthPage from './pages/HeartHealthPage'
+import WholesalePage from './pages/WholesalePage'
+import AboutPage from './pages/AboutPage'
+import ContactPage from './pages/ContactPage'
+import FaqPage from './pages/FaqPage'
+import ReturnPolicyPage from './pages/ReturnPolicyPage'
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage'
+import TermsPage from './pages/TermsPage'
+
 import './App.css'
+
+// Helper component that resets window scroll when changing routes
+function ScrollToTop() {
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
+
+  return null
+}
 
 function App() {
   return (
-    <ShopProvider>
-      <div className="App">
-        <ShopHeader />
-        <main>
-          <HeroSection />
-          <ProductHighlight />
-          <PageBanner title="Our Collections" crumb="Shop" />
-          <CollectionSection
-            id="honey-collection"
-            title="Honey Collection"
-            subtitle="100% pure and natural honey"
-            products={honeyProducts}
-          />
-          <CollectionSection
-            id="dates"
-            title="Dates Collection"
-            subtitle="Hand-picked, naturally sweet dates"
-            products={datesProducts}
-          />
-          <CollectionSection
-            id="shilajit"
-            title="Shilajit Collection"
-            subtitle="Pure Himalayan shilajit for daily vitality"
-            products={shilajitProducts}
-          />
-          <AboutOrigin />
-          <QualitySection />
-          <WholesaleExport />
-        </main>
-        <Footer />
-      </div>
-    </ShopProvider>
+    <BrowserRouter>
+      <ShopProvider>
+        <ScrollToTop />
+        <div className="App">
+          <ShopHeader />
+          <main>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/shop" element={<ShopPage />} />
+              <Route path="/honey" element={<HoneyPage />} />
+              <Route path="/dates" element={<DatesPage />} />
+              <Route path="/shilajit" element={<ShilajitPage />} />
+              <Route path="/heart-health" element={<HeartHealthPage />} />
+              <Route path="/wholesale" element={<WholesalePage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/faq" element={<FaqPage />} />
+              <Route path="/return-policy" element={<ReturnPolicyPage />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+              <Route path="/terms" element={<TermsPage />} />
+              {/* Fallback */}
+              <Route path="*" element={<HomePage />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
+      </ShopProvider>
+    </BrowserRouter>
   )
 }
 

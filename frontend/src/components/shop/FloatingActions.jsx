@@ -7,7 +7,7 @@ const FloatingActions = () => (
   <div className="floating-actions">
     <a
       className="floating-whatsapp"
-      href="https://wa.me/923000000000"
+      href="https://wa.me/923339300672"
       target="_blank"
       rel="noreferrer"
       aria-label="Chat on WhatsApp"

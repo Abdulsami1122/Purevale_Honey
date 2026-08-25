@@ -1,141 +1,724 @@
-.footer {
-  background-color: var(--color-green);
-  color: var(--color-white);
-  padding: 5rem 0 2rem;
+/* ==========================================================================
+   PUREVALE NATURAL - FOOTER STYLES & ANIMATIONS
+   ========================================================================== */
+
+.ih-footer {
+  background-color: #F8F9FA;
+  color: #555555;
+  font-family: var(--font-body, 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  border-top: 1px solid #EAEAEA;
+  position: relative;
+  overflow: hidden;
+  z-index: 10;
 }
 
-.footer-grid {
+.ih-footer-container {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 4.5rem 1.5rem 3.5rem;
+}
+
+.ih-footer-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1.5fr;
-  gap: 3rem;
-  margin-bottom: 4rem;
+  grid-template-columns: 1.4fr 1fr 1fr 0.9fr 1.4fr;
+  gap: 2.5rem;
+  align-items: start;
 }
 
-.footer-logo {
+/* ==========================================================================
+   1. Brand Logo (Purevale)
+   ========================================================================== */
+.ih-brand-col {
+  padding-right: 1rem;
+}
+
+.ih-logo-wrapper {
+  margin-bottom: 1.75rem;
+}
+
+.pv-footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.pv-footer-brand:hover {
+  transform: translateY(-2px);
+}
+
+.pv-footer-logo-img {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #EAA82C;
+  box-shadow: 0 4px 12px rgba(234, 168, 44, 0.25);
+}
+
+.pv-brand-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.pv-brand-name {
+  font-family: var(--font-heading, sans-serif);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #133827;
+  letter-spacing: 1px;
+  line-height: 1.1;
+}
+
+.pv-brand-sub {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #C5A059;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   Contact Details
+   ========================================================================== */
+.ih-contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.ih-contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.92rem;
+  color: #555555;
+  line-height: 1.45;
+  text-decoration: none;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.ih-contact-icon {
+  color: #666666;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+  transition: color 0.25s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ih-contact-link:hover {
+  color: #133827;
+  transform: translateX(3px);
+}
+
+.ih-contact-link:hover .ih-contact-icon {
+  color: #D88F18;
+  transform: scale(1.18);
+}
+
+/* ==========================================================================
+   2-4. Headings & Link Columns
+   ========================================================================== */
+.ih-footer-heading {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #111111;
+  margin-bottom: 1.6rem;
+  font-family: var(--font-heading, sans-serif);
+  letter-spacing: -0.2px;
+  position: relative;
+}
+
+.ih-footer-heading::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 20px;
+  height: 2px;
+  background-color: #EAA82C;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.ih-footer-col:hover .ih-footer-heading::after {
+  width: 32px;
+}
+
+.ih-footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.78rem;
+}
+
+.ih-footer-links li a {
+  font-size: 0.92rem;
+  color: #555555;
+  text-decoration: none;
+  display: inline-block;
+  transition: color 0.22s ease, transform 0.22s ease;
+  position: relative;
+}
+
+.ih-footer-links li a:hover {
+  color: #133827;
+  transform: translateX(4px);
+  font-weight: 500;
+}
+
+/* Link Button style for Modals */
+.ih-link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 0.92rem;
+  color: #555555;
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.22s ease, transform 0.22s ease;
+}
+
+.ih-link-btn:hover {
+  color: #133827;
+  transform: translateX(4px);
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   5. Newsletter Signup
+   ========================================================================== */
+.ih-newsletter-col {
+  padding-left: 0.5rem;
+}
+
+.ih-newsletter-desc {
+  font-size: 0.92rem;
+  color: #555555;
+  line-height: 1.5;
+  margin-bottom: 1.25rem;
+}
+
+.ih-newsletter-form {
   margin-bottom: 1.5rem;
+  position: relative;
 }
 
-.logo-img-footer {
-  height: 56px;
+.ih-input-pill-container {
+  display: flex;
+  align-items: center;
+  background: #FFFFFF;
+  border: 1.5px solid #777777;
+  border-radius: 50px;
+  padding: 4px 4px 4px 16px;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.ih-input-pill-container:focus-within {
+  border-color: #133827;
+  box-shadow: 0 0 0 3px rgba(19, 56, 39, 0.1);
+}
+
+.ih-email-input {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  font-size: 0.88rem;
+  color: #333333;
+  font-family: inherit;
+}
+
+.ih-email-input::placeholder {
+  color: #888888;
+}
+
+.ih-subscribe-btn {
+  background-color: #133827;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 50px;
+  padding: 0.65rem 1.4rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  white-space: nowrap;
+}
+
+.ih-subscribe-btn:hover {
+  background-color: #2A5A44;
+  transform: scale(1.04);
+  box-shadow: 0 4px 12px rgba(19, 56, 39, 0.25);
+}
+
+.ih-subscribe-btn:active {
+  transform: scale(0.97);
+}
+
+.ih-subscribe-success {
+  margin-top: 0.6rem;
+  font-size: 0.84rem;
+  color: #1b8754;
+  font-weight: 600;
+  animation: fadeInDown 0.3s ease;
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Social Row */
+.ih-social-row {
+  display: flex;
+  align-items: center;
+  gap: 1.3rem;
+  margin-top: 1.25rem;
+}
+
+.ih-social-icon {
+  color: #777777;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.25s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  text-decoration: none;
+}
+
+.ih-social-icon:hover {
+  color: #133827;
+  transform: translateY(-3px) scale(1.15);
+}
+
+/* ==========================================================================
+   Bottom Yellow/Amber Bar
+   ========================================================================== */
+.ih-bottom-bar {
+  background-color: #ECAE2D;
+  padding: 1.1rem 1.5rem;
+  color: #1A1A1A;
+  position: relative;
+  z-index: 5;
+}
+
+.ih-bottom-container {
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+.ih-copyright-text {
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: #1A1A1A;
+  margin: 0;
+}
+
+.ih-copyright-text strong {
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   Floating Action Button (WhatsApp ONLY)
+   ========================================================================== */
+.ih-floating-whatsapp {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
   width: 56px;
-  object-fit: cover;
+  height: 56px;
+  background-color: #25D366;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.45);
+  z-index: 999;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  text-decoration: none;
+}
+
+.ih-floating-whatsapp:hover {
+  transform: scale(1.1) translateY(-3px);
+  box-shadow: 0 8px 26px rgba(37, 211, 102, 0.65);
+}
+
+.ih-wa-ping {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  background-color: #25D366;
+  opacity: 0.6;
+  z-index: -1;
+  animation: waPing 2.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes waPing {
+  0% { transform: scale(1); opacity: 0.7; }
+  70% { transform: scale(1.4); opacity: 0; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+
+/* ==========================================================================
+   INTERACTIVE POPUP MODALS (FAQ, ABOUT, CONTACT, POLICIES)
+   ========================================================================== */
+.pv-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(5px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: modalFadeIn 0.25s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.pv-modal-content {
+  background: #FFFFFF;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 680px;
+  max-height: 88vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  position: relative;
+  padding: 2.25rem 2rem;
+  border: 1px solid #EAEAEA;
+  animation: modalScaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalScaleUp {
+  from { opacity: 0; transform: scale(0.94) translateY(12px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.pv-modal-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: #F0F2F5;
+  border: none;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
-  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #555555;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.text-white {
-  color: var(--color-white) !important;
+.pv-modal-close:hover {
+  background: #E4E6EB;
+  color: #111111;
+  transform: rotate(90deg);
 }
 
-.footer-desc {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.95rem;
-  margin-bottom: 2rem;
+.pv-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid #EEEEEE;
+}
+
+.pv-modal-icon-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: #F4F7F4;
+  color: #133827;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pv-modal-header h2 {
+  font-size: 1.45rem;
+  color: #133827;
+  margin-bottom: 0.25rem;
+}
+
+.pv-modal-header p {
+  font-size: 0.88rem;
+  color: #666666;
+}
+
+/* FAQ list */
+.pv-faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.pv-faq-item {
+  background: #F8F9FA;
+  padding: 1.15rem 1.3rem;
+  border-radius: 12px;
+  border: 1px solid #EFEFEF;
+}
+
+.pv-faq-item h4 {
+  font-size: 0.98rem;
+  color: #133827;
+  margin-bottom: 0.5rem;
+}
+
+.pv-faq-item p {
+  font-size: 0.9rem;
+  color: #555555;
+  line-height: 1.55;
+}
+
+/* About content */
+.pv-about-content {
+  font-size: 0.94rem;
+  color: #444444;
   line-height: 1.6;
 }
 
-.social-links-text {
-  display: flex;
+.pv-about-pillars {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.pv-pillar-card {
+  background: #F8F9FA;
+  padding: 1.2rem 1rem;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px solid #EAEAEA;
+}
+
+.pv-pillar-emoji {
+  font-size: 1.6rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.pv-pillar-card h4 {
+  font-size: 0.92rem;
+  color: #133827;
+  margin-bottom: 0.4rem;
+}
+
+.pv-pillar-card p {
+  font-size: 0.8rem;
+  color: #666666;
+  line-height: 1.4;
+}
+
+.pv-about-footer-text {
+  font-style: italic;
+  color: #666666;
+  margin-top: 1rem;
+}
+
+/* Contact modal */
+.pv-contact-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
 }
 
-.social-links-text a {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.9rem;
-  font-family: var(--font-heading);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.social-links-text a:hover {
-  color: var(--color-gold);
-}
-
-.footer h4 {
-  color: var(--color-gold);
-  margin-bottom: 1.5rem;
-  font-family: var(--font-heading);
-  font-weight: 600;
-  letter-spacing: 1px;
-}
-
-.footer-links ul {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-}
-
-.footer-links a {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.9rem;
-}
-
-.footer-links a:hover {
-  color: var(--color-gold);
-}
-
-.footer-contact ul {
+.pv-contact-quick-info {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.footer-contact li {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.8rem;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.9rem;
+.pv-info-box {
+  background: #F8F9FA;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  border: 1px solid #EFEFEF;
 }
 
-.contact-icon {
-  color: var(--color-gold);
-  flex-shrink: 0;
-  margin-top: 3px;
-}
-
-.footer-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+.pv-info-box strong {
+  display: block;
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: #133827;
+  margin-bottom: 0.2rem;
 }
 
-.payment-methods {
+.pv-info-box p, .pv-info-box a {
+  font-size: 0.88rem;
+  color: #444444;
+  text-decoration: none;
+}
+
+.pv-info-box a:hover {
+  color: #EAA82C;
+  text-decoration: underline;
+}
+
+.pv-contact-modal-form {
   display: flex;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-.payment-icon {
-  padding: 0.3rem 0.6rem;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+.pv-contact-modal-form h4 {
+  font-size: 1rem;
+  color: #133827;
+  margin-bottom: 0.25rem;
 }
 
-@media (max-width: 992px) {
-  .footer-grid {
-    grid-template-columns: 1fr 1fr;
+.pv-contact-modal-form input,
+.pv-contact-modal-form textarea {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid #CCCCCC;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.pv-contact-modal-form input:focus,
+.pv-contact-modal-form textarea:focus {
+  border-color: #133827;
+}
+
+.pv-submit-modal-btn {
+  background: #133827;
+  color: #FFFFFF;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.pv-submit-modal-btn:hover {
+  background: #2A5A44;
+}
+
+.pv-contact-success-note {
+  font-size: 0.82rem;
+  color: #1b8754;
+  font-weight: 600;
+}
+
+/* Policies */
+.pv-policy-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.pv-policy-block {
+  background: #F8F9FA;
+  padding: 1.15rem 1.3rem;
+  border-radius: 12px;
+  border: 1px solid #EFEFEF;
+}
+
+.pv-policy-block h4 {
+  font-size: 0.98rem;
+  color: #133827;
+  margin-bottom: 0.4rem;
+}
+
+.pv-policy-block p {
+  font-size: 0.9rem;
+  color: #555555;
+  line-height: 1.55;
+}
+
+/* ==========================================================================
+   Responsive Breakpoints
+   ========================================================================== */
+@media (max-width: 1100px) {
+  .ih-footer-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2.5rem 2rem;
+  }
+
+  .ih-newsletter-col {
+    grid-column: span 2;
+    padding-left: 0;
   }
 }
 
-@media (max-width: 600px) {
-  .footer-grid {
+@media (max-width: 768px) {
+  .ih-footer-container {
+    padding: 3rem 1.25rem 2.5rem;
+  }
+
+  .ih-footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 2.2rem 1.5rem;
+  }
+
+  .ih-brand-col {
+    grid-column: span 2;
+    padding-right: 0;
+  }
+
+  .ih-newsletter-col {
+    grid-column: span 2;
+  }
+
+  .ih-floating-whatsapp {
+    bottom: 16px;
+    left: 16px;
+    width: 50px;
+    height: 50px;
+  }
+
+  .pv-contact-modal-grid {
     grid-template-columns: 1fr;
   }
 
-  .footer-bottom {
-    flex-direction: column;
-    gap: 1.5rem;
+  .pv-about-pillars {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .ih-footer-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .ih-brand-col,
+  .ih-newsletter-col {
+    grid-column: span 1;
+  }
+
+  .ih-bottom-bar {
     text-align: center;
   }
 }

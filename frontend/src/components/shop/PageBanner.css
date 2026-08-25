@@ -1,13 +1,17 @@
 .page-banner {
-  background-color: #0c0c0c;
-  padding: 4.5rem 0;
+  background: linear-gradient(135deg, #091710 0%, #0d2217 50%, #07140e 100%);
+  padding: 2.25rem 1.5rem 2rem;
   text-align: center;
+  border-bottom: 1px solid rgba(229, 168, 35, 0.2);
 }
 
 .page-banner-inner h1 {
-  color: var(--color-gold-light);
-  font-size: clamp(2.2rem, 4vw, 3rem);
-  margin-bottom: 1rem;
+  color: #FFFFFF;
+  font-size: clamp(1.45rem, 2.5vw, 1.85rem);
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  font-family: var(--font-heading, sans-serif);
+  letter-spacing: -0.3px;
 }
 
 .page-banner-crumb {
@@ -15,12 +19,19 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  color: rgba(255, 255, 255, 0.85);
-  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.82rem;
+  font-weight: 500;
 }
 
 .page-banner-crumb a {
-  color: #ffffff;
+  color: #EAA82C;
+  transition: color 0.2s ease;
+}
+
+.page-banner-crumb a:hover {
+  color: #FFD54F;
+  text-decoration: underline;
 }
 
 .page-banner-crumb svg {
@@ -28,5 +39,5 @@
 }
 
 .page-banner-crumb span {
-  color: var(--color-gold-light);
+  color: rgba(255, 255, 255, 0.75);
 }

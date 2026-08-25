@@ -1,0 +1,332 @@
+/* ==========================================================================
+   PUREVALE DEDICATED PAGES STYLES
+   ========================================================================== */
+
+.page-container {
+  min-height: 70vh;
+  padding-bottom: 5rem;
+}
+
+.page-hero-banner {
+  background: linear-gradient(135deg, #091710 0%, #0d2217 50%, #07140e 100%);
+  color: #FFFFFF;
+  padding: 2.25rem 1.5rem 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(229, 168, 35, 0.2);
+}
+
+.page-hero-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 30%, rgba(234, 168, 44, 0.08) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.page-breadcrumbs {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.45rem;
+  letter-spacing: 0.3px;
+}
+
+.page-breadcrumbs a {
+  color: #EAA82C;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.page-breadcrumbs a:hover {
+  color: #FFD54F;
+  text-decoration: underline;
+}
+
+.page-hero-title {
+  font-size: clamp(1.45rem, 2.5vw, 1.85rem);
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 0.4rem;
+  font-family: var(--font-heading, sans-serif);
+  letter-spacing: -0.3px;
+}
+
+.page-hero-subtitle {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.75);
+  max-width: 580px;
+  margin: 0 auto;
+  line-height: 1.45;
+}
+
+.page-content-wrapper {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 3.5rem 1.5rem 1rem;
+}
+
+/* Informational / Policy Cards */
+.info-section-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border: 1px solid #EAEAEA;
+  margin-bottom: 2rem;
+}
+
+.info-section-card h2 {
+  font-size: 1.6rem;
+  color: #133827;
+  margin-bottom: 1.25rem;
+  font-family: var(--font-heading, sans-serif);
+}
+
+.info-section-card h3 {
+  font-size: 1.2rem;
+  color: #133827;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.info-section-card p {
+  color: #555555;
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.info-list-styled {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.info-list-styled li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  color: #444444;
+  font-size: 0.98rem;
+  line-height: 1.5;
+}
+
+.info-list-styled li strong {
+  color: #133827;
+}
+
+/* FAQ Accordion Styling */
+.faq-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.faq-card-item {
+  background: #FFFFFF;
+  border-radius: 14px;
+  border: 1px solid #E5E8EC;
+  padding: 1.75rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.faq-card-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  border-color: #C5A059;
+}
+
+.faq-q-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #133827;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.faq-a-desc {
+  font-size: 0.98rem;
+  color: #555555;
+  line-height: 1.65;
+  padding-left: 2rem;
+}
+
+/* Contact Page Layout */
+.contact-page-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.contact-info-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.contact-card-box {
+  background: #FFFFFF;
+  border-radius: 14px;
+  border: 1px solid #E5E8EC;
+  padding: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+  transition: transform 0.2s ease;
+}
+
+.contact-card-box:hover {
+  transform: translateY(-2px);
+}
+
+.contact-icon-bubble {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #F4F7F4;
+  color: #133827;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.contact-card-text h4 {
+  font-size: 1rem;
+  color: #133827;
+  margin-bottom: 0.25rem;
+}
+
+.contact-card-text p, .contact-card-text a {
+  font-size: 0.95rem;
+  color: #555555;
+  text-decoration: none;
+  line-height: 1.4;
+}
+
+.contact-card-text a:hover {
+  color: #EAA82C;
+  text-decoration: underline;
+}
+
+.contact-form-panel {
+  background: #FFFFFF;
+  border-radius: 16px;
+  border: 1px solid #EAEAEA;
+  padding: 2.25rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.contact-form-panel h3 {
+  font-size: 1.4rem;
+  color: #133827;
+  margin-bottom: 1.25rem;
+}
+
+.contact-input-field {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1.5px solid #D5D8DC;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  margin-bottom: 1rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.contact-input-field:focus {
+  border-color: #133827;
+  box-shadow: 0 0 0 3px rgba(19, 56, 39, 0.1);
+}
+
+.contact-btn-submit {
+  background: #133827;
+  color: #FFFFFF;
+  border: none;
+  padding: 0.9rem 2rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  transition: all 0.25s ease;
+}
+
+.contact-btn-submit:hover {
+  background: #2A5A44;
+  transform: translateY(-2px);
+}
+
+.contact-success-box {
+  background: #E8F5E9;
+  color: #2E7D32;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-top: 1rem;
+  font-size: 0.92rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* About Page Visuals */
+.about-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.about-pillar-card {
+  background: #FFFFFF;
+  border-radius: 14px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  border: 1px solid #E5E8EC;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.about-pillar-card .pillar-icon {
+  font-size: 2.4rem;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.about-pillar-card h4 {
+  font-size: 1.15rem;
+  color: #133827;
+  margin-bottom: 0.5rem;
+}
+
+.about-pillar-card p {
+  font-size: 0.9rem;
+  color: #666666;
+  line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .contact-page-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-pillars-grid {
+    grid-template-columns: 1fr;
+  }
+}
