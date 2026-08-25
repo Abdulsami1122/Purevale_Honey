@@ -94,15 +94,19 @@
   color: var(--color-text);
 }
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
   .toolbar {
     flex-wrap: wrap;
+    gap: 0.85rem;
   }
 
   .toolbar-views {
     order: 3;
-    width: 100%;
+    width: auto;
     justify-content: flex-start;
-    flex-wrap: wrap;
+  }
+
+  .toolbar-view-btn.hide-on-mobile {
+    display: none !important;
   }
 }

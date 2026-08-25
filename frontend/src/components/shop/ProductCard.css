@@ -164,3 +164,42 @@
   align-items: center;
   color: var(--color-gold);
 }
+
+@media (max-width: 768px) {
+  .product-title {
+    font-size: 0.92rem;
+    line-height: 1.3;
+    margin-bottom: 0.3rem;
+  }
+
+  .product-price {
+    font-size: 0.88rem;
+    gap: 0.4rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .product-card-body {
+    padding-top: 0.65rem;
+  }
+
+  .product-card-overlay {
+    padding: 0.5rem;
+    gap: 0.4rem;
+  }
+
+  .product-pill {
+    padding: 0.45rem 0.6rem;
+    font-size: 0.78rem;
+  }
+
+  .product-wish {
+    width: 28px;
+    height: 28px;
+    top: 0.5rem;
+    left: 0.5rem;
+  }
+
+  .product-rating {
+    font-size: 0.76rem;
+  }
+}

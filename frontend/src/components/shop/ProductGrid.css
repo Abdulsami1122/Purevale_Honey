@@ -7,18 +7,20 @@
 @media (max-width: 992px) {
   .product-grid {
     grid-template-columns: repeat(min(var(--cols, 4), 3), 1fr);
+    gap: 1.5rem 1.25rem;
   }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
   .product-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem 1rem;
+    grid-template-columns: repeat(var(--cols, 2), 1fr);
+    gap: 1.25rem 0.85rem;
   }
 }
 
-@media (max-width: 460px) {
+@media (max-width: 480px) {
   .product-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(var(--cols, 2), 1fr);
+    gap: 1rem 0.65rem;
   }
 }

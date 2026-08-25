@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { X } from 'lucide-react'
 import Toolbar from './Toolbar'
 import ProductGrid from './ProductGrid'
@@ -8,10 +8,27 @@ import './CollectionSection.css'
 const PAGE_SIZE = 8
 
 const CollectionSection = ({ id, title, subtitle, products = [] }) => {
-  const [columns, setColumns] = useState(4)
-  const [viewId, setViewId] = useState('4')
+  // Check if screen is mobile on initial load
+  const isInitialMobile = typeof window !== 'undefined' && window.innerWidth <= 768
+
+  const [columns, setColumns] = useState(isInitialMobile ? 2 : 4)
+  const [viewId, setViewId] = useState(isInitialMobile ? '2' : '4')
   const [sort, setSort] = useState('featured')
   const [visible, setVisible] = useState(PAGE_SIZE)
+
+  // Handle responsive resize adjustment
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 768) {
+        if (columns > 2) {
+          setColumns(2)
+          setViewId('2')
+        }
+      }
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [columns])
   
   // Calculate max price from available products in this collection
   const maxCollectionPrice = useMemo(() => {

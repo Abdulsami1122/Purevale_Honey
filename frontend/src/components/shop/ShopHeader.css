@@ -386,19 +386,32 @@
 }
 
 @media (max-width: 768px) {
+  .info-phone {
+    display: none !important;
+  }
+
   .info-bar {
-    grid-template-columns: 1fr;
-    justify-items: center;
-    gap: 0.4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.45rem 1rem;
     text-align: center;
   }
 
   .info-message {
     white-space: normal;
+    font-size: 0.84rem;
+  }
+
+  .info-socials {
+    justify-self: center;
+    gap: 0.95rem;
   }
 
   .nav-bar {
-    padding: 0.75rem 1rem;
+    padding: 0.65rem 1rem;
   }
 
   .brand-word-main {
