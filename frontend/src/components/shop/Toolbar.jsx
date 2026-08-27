@@ -3,8 +3,8 @@ import { AlignJustify, ChevronDown, Columns2, Columns3, Grid2x2, Grid3x3, Slider
 import './Toolbar.css'
 
 const VIEW_MODES = [
-  { id: 'list', label: 'List view', Icon: AlignJustify, cols: 1 },
-  { id: '2', label: '2 columns', Icon: Columns2, cols: 2 },
+  { id: 'list', label: 'List view', Icon: AlignJustify, cols: 1, hideOnDesktop: true },
+  { id: '2', label: '2 columns', Icon: Columns2, cols: 2, hideOnDesktop: true },
   { id: '3', label: '3 columns', Icon: Columns3, cols: 3, hideOnMobile: true },
   { id: '4', label: '4 columns', Icon: Grid2x2, cols: 4, hideOnMobile: true },
   { id: '5', label: '5 columns', Icon: Grid3x3, cols: 5, hideOnMobile: true },
@@ -24,12 +24,12 @@ const Toolbar = ({ activeView, onViewChange, sort, onSortChange, onOpenFilter, h
     </button>
 
     <div className="toolbar-views">
-      {VIEW_MODES.map(({ id, label, Icon, cols, hideOnMobile }) => (
+      {VIEW_MODES.map(({ id, label, Icon, cols, hideOnMobile, hideOnDesktop }) => (
         <button
           key={id}
           type="button"
           aria-label={label}
-          className={`toolbar-view-btn ${activeView === id ? 'is-active' : ''} ${hideOnMobile ? 'hide-on-mobile' : ''}`}
+          className={`toolbar-view-btn ${activeView === id ? 'is-active' : ''} ${hideOnMobile ? 'hide-on-mobile' : ''} ${hideOnDesktop ? 'hide-on-desktop' : ''}`}
           onClick={() => onViewChange(cols, id)}
         >
           <Icon size={16} strokeWidth={2} />

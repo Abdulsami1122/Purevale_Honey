@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { ShopProvider } from './components/shop/ShopContext'
 import ShopHeader from './components/shop/ShopHeader'
 import Footer from './components/Footer'
+import FlyingBee from './components/FlyingBee'
 
 // Dedicated Pages
 import HomePage from './pages/HomePage'
@@ -39,6 +40,7 @@ function App() {
     <BrowserRouter>
       <ShopProvider>
         <ScrollToTop />
+        <FlyingBee />
         <div className="App">
           <ShopHeader />
           <main>

@@ -1,0 +1,132 @@
+/* Flying Bee Floating Cursor Follower */
+
+.flying-bee-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 99999;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.flying-bee-container.visible {
+  opacity: 1;
+}
+
+/* Bee main wrapper positioned with transform3d in requestAnimationFrame */
+.bee-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 25px;
+  will-change: transform;
+  filter: drop-shadow(0 4px 8px rgba(217, 119, 6, 0.25));
+  transition: filter 0.2s ease;
+}
+
+.bee-wrapper.excited {
+  filter: drop-shadow(0 0 16px rgba(251, 191, 36, 0.65)) drop-shadow(0 6px 14px rgba(217, 119, 6, 0.4));
+}
+
+.bee-body-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  animation: beeHoverJitter 1.2s ease-in-out infinite alternate;
+}
+
+.bee-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Wings Fluttering Animation */
+.wing-front {
+  transform-origin: 28px 18px;
+  animation: flapFront 0.075s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite alternate;
+}
+
+.wing-back {
+  transform-origin: 26px 18px;
+  animation: flapBack 0.075s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite alternate-reverse;
+  opacity: 0.85;
+}
+
+.bee-wrapper.excited .wing-front,
+.bee-wrapper.excited .wing-back {
+  animation-duration: 0.045s;
+}
+
+@keyframes flapFront {
+  0% {
+    transform: rotate(-15deg) scaleY(1) skewX(0deg);
+  }
+  50% {
+    transform: rotate(18deg) scaleY(0.4) skewX(-10deg);
+  }
+  100% {
+    transform: rotate(38deg) scaleY(-0.8) skewX(-20deg);
+  }
+}
+
+@keyframes flapBack {
+  0% {
+    transform: rotate(25deg) scaleY(-0.7) skewX(10deg);
+  }
+  50% {
+    transform: rotate(5deg) scaleY(0.5) skewX(0deg);
+  }
+  100% {
+    transform: rotate(-25deg) scaleY(1) skewX(-15deg);
+  }
+}
+
+@keyframes beeHoverJitter {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  30% {
+    transform: translateY(-2.5px) rotate(-1.5deg);
+  }
+  70% {
+    transform: translateY(2px) rotate(1.5deg);
+  }
+  100% {
+    transform: translateY(-1px) rotate(0.5deg);
+  }
+}
+
+/* Pollen Golden Sparkle Particles */
+.pollen-particle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .wing-front,
+  .wing-back {
+    animation-duration: 0.3s;
+  }
+  .bee-body-container {
+    animation: none;
+  }
+}
+
+/* Hide on touch devices without fine pointers to preserve pure mobile UX */
+@media (hover: none) and (pointer: coarse) {
+  .flying-bee-container {
+    display: none !important;
+  }
+}

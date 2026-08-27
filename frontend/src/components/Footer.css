@@ -674,28 +674,90 @@
 
 @media (max-width: 768px) {
   .ih-footer-container {
-    padding: 3rem 1.25rem 2.5rem;
+    padding: 2rem 1.25rem 1.75rem;
   }
 
   .ih-footer-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 2.2rem 1.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.75rem 1.25rem;
   }
 
   .ih-brand-col {
     grid-column: span 2;
     padding-right: 0;
+    margin-bottom: 0.25rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid #EAEAEA;
+  }
+
+  .ih-logo-wrapper {
+    margin-bottom: 0.85rem;
+  }
+
+  .pv-footer-logo-img {
+    width: 48px;
+    height: 48px;
+  }
+
+  .pv-brand-name {
+    font-size: 1.2rem;
+  }
+
+  .ih-contact-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.65rem 1rem;
+  }
+
+  .ih-contact-item {
+    font-size: 0.82rem;
+    gap: 0.5rem;
+    line-height: 1.35;
+  }
+
+  .ih-contact-icon svg,
+  .ih-contact-icon {
+    width: 15px;
+    height: 15px;
+  }
+
+  .ih-footer-heading {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .ih-footer-heading::after {
+    bottom: -4px;
+    width: 16px;
+  }
+
+  .ih-footer-links {
+    gap: 0.55rem;
+  }
+
+  .ih-footer-links li a,
+  .ih-link-btn {
+    font-size: 0.84rem;
   }
 
   .ih-newsletter-col {
     grid-column: span 2;
+    padding-left: 0;
+    margin-top: 0.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid #EAEAEA;
+  }
+
+  .ih-newsletter-desc {
+    font-size: 0.84rem;
+    margin-bottom: 0.85rem;
   }
 
   .ih-floating-whatsapp {
     bottom: 16px;
     left: 16px;
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
   }
 
   .pv-contact-modal-grid {
@@ -708,17 +770,71 @@
 }
 
 @media (max-width: 480px) {
-  .ih-footer-grid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
+  .ih-footer-container {
+    padding: 1.5rem 1rem 1.25rem;
   }
 
-  .ih-brand-col,
+  .ih-footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.4rem 0.85rem;
+  }
+
+  .ih-brand-col {
+    grid-column: span 2;
+    padding-bottom: 1rem;
+    margin-bottom: 0;
+  }
+
+  .ih-contact-list {
+    grid-template-columns: 1fr;
+    gap: 0.55rem;
+  }
+
+  .ih-footer-heading {
+    font-size: 0.95rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .ih-footer-links {
+    gap: 0.5rem;
+  }
+
+  .ih-footer-links li a,
+  .ih-link-btn {
+    font-size: 0.82rem;
+    line-height: 1.35;
+  }
+
   .ih-newsletter-col {
-    grid-column: span 1;
+    grid-column: span 2;
+    margin-top: 0.25rem;
+    padding-top: 1rem;
+  }
+
+  .ih-input-pill-container {
+    padding: 3px 3px 3px 12px;
+  }
+
+  .ih-email-input {
+    font-size: 0.82rem;
+  }
+
+  .ih-subscribe-btn {
+    padding: 0.55rem 1.1rem;
+    font-size: 0.8rem;
+  }
+
+  .ih-social-row {
+    gap: 1rem;
+    margin-top: 1rem;
   }
 
   .ih-bottom-bar {
+    padding: 0.9rem 1rem;
     text-align: center;
+  }
+
+  .ih-copyright-text {
+    font-size: 0.78rem;
   }
 }
