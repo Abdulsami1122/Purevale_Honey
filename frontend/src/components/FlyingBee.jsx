@@ -193,7 +193,7 @@ export default function FlyingBee() {
   }, [])
 
   return (
-    <div className={`flying-bee-container ${isVisible ? 'visible' : ''}`} aria-hidden="true">
+    <div className={`flying-bee-container ${isVisible && !isHoveringClickable ? 'visible' : ''}`} aria-hidden="true">
       {/* Particle Canvas / Golden Pollen Trail */}
       {particles.map((p) => (
         <span
