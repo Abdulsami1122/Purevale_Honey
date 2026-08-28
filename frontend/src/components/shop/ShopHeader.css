@@ -371,6 +371,11 @@
   padding: 0;
 }
 
+/* Mobile Bottom Navigation (hidden on desktop) */
+.mobile-bottom-nav {
+  display: none;
+}
+
 /* Responsive */
 @media (max-width: 1200px) {
   .mobile-nav-backdrop {
@@ -474,5 +479,83 @@
 
   .nav-actions {
     gap: 0.85rem;
+  }
+
+  /* Wishlist moves to the bottom nav on mobile */
+  .nav-action-wishlist {
+    display: none;
+  }
+
+  /* Show bottom nav bar */
+  .mobile-bottom-nav {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-around;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background-color: #FFFFFF;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.06);
+    padding: 0.4rem 0.25rem calc(0.4rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .bottom-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    padding: 0.3rem 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #555555;
+    font-family: inherit;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .bottom-nav-item.is-active {
+    color: #133827;
+  }
+
+  .bottom-nav-item:hover {
+    color: #EEAB3F;
+  }
+
+  .bottom-nav-icon {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bottom-nav-count {
+    position: absolute;
+    top: -6px;
+    right: -10px;
+    background-color: #000000;
+    color: #FFFFFF;
+    font-size: 0.6rem;
+    font-weight: 700;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    border: 1.5px solid #FFFFFF;
+  }
+
+  /* Keep page content clear of the fixed bottom nav */
+  .App {
+    padding-bottom: 62px;
   }
 }

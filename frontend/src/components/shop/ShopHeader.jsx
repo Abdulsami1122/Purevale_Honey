@@ -198,7 +198,7 @@ const ShopHeader = () => {
             <button type="button" aria-label="Account" className="nav-action-btn" onClick={() => setAuthOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', padding: 0 }}>
               <User size={22} strokeWidth={1.6} />
             </button>
-            <Link to="/shop" aria-label="Wishlist" className="nav-action-counted">
+            <Link to="/shop" aria-label="Wishlist" className="nav-action-counted nav-action-wishlist">
               <Heart size={22} strokeWidth={1.6} />
               <span className="nav-count">{wishlist.size}</span>
             </Link>
@@ -217,7 +217,47 @@ const ShopHeader = () => {
           </div>
         </div>
       </header>
-      
+
+      {/* Mobile Bottom Navigation */}
+      <nav className="mobile-bottom-nav" aria-label="Primary mobile navigation">
+        <Link
+          to="/"
+          className={`bottom-nav-item ${location.pathname === '/' ? 'is-active' : ''}`}
+        >
+          <Home size={22} strokeWidth={1.7} />
+          <span>Home</span>
+        </Link>
+        <Link
+          to="/shop"
+          className={`bottom-nav-item ${location.pathname === '/shop' ? 'is-active' : ''}`}
+        >
+          <ShoppingBag size={22} strokeWidth={1.7} />
+          <span>Shop</span>
+        </Link>
+        <Link to="/shop" className="bottom-nav-item" aria-label="Wishlist">
+          <span className="bottom-nav-icon">
+            <Heart size={22} strokeWidth={1.7} />
+            {wishlist.size > 0 && <span className="bottom-nav-count">{wishlist.size}</span>}
+          </span>
+          <span>Wishlist</span>
+        </Link>
+        <Link to="/shop" className="bottom-nav-item" aria-label="Cart">
+          <span className="bottom-nav-icon">
+            <ShoppingCart size={22} strokeWidth={1.7} />
+            {cartCount > 0 && <span className="bottom-nav-count">{cartCount}</span>}
+          </span>
+          <span>Cart</span>
+        </Link>
+        <button
+          type="button"
+          className="bottom-nav-item"
+          onClick={() => setAuthOpen(true)}
+        >
+          <User size={22} strokeWidth={1.7} />
+          <span>Account</span>
+        </button>
+      </nav>
+
       <AuthDrawer isOpen={authOpen} onClose={() => setAuthOpen(false)} />
       <SearchDrawer isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
