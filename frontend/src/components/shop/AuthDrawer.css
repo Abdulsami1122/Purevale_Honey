@@ -1,4 +1,5 @@
-body.auth-drawer-open {
+body.auth-drawer-open,
+html.auth-drawer-open {
   overflow: hidden !important;
 }
 

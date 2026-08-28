@@ -8,11 +8,14 @@ const AuthDrawer = ({ isOpen, onClose }) => {
   React.useEffect(() => {
     if (isOpen) {
       document.body.classList.add('auth-drawer-open');
+      document.documentElement.classList.add('auth-drawer-open');
     } else {
       document.body.classList.remove('auth-drawer-open');
+      document.documentElement.classList.remove('auth-drawer-open');
     }
     return () => {
       document.body.classList.remove('auth-drawer-open');
+      document.documentElement.classList.remove('auth-drawer-open');
     };
   }, [isOpen]);
 

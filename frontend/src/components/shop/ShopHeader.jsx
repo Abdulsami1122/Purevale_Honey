@@ -98,69 +98,59 @@ const ShopHeader = () => {
   }, [])
 
   return (
-    <header className={`shop-header header-scroll-${scrollState}`}>
-      {/* 1. Top Announcement Bar */}
-      {announcementOpen && (
-        <div className="announcement-bar">
-          <div className="announcement-slider-wrap">
-            <p key={currentMsgIndex} className="announcement-text animate-slide-right">
-              {ANNOUNCEMENT_MESSAGES[currentMsgIndex]}
-            </p>
-          </div>
-          <button
-            type="button"
-            className="announcement-close"
-            onClick={() => setAnnouncementOpen(false)}
-            aria-label="Close announcement"
-          >
-            <X size={16} strokeWidth={2.2} />
-            <span>close</span>
-          </button>
-        </div>
-      )}
-
-      {/* 2. Middle Info Bar */}
-      <div className="info-bar">
-        <a className="info-phone" href="tel:+923339300672">
-          <Phone size={16} strokeWidth={1.8} />
-          <span>+92 3339300672</span>
-        </a>
-
-        <p className="info-message">
-          <strong>Purevale Honey</strong> is now <strong>PUREVALE NATURAL</strong>
-        </p>
-
-        <div className="info-socials">
-          {SOCIALS.map(({ label, href, Icon }) => (
-            <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label}>
-              <Icon size={18} />
-            </a>
-          ))}
-        </div>
-      </div>
-
-      {/* 3. Main Navigation Bar */}
-      <div className="nav-bar">
-        <Link className="brand" to="/">
-          <img className="brand-seal" src="/logo.jpeg" alt="Purevale" />
-          <span className="brand-word">
-            <span className="brand-word-main">PUREVALE</span>
-            <span className="brand-word-sub">N A T U R A L</span>
-          </span>
-        </Link>
-
-        {/* Backdrop for Mobile Nav */}
-        {mobileNavOpen && <div className="mobile-nav-backdrop" onClick={() => setMobileNavOpen(false)}></div>}
-        
-        <nav className={`shop-nav ${mobileNavOpen ? 'is-open' : ''}`}>
-          <div className="mobile-nav-header">
-            <h2>MENU</h2>
-            <button type="button" className="mobile-nav-close" onClick={() => setMobileNavOpen(false)} aria-label="Close">
-              <X size={24} strokeWidth={1.5} />
+    <>
+      <header className={`shop-header header-scroll-${scrollState}`}>
+        {/* 1. Top Announcement Bar */}
+        {announcementOpen && (
+          <div className="announcement-bar">
+            <div className="announcement-slider-wrap">
+              <p key={currentMsgIndex} className="announcement-text animate-slide-right">
+                {ANNOUNCEMENT_MESSAGES[currentMsgIndex]}
+              </p>
+            </div>
+            <button
+              type="button"
+              className="announcement-close"
+              onClick={() => setAnnouncementOpen(false)}
+              aria-label="Close announcement"
+            >
+              <X size={16} strokeWidth={2.2} />
+              <span>close</span>
             </button>
           </div>
+        )}
 
-          <div className="mobile-nav-links">
+        {/* 2. Middle Info Bar */}
+        <div className="info-bar">
+          <a className="info-phone" href="tel:+923339300672">
+            <Phone size={16} strokeWidth={1.8} />
+            <span>+92 3339300672</span>
+          </a>
+
+          <p className="info-message">
+            <strong>Purevale Honey</strong> is now <strong>PUREVALE NATURAL</strong>
+          </p>
+
+          <div className="info-socials">
+            {SOCIALS.map(({ label, href, Icon }) => (
+              <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label}>
+                <Icon size={18} />
+              </a>
+            ))}
+          </div>
+        </div>
+
+        {/* 3. Main Navigation Bar */}
+        <div className="nav-bar">
+          <Link className="brand" to="/">
+            <img className="brand-seal" src="/logo.jpeg" alt="Purevale" />
+            <span className="brand-word">
+              <span className="brand-word-main">PUREVALE</span>
+              <span className="brand-word-sub">N A T U R A L</span>
+            </span>
+          </Link>
+
+          <nav className={`shop-nav ${mobileNavOpen ? 'is-open' : ''}`}>
             {NAV_ITEMS.map(({ label, icon: Icon, badge, badgeTone, hideIcon, href }) => {
               const isActive = location.pathname === href
               return (
@@ -176,53 +166,38 @@ const ShopHeader = () => {
                 </Link>
               )
             })}
-          </div>
+          </nav>
 
-          <div className="mobile-nav-footer">
-            <a className="mobile-nav-contact" href="tel:+923339300672">
-              <Phone size={18} strokeWidth={1.5} />
-              <span>+92 3339300672</span>
-            </a>
-            <a className="mobile-nav-contact" href="mailto:info@purevale.com">
-              <User size={18} strokeWidth={1.5} />
-              <span>info@purevale.com</span>
-            </a>
-            <div className="mobile-nav-auth-links">
-              <button className="mobile-nav-auth-btn" onClick={() => { setMobileNavOpen(false); setAuthOpen(true); }}>Login</button>
-              <button className="mobile-nav-auth-btn" onClick={() => { setMobileNavOpen(false); setAuthOpen(true); }}>Register</button>
-            </div>
+          <div className="nav-actions">
+            <button type="button" aria-label="Search" className="nav-action-btn" onClick={() => setSearchOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', padding: 0 }}>
+              <Search size={22} strokeWidth={1.6} />
+            </button>
+            <button type="button" aria-label="Account" className="nav-action-btn" onClick={() => setAuthOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', padding: 0 }}>
+              <User size={22} strokeWidth={1.6} />
+            </button>
+            <Link to="/shop" aria-label="Wishlist" className="nav-action-counted">
+              <Heart size={22} strokeWidth={1.6} />
+              <span className="nav-count">{wishlist.size}</span>
+            </Link>
+            <Link to="/shop" aria-label="Cart" className="nav-action-counted">
+              <ShoppingCart size={22} strokeWidth={1.6} />
+              <span className="nav-count">{cartCount}</span>
+            </Link>
+            <button
+              type="button"
+              className="nav-burger"
+              aria-label="Menu"
+              onClick={() => setMobileNavOpen((open) => !open)}
+            >
+              {mobileNavOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
           </div>
-        </nav>
-
-        <div className="nav-actions">
-          <button type="button" aria-label="Search" className="nav-action-btn" onClick={() => setSearchOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', padding: 0 }}>
-            <Search size={22} strokeWidth={1.6} />
-          </button>
-          <button type="button" aria-label="Account" className="nav-action-btn" onClick={() => setAuthOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', padding: 0 }}>
-            <User size={22} strokeWidth={1.6} />
-          </button>
-          <Link to="/shop" aria-label="Wishlist" className="nav-action-counted">
-            <Heart size={22} strokeWidth={1.6} />
-            <span className="nav-count">{wishlist.size}</span>
-          </Link>
-          <Link to="/shop" aria-label="Cart" className="nav-action-counted">
-            <ShoppingCart size={22} strokeWidth={1.6} />
-            <span className="nav-count">{cartCount}</span>
-          </Link>
-          <button
-            type="button"
-            className="nav-burger"
-            aria-label="Menu"
-            onClick={() => setMobileNavOpen(true)}
-          >
-            <Menu size={24} />
-          </button>
         </div>
-      </div>
-
+      </header>
+      
       <AuthDrawer isOpen={authOpen} onClose={() => setAuthOpen(false)} />
       <SearchDrawer isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
-    </header>
+    </>
   )
 }
 

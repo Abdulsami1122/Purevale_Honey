@@ -27,17 +27,20 @@ const SearchDrawer = ({ isOpen, onClose }) => {
   // Focus input when drawer opens
   useEffect(() => {
     if (isOpen) {
-      document.body.classList.add('auth-drawer-open'); // Reusing this class to lock scroll and hide bee
+      document.body.classList.add('auth-drawer-open');
+      document.documentElement.classList.add('auth-drawer-open');
       setTimeout(() => {
         if (inputRef.current) inputRef.current.focus();
       }, 300);
     } else {
       document.body.classList.remove('auth-drawer-open');
+      document.documentElement.classList.remove('auth-drawer-open');
       setQuery(''); // Reset query on close
     }
 
     return () => {
       document.body.classList.remove('auth-drawer-open');
+      document.documentElement.classList.remove('auth-drawer-open');
     };
   }, [isOpen]);
 
