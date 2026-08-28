@@ -149,22 +149,49 @@ const ShopHeader = () => {
           </span>
         </Link>
 
+        {/* Backdrop for Mobile Nav */}
+        {mobileNavOpen && <div className="mobile-nav-backdrop" onClick={() => setMobileNavOpen(false)}></div>}
+        
         <nav className={`shop-nav ${mobileNavOpen ? 'is-open' : ''}`}>
-          {NAV_ITEMS.map(({ label, icon: Icon, badge, badgeTone, hideIcon, href }) => {
-            const isActive = location.pathname === href
-            return (
-              <Link
-                key={label}
-                className={`shop-nav-link ${isActive ? 'is-active' : ''}`}
-                to={href}
-                onClick={() => setMobileNavOpen(false)}
-              >
-                {!hideIcon && <Icon size={20} strokeWidth={1.7} className="shop-nav-icon" />}
-                <span className="shop-nav-text">{label}</span>
-                {badge && <span className={`nav-badge nav-badge-${badgeTone}`}>{badge}</span>}
-              </Link>
-            )
-          })}
+          <div className="mobile-nav-header">
+            <h2>MENU</h2>
+            <button type="button" className="mobile-nav-close" onClick={() => setMobileNavOpen(false)} aria-label="Close">
+              <X size={24} strokeWidth={1.5} />
+            </button>
+          </div>
+
+          <div className="mobile-nav-links">
+            {NAV_ITEMS.map(({ label, icon: Icon, badge, badgeTone, hideIcon, href }) => {
+              const isActive = location.pathname === href
+              return (
+                <Link
+                  key={label}
+                  className={`shop-nav-link ${isActive ? 'is-active' : ''}`}
+                  to={href}
+                  onClick={() => setMobileNavOpen(false)}
+                >
+                  {!hideIcon && <Icon size={20} strokeWidth={1.7} className="shop-nav-icon" />}
+                  <span className="shop-nav-text">{label}</span>
+                  {badge && <span className={`nav-badge nav-badge-${badgeTone}`}>{badge}</span>}
+                </Link>
+              )
+            })}
+          </div>
+
+          <div className="mobile-nav-footer">
+            <a className="mobile-nav-contact" href="tel:+923339300672">
+              <Phone size={18} strokeWidth={1.5} />
+              <span>+92 3339300672</span>
+            </a>
+            <a className="mobile-nav-contact" href="mailto:info@purevale.com">
+              <User size={18} strokeWidth={1.5} />
+              <span>info@purevale.com</span>
+            </a>
+            <div className="mobile-nav-auth-links">
+              <button className="mobile-nav-auth-btn" onClick={() => { setMobileNavOpen(false); setAuthOpen(true); }}>Login</button>
+              <button className="mobile-nav-auth-btn" onClick={() => { setMobileNavOpen(false); setAuthOpen(true); }}>Register</button>
+            </div>
+          </div>
         </nav>
 
         <div className="nav-actions">
@@ -186,9 +213,9 @@ const ShopHeader = () => {
             type="button"
             className="nav-burger"
             aria-label="Menu"
-            onClick={() => setMobileNavOpen((open) => !open)}
+            onClick={() => setMobileNavOpen(true)}
           >
-            {mobileNavOpen ? <X size={24} /> : <Menu size={24} />}
+            <Menu size={24} />
           </button>
         </div>
       </div>
