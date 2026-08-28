@@ -242,17 +242,124 @@
   align-items: center;
 }
 
-.mobile-nav-header,
-.mobile-nav-backdrop,
-.mobile-nav-contact {
-  display: none;
-}
-
 .mobile-nav-links {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 0.35rem;
+}
+
+/* ==========================================================================
+   MOBILE MENU DRAWER
+   Rendered outside <header> (like SearchDrawer) so the backdrop always
+   covers the full viewport and an outside tap closes it.
+   ========================================================================== */
+.mobile-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 100000;
+}
+
+.mobile-nav-drawer {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 85%;
+  max-width: 380px;
+  background-color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.1);
+  z-index: 100001;
+  overflow-y: auto;
+}
+
+.mobile-nav-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.mobile-nav-header h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #111;
+  margin: 0;
+}
+
+.mobile-nav-close {
+  background: none;
+  border: none;
+  color: #111;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+}
+
+.mobile-nav-drawer .mobile-nav-links {
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex-wrap: nowrap;
+  gap: 0.25rem;
+}
+
+.mobile-nav-drawer .shop-nav-link {
+  justify-content: flex-start;
+  padding: 0.85rem 0.5rem;
+  font-size: 1rem;
+  border-bottom: 1px solid #f1f1f1;
+  border-radius: 0;
+}
+
+.mobile-nav-drawer .shop-nav-link .nav-badge {
+  position: static;
+  margin-left: 0.5rem;
+}
+
+/* Phone + email block pinned beneath the menu links */
+.mobile-nav-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: auto;
+  padding: 1.25rem 1.5rem calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid #eaeaea;
+  background-color: #FAFAFA;
+}
+
+.mobile-nav-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0;
+  color: #444444;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.mobile-nav-contact-item svg {
+  flex-shrink: 0;
+  color: #133827;
+}
+
+.mobile-nav-contact-item:hover {
+  color: #133827;
+}
+
+/* Never show the mobile drawer on desktop */
+@media (min-width: 1201px) {
+  .mobile-nav-backdrop,
+  .mobile-nav-drawer {
+    display: none !important;
+  }
 }
 
 .shop-nav-link {
@@ -379,119 +486,9 @@
 
 /* Responsive */
 @media (max-width: 1200px) {
-  /* Neutralise the scroll transform while the drawer is open so the
-     fixed backdrop / drawer are positioned against the viewport
-     (otherwise an outside click below the header won't close it). */
-  .shop-header.nav-open {
-    transform: none !important;
-    z-index: 100002;
-  }
-
-  .mobile-nav-backdrop {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.4);
-    z-index: 100000;
-  }
-
+  /* Desktop inline nav hidden; menu moves into the drawer */
   .shop-nav {
-    position: fixed;
-    top: 0;
-    right: -400px;
-    left: auto;
-    width: 85%;
-    max-width: 380px;
-    height: 100vh;
-    background-color: #FFFFFF;
-    flex-direction: column;
-    align-items: stretch;
-    padding: 0;
-    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.1);
-    z-index: 100001;
-    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow-y: auto;
-    display: flex;
-  }
-  
-  .shop-nav.is-open {
-    right: 0;
-  }
-
-  .mobile-nav-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1.5rem;
-    border-bottom: 1px solid #eaeaea;
-  }
-
-  .mobile-nav-header h2 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #111;
-    margin: 0;
-  }
-
-  .mobile-nav-close {
-    background: none;
-    border: none;
-    color: #111;
-    cursor: pointer;
-    padding: 0;
-    display: flex;
-  }
-
-  .mobile-nav-links {
-    padding: 1rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.25rem;
-  }
-
-  .mobile-nav-links .shop-nav-link {
-    justify-content: flex-start;
-    padding: 0.85rem 0.5rem;
-    font-size: 1rem;
-    border-bottom: 1px solid #f1f1f1;
-    border-radius: 0;
-  }
-
-  .mobile-nav-links .shop-nav-link .nav-badge {
-    position: static;
-    margin-left: 0.5rem;
-  }
-
-  /* Phone + email block beneath the menu links (mobile only) */
-  .mobile-nav-contact {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    margin-top: auto;
-    padding: 1.25rem 1.5rem calc(1.5rem + env(safe-area-inset-bottom, 0px));
-    border-top: 1px solid #eaeaea;
-    background-color: #FAFAFA;
-  }
-
-  .mobile-nav-contact-item {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.5rem 0;
-    color: #444444;
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-decoration: none;
-    transition: color 0.2s ease;
-  }
-
-  .mobile-nav-contact-item svg {
-    flex-shrink: 0;
-    color: #133827;
-  }
-
-  .mobile-nav-contact-item:hover {
-    color: #133827;
+    display: none;
   }
 
   .nav-actions .nav-burger {
@@ -616,8 +613,7 @@
 
   /* Drawer stops above the fixed bottom nav so the phone + email
      row stays fully visible instead of hiding behind the bar */
-  .shop-nav {
-    height: auto;
+  .mobile-nav-drawer {
     bottom: calc(60px + env(safe-area-inset-bottom, 0px));
   }
 

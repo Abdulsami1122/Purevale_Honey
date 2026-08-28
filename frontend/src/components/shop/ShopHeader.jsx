@@ -56,6 +56,19 @@ const ShopHeader = () => {
   const { wishlist, cartCount } = useShop()
   const location = useLocation()
 
+  const navLinks = NAV_ITEMS.map(({ label, icon: Icon, badge, badgeTone, hideIcon, href }) => (
+    <Link
+      key={label}
+      className={`shop-nav-link ${location.pathname === href ? 'is-active' : ''}`}
+      to={href}
+      onClick={() => setMobileNavOpen(false)}
+    >
+      {!hideIcon && <Icon size={20} strokeWidth={1.7} className="shop-nav-icon" />}
+      <span className="shop-nav-text">{label}</span>
+      {badge && <span className={`nav-badge nav-badge-${badgeTone}`}>{badge}</span>}
+    </Link>
+  ))
+
   // Lock scrolling when mobile nav is open
   useEffect(() => {
     if (mobileNavOpen) {
@@ -111,7 +124,7 @@ const ShopHeader = () => {
 
   return (
     <>
-      <header className={`shop-header header-scroll-${scrollState} ${mobileNavOpen ? 'nav-open' : ''}`}>
+      <header className={`shop-header header-scroll-${scrollState}`}>
         {/* 1. Top Announcement Bar */}
         {announcementOpen && (
           <div className="announcement-bar">
@@ -162,45 +175,8 @@ const ShopHeader = () => {
             </span>
           </Link>
 
-          {/* Backdrop for Mobile Nav */}
-          {mobileNavOpen && <div className="mobile-nav-backdrop" onClick={() => setMobileNavOpen(false)}></div>}
-          
-          <nav className={`shop-nav ${mobileNavOpen ? 'is-open' : ''}`}>
-            <div className="mobile-nav-header">
-              <h2>MENU</h2>
-              <button type="button" className="mobile-nav-close" onClick={() => setMobileNavOpen(false)} aria-label="Close">
-                <X size={24} strokeWidth={1.5} />
-              </button>
-            </div>
-
-            <div className="mobile-nav-links">
-              {NAV_ITEMS.map(({ label, icon: Icon, badge, badgeTone, hideIcon, href }) => {
-                const isActive = location.pathname === href
-                return (
-                  <Link
-                    key={label}
-                    className={`shop-nav-link ${isActive ? 'is-active' : ''}`}
-                    to={href}
-                    onClick={() => setMobileNavOpen(false)}
-                  >
-                    {!hideIcon && <Icon size={20} strokeWidth={1.7} className="shop-nav-icon" />}
-                    <span className="shop-nav-text">{label}</span>
-                    {badge && <span className={`nav-badge nav-badge-${badgeTone}`}>{badge}</span>}
-                  </Link>
-                )
-              })}
-            </div>
-
-            <div className="mobile-nav-contact">
-              <a className="mobile-nav-contact-item" href="tel:+923339300672">
-                <Phone size={18} strokeWidth={1.7} />
-                <span>+92 3339300672</span>
-              </a>
-              <a className="mobile-nav-contact-item" href="mailto:support@purevale.com">
-                <Mail size={18} strokeWidth={1.7} />
-                <span>support@purevale.com</span>
-              </a>
-            </div>
+          <nav className="shop-nav">
+            <div className="mobile-nav-links">{navLinks}</div>
           </nav>
 
           <div className="nav-actions">
@@ -269,6 +245,39 @@ const ShopHeader = () => {
           <span>Account</span>
         </button>
       </nav>
+
+      {/* Mobile Menu Drawer (rendered outside the header, closes on outside click) */}
+      {mobileNavOpen && (
+        <>
+          <div className="mobile-nav-backdrop" onClick={() => setMobileNavOpen(false)}></div>
+          <div className="mobile-nav-drawer is-open">
+            <div className="mobile-nav-header">
+              <h2>MENU</h2>
+              <button
+                type="button"
+                className="mobile-nav-close"
+                onClick={() => setMobileNavOpen(false)}
+                aria-label="Close"
+              >
+                <X size={24} strokeWidth={1.5} />
+              </button>
+            </div>
+
+            <div className="mobile-nav-links">{navLinks}</div>
+
+            <div className="mobile-nav-contact">
+              <a className="mobile-nav-contact-item" href="tel:+923339300672">
+                <Phone size={18} strokeWidth={1.7} />
+                <span>+92 3339300672</span>
+              </a>
+              <a className="mobile-nav-contact-item" href="mailto:support@purevale.com">
+                <Mail size={18} strokeWidth={1.7} />
+                <span>support@purevale.com</span>
+              </a>
+            </div>
+          </div>
+        </>
+      )}
 
       <AuthDrawer isOpen={authOpen} onClose={() => setAuthOpen(false)} />
       <SearchDrawer isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
