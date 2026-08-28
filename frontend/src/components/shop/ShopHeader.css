@@ -243,7 +243,8 @@
 }
 
 .mobile-nav-header,
-.mobile-nav-backdrop {
+.mobile-nav-backdrop,
+.mobile-nav-contact {
   display: none;
 }
 
@@ -378,13 +379,21 @@
 
 /* Responsive */
 @media (max-width: 1200px) {
+  /* Neutralise the scroll transform while the drawer is open so the
+     fixed backdrop / drawer are positioned against the viewport
+     (otherwise an outside click below the header won't close it). */
+  .shop-header.nav-open {
+    transform: none !important;
+    z-index: 100002;
+  }
+
   .mobile-nav-backdrop {
     position: fixed;
     inset: 0;
     background-color: rgba(0, 0, 0, 0.4);
     z-index: 100000;
   }
-  
+
   .shop-nav {
     position: fixed;
     top: 0;
@@ -436,7 +445,53 @@
     padding: 1rem 1.5rem;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    align-items: stretch;
+    gap: 0.25rem;
+  }
+
+  .mobile-nav-links .shop-nav-link {
+    justify-content: flex-start;
+    padding: 0.85rem 0.5rem;
+    font-size: 1rem;
+    border-bottom: 1px solid #f1f1f1;
+    border-radius: 0;
+  }
+
+  .mobile-nav-links .shop-nav-link .nav-badge {
+    position: static;
+    margin-left: 0.5rem;
+  }
+
+  /* Phone + email block beneath the menu links (mobile only) */
+  .mobile-nav-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-top: auto;
+    padding: 1.25rem 1.5rem calc(1.5rem + env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid #eaeaea;
+    background-color: #FAFAFA;
+  }
+
+  .mobile-nav-contact-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0;
+    color: #444444;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .mobile-nav-contact-item svg {
+    flex-shrink: 0;
+    color: #133827;
+  }
+
+  .mobile-nav-contact-item:hover {
+    color: #133827;
   }
 
   .nav-actions .nav-burger {
@@ -557,5 +612,16 @@
   /* Keep page content clear of the fixed bottom nav */
   .App {
     padding-bottom: 62px;
+  }
+
+  /* Drawer stops above the fixed bottom nav so the phone + email
+     row stays fully visible instead of hiding behind the bar */
+  .shop-nav {
+    height: auto;
+    bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .mobile-nav-contact {
+    padding: 1rem 1.5rem 1.1rem;
   }
 }

@@ -10,6 +10,7 @@ import {
   Sparkles,
   Menu,
   Phone,
+  Mail,
   Search,
   ShoppingCart,
   Heart,
@@ -110,7 +111,7 @@ const ShopHeader = () => {
 
   return (
     <>
-      <header className={`shop-header header-scroll-${scrollState}`}>
+      <header className={`shop-header header-scroll-${scrollState} ${mobileNavOpen ? 'nav-open' : ''}`}>
         {/* 1. Top Announcement Bar */}
         {announcementOpen && (
           <div className="announcement-bar">
@@ -188,6 +189,17 @@ const ShopHeader = () => {
                   </Link>
                 )
               })}
+            </div>
+
+            <div className="mobile-nav-contact">
+              <a className="mobile-nav-contact-item" href="tel:+923339300672">
+                <Phone size={18} strokeWidth={1.7} />
+                <span>+92 3339300672</span>
+              </a>
+              <a className="mobile-nav-contact-item" href="mailto:support@purevale.com">
+                <Mail size={18} strokeWidth={1.7} />
+                <span>support@purevale.com</span>
+              </a>
             </div>
           </nav>
 
