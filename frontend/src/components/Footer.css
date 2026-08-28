@@ -753,11 +753,13 @@
     margin-bottom: 0.85rem;
   }
 
+  /* Lifted above the fixed bottom nav bar on phones (sits over the Home icon) */
   .ih-floating-whatsapp {
-    bottom: 16px;
+    bottom: calc(62px + env(safe-area-inset-bottom, 0px) + 14px);
     left: 16px;
     width: 48px;
     height: 48px;
+    z-index: 1001;
   }
 
   .pv-contact-modal-grid {
