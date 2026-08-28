@@ -55,6 +55,17 @@ const ShopHeader = () => {
   const { wishlist, cartCount } = useShop()
   const location = useLocation()
 
+  // Lock scrolling when mobile nav is open
+  useEffect(() => {
+    if (mobileNavOpen) {
+      document.body.classList.add('auth-drawer-open')
+      document.documentElement.classList.add('auth-drawer-open')
+    } else if (!authOpen && !searchOpen) {
+      document.body.classList.remove('auth-drawer-open')
+      document.documentElement.classList.remove('auth-drawer-open')
+    }
+  }, [mobileNavOpen])
+
   // Rotate announcement message every 4 seconds
   useEffect(() => {
     if (!announcementOpen) return
@@ -150,22 +161,34 @@ const ShopHeader = () => {
             </span>
           </Link>
 
+          {/* Backdrop for Mobile Nav */}
+          {mobileNavOpen && <div className="mobile-nav-backdrop" onClick={() => setMobileNavOpen(false)}></div>}
+          
           <nav className={`shop-nav ${mobileNavOpen ? 'is-open' : ''}`}>
-            {NAV_ITEMS.map(({ label, icon: Icon, badge, badgeTone, hideIcon, href }) => {
-              const isActive = location.pathname === href
-              return (
-                <Link
-                  key={label}
-                  className={`shop-nav-link ${isActive ? 'is-active' : ''}`}
-                  to={href}
-                  onClick={() => setMobileNavOpen(false)}
-                >
-                  {!hideIcon && <Icon size={20} strokeWidth={1.7} className="shop-nav-icon" />}
-                  <span className="shop-nav-text">{label}</span>
-                  {badge && <span className={`nav-badge nav-badge-${badgeTone}`}>{badge}</span>}
-                </Link>
-              )
-            })}
+            <div className="mobile-nav-header">
+              <h2>MENU</h2>
+              <button type="button" className="mobile-nav-close" onClick={() => setMobileNavOpen(false)} aria-label="Close">
+                <X size={24} strokeWidth={1.5} />
+              </button>
+            </div>
+
+            <div className="mobile-nav-links">
+              {NAV_ITEMS.map(({ label, icon: Icon, badge, badgeTone, hideIcon, href }) => {
+                const isActive = location.pathname === href
+                return (
+                  <Link
+                    key={label}
+                    className={`shop-nav-link ${isActive ? 'is-active' : ''}`}
+                    to={href}
+                    onClick={() => setMobileNavOpen(false)}
+                  >
+                    {!hideIcon && <Icon size={20} strokeWidth={1.7} className="shop-nav-icon" />}
+                    <span className="shop-nav-text">{label}</span>
+                    {badge && <span className={`nav-badge nav-badge-${badgeTone}`}>{badge}</span>}
+                  </Link>
+                )
+              })}
+            </div>
           </nav>
 
           <div className="nav-actions">
@@ -187,9 +210,9 @@ const ShopHeader = () => {
               type="button"
               className="nav-burger"
               aria-label="Menu"
-              onClick={() => setMobileNavOpen((open) => !open)}
+              onClick={() => setMobileNavOpen(true)}
             >
-              {mobileNavOpen ? <X size={24} /> : <Menu size={24} />}
+              <Menu size={24} />
             </button>
           </div>
         </div>
