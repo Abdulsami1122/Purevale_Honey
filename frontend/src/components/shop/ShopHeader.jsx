@@ -186,7 +186,7 @@ const ShopHeader = () => {
             <button type="button" aria-label="Account" className="nav-action-btn" onClick={() => setAuthOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', padding: 0 }}>
               <User size={22} strokeWidth={1.6} />
             </button>
-            <Link to="/shop" aria-label="Wishlist" className="nav-action-counted nav-action-wishlist">
+            <Link to="/wishlist" aria-label="Wishlist" className="nav-action-counted nav-action-wishlist">
               <Heart size={22} strokeWidth={1.6} />
               <span className="nav-count">{wishlist.size}</span>
             </Link>
@@ -222,7 +222,11 @@ const ShopHeader = () => {
           <ShoppingBag size={22} strokeWidth={1.7} />
           <span>Shop</span>
         </Link>
-        <Link to="/shop" className="bottom-nav-item" aria-label="Wishlist">
+        <Link
+          to="/wishlist"
+          className={`bottom-nav-item ${location.pathname === '/wishlist' ? 'is-active' : ''}`}
+          aria-label="Wishlist"
+        >
           <span className="bottom-nav-icon">
             <Heart size={22} strokeWidth={1.7} />
             {wishlist.size > 0 && <span className="bottom-nav-count">{wishlist.size}</span>}

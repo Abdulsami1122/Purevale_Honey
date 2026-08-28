@@ -1,10 +1,46 @@
-import React, { createContext, useCallback, useContext, useMemo, useState } from 'react'
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import {
+  honeyProducts,
+  datesProducts,
+  jaggeryProducts,
+  shilajitProducts,
+  cosmeticsProducts,
+} from '../../data/products'
 
 const ShopContext = createContext(null)
 
+const ALL_PRODUCTS = [
+  ...honeyProducts,
+  ...datesProducts,
+  ...jaggeryProducts,
+  ...shilajitProducts,
+  ...cosmeticsProducts,
+]
+
+const WISHLIST_STORAGE_KEY = 'purevale_wishlist'
+
+const readStoredWishlist = () => {
+  try {
+    const raw = localStorage.getItem(WISHLIST_STORAGE_KEY)
+    const ids = raw ? JSON.parse(raw) : []
+    return Array.isArray(ids) ? new Set(ids) : new Set()
+  } catch {
+    return new Set()
+  }
+}
+
 export const ShopProvider = ({ children }) => {
-  const [wishlist, setWishlist] = useState(() => new Set())
+  const [wishlist, setWishlist] = useState(readStoredWishlist)
   const [cartCount, setCartCount] = useState(6)
+
+  // Keep the wishlist so it survives a page reload
+  useEffect(() => {
+    try {
+      localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify([...wishlist]))
+    } catch {
+      /* storage unavailable (private mode / quota) — ignore */
+    }
+  }, [wishlist])
 
   const toggleWishlist = useCallback((id) => {
     setWishlist((current) => {
@@ -19,9 +55,15 @@ export const ShopProvider = ({ children }) => {
     setCartCount((current) => current + quantity)
   }, [])
 
+  // Full product objects for everything currently wishlisted
+  const wishlistProducts = useMemo(
+    () => ALL_PRODUCTS.filter((product) => wishlist.has(product.id)),
+    [wishlist],
+  )
+
   const value = useMemo(
-    () => ({ wishlist, toggleWishlist, cartCount, addToCart }),
-    [wishlist, toggleWishlist, cartCount, addToCart],
+    () => ({ wishlist, wishlistProducts, toggleWishlist, cartCount, addToCart }),
+    [wishlist, wishlistProducts, toggleWishlist, cartCount, addToCart],
   )
 
   return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>

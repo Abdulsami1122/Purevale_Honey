@@ -8,6 +8,7 @@ import FlyingBee from './components/FlyingBee'
 // Dedicated Pages
 import HomePage from './pages/HomePage'
 import ShopPage from './pages/ShopPage'
+import WishlistPage from './pages/WishlistPage'
 import HoneyPage from './pages/HoneyPage'
 import DatesPage from './pages/DatesPage'
 import ShilajitPage from './pages/ShilajitPage'
@@ -47,6 +48,7 @@ function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/shop" element={<ShopPage />} />
+              <Route path="/wishlist" element={<WishlistPage />} />
               <Route path="/honey" element={<HoneyPage />} />
               <Route path="/dates" element={<DatesPage />} />
               <Route path="/jaggery" element={<JaggeryPage />} />
