@@ -19,6 +19,7 @@ import {
 import { FacebookIcon, InstagramIcon, TiktokIcon, YoutubeIcon } from './BrandIcons'
 import { useShop } from './ShopContext'
 import AuthDrawer from './AuthDrawer'
+import SearchDrawer from './SearchDrawer'
 import './ShopHeader.css'
 
 // 1. Home -> 2. Shop -> 3. Pure Honney [premium] -> 4. Dates [Fresh] -> 5. Jaggery (Gur) [Natural] -> 6. Shilajit [Gold] -> 7. Cosmetics [new]
@@ -49,6 +50,7 @@ const ShopHeader = () => {
   const [currentMsgIndex, setCurrentMsgIndex] = useState(0)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [authOpen, setAuthOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
   const [scrollState, setScrollState] = useState('top') // 'top' | 'down' | 'up'
   const { wishlist, cartCount } = useShop()
   const location = useLocation()
@@ -166,9 +168,9 @@ const ShopHeader = () => {
         </nav>
 
         <div className="nav-actions">
-          <Link to="/shop" aria-label="Search" className="nav-action-btn">
+          <button type="button" aria-label="Search" className="nav-action-btn" onClick={() => setSearchOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', padding: 0 }}>
             <Search size={22} strokeWidth={1.6} />
-          </Link>
+          </button>
           <button type="button" aria-label="Account" className="nav-action-btn" onClick={() => setAuthOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', padding: 0 }}>
             <User size={22} strokeWidth={1.6} />
           </button>
@@ -192,6 +194,7 @@ const ShopHeader = () => {
       </div>
 
       <AuthDrawer isOpen={authOpen} onClose={() => setAuthOpen(false)} />
+      <SearchDrawer isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </header>
   )
 }
