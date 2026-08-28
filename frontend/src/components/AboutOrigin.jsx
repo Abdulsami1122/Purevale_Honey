@@ -8,8 +8,11 @@ const AboutOrigin = () => {
         <div className="origin-layout">
           <div className="origin-image-wrapper">
             <div className="origin-image-box">
-              {/* Using a solid color or gradient as a placeholder for a rich contextual image */}
-              <div className="placeholder-image"></div>
+              <img
+                className="origin-image"
+                src="/hero-bg.jpg"
+                alt="Traditional honey and jaggery harvesting in Pakistan"
+              />
               <div className="experience-badge">
                 <span className="years">100%</span>
                 <span className="text">Natural<br/>Source</span>
