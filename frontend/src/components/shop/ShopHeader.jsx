@@ -18,6 +18,7 @@ import {
 } from 'lucide-react'
 import { FacebookIcon, InstagramIcon, TiktokIcon, YoutubeIcon } from './BrandIcons'
 import { useShop } from './ShopContext'
+import AuthDrawer from './AuthDrawer'
 import './ShopHeader.css'
 
 // 1. Home -> 2. Shop -> 3. Pure Honney [premium] -> 4. Dates [Fresh] -> 5. Jaggery (Gur) [Natural] -> 6. Shilajit [Gold] -> 7. Cosmetics [new]
@@ -47,6 +48,7 @@ const ShopHeader = () => {
   const [announcementOpen, setAnnouncementOpen] = useState(true)
   const [currentMsgIndex, setCurrentMsgIndex] = useState(0)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const [authOpen, setAuthOpen] = useState(false)
   const [scrollState, setScrollState] = useState('top') // 'top' | 'down' | 'up'
   const { wishlist, cartCount } = useShop()
   const location = useLocation()
@@ -167,9 +169,9 @@ const ShopHeader = () => {
           <Link to="/shop" aria-label="Search" className="nav-action-btn">
             <Search size={22} strokeWidth={1.6} />
           </Link>
-          <Link to="/contact" aria-label="Account" className="nav-action-btn">
+          <button type="button" aria-label="Account" className="nav-action-btn" onClick={() => setAuthOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', padding: 0 }}>
             <User size={22} strokeWidth={1.6} />
-          </Link>
+          </button>
           <Link to="/shop" aria-label="Wishlist" className="nav-action-counted">
             <Heart size={22} strokeWidth={1.6} />
             <span className="nav-count">{wishlist.size}</span>
@@ -188,6 +190,8 @@ const ShopHeader = () => {
           </button>
         </div>
       </div>
+
+      <AuthDrawer isOpen={authOpen} onClose={() => setAuthOpen(false)} />
     </header>
   )
 }

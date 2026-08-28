@@ -130,3 +130,7 @@
     display: none !important;
   }
 }
+
+body.auth-drawer-open .flying-bee-container {
+  display: none !important;
+}

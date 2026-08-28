@@ -1,0 +1,177 @@
+body.auth-drawer-open {
+  overflow: hidden !important;
+}
+
+.auth-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 100000;
+}
+
+.auth-drawer {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 100%;
+  max-width: 380px;
+  height: 100%;
+  background-color: #ffffff;
+  z-index: 100001;
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.auth-drawer.is-open {
+  right: 0;
+}
+
+.auth-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.auth-drawer-header h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #111;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.auth-drawer-close {
+  background: none;
+  border: none;
+  color: #111;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-drawer-body {
+  padding: 2rem 1.5rem;
+  overflow-y: auto;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  animation: authFadeIn 0.3s ease-out;
+}
+
+@keyframes authFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-group {
+  position: relative;
+}
+
+.form-group input {
+  width: 100%;
+  height: 3.6rem;
+  box-sizing: border-box;
+  padding: 1.5rem 1rem 0.5rem;
+  font-size: 0.95rem;
+  color: #333;
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+  outline: none;
+  background-color: #fff;
+  transition: border-color 0.2s ease;
+}
+
+.form-group input::placeholder {
+  color: #555;
+  font-family: inherit;
+}
+
+.form-group input:focus {
+  border-color: #bbb;
+}
+
+.custom-placeholder label {
+  position: absolute;
+  top: 1.8rem;
+  left: 1rem;
+  transform: translateY(-50%);
+  color: #555;
+  font-size: 0.95rem;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  transform-origin: left top;
+}
+
+.custom-placeholder input:focus + label,
+.custom-placeholder input:not(:placeholder-shown) + label {
+  top: 0.9rem;
+  font-size: 0.72rem;
+  transform: translateY(-50%);
+  opacity: 1;
+}
+
+/* For simplicity, since the input will be populated, let's just use opacity 0 when not empty. 
+To make it work perfectly without JS, we can use the :placeholder-shown hack. */
+.custom-placeholder input {
+  /* We need a real placeholder but transparent, so :placeholder-shown works */
+  /* We'll set placeholder in jsx, but color transparent */
+}
+
+.custom-placeholder input::placeholder {
+  color: transparent !important;
+}
+
+.req {
+  color: #e03131;
+}
+
+.form-links {
+  margin-top: -0.25rem;
+}
+
+.form-links.mt-3 {
+  margin-top: 0.75rem;
+}
+
+.auth-link {
+  color: #444;
+  font-size: 0.95rem;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.auth-link:hover {
+  color: #111;
+}
+
+.auth-submit-btn {
+  background-color: #efb045;
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.auth-submit-btn:hover {
+  background-color: #e3a033;
+}
