@@ -17,10 +17,12 @@
   z-index: -1;
 }
 
-.hero-background img {
+.hero-background img,
+.hero-background .hero-video {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
 .hero-overlay {

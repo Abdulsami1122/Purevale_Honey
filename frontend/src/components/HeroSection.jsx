@@ -5,7 +5,15 @@ const HeroSection = () => {
   return (
     <section className="hero" id="home">
       <div className="hero-background">
-        <img src="/hero-bg.jpg" alt="Premium Natural Honey and Jaggery" />
+        <video
+          className="hero-video"
+          src="/banner-vedio.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+        />
         <div className="hero-overlay"></div>
       </div>
       <div className="container hero-content animate-fade-in">
