@@ -367,13 +367,17 @@
     display: none;
     position: absolute;
     top: 100%;
-    left: 0;
     right: 0;
+    left: auto;
+    width: 85%;
+    max-width: 380px;
+    height: 100vh;
     background-color: #FFFFFF;
     flex-direction: column;
     align-items: flex-start;
     padding: 1rem 2rem 1.5rem;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: -4px 10px 20px rgba(0, 0, 0, 0.08);
+    overflow-y: auto;
   }
 
   .shop-nav.is-open {

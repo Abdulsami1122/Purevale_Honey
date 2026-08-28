@@ -13,7 +13,7 @@ body.auth-drawer-open {
   position: fixed;
   top: 0;
   right: -400px;
-  width: 100%;
+  width: 85%;
   max-width: 380px;
   height: 100%;
   background-color: #ffffff;
