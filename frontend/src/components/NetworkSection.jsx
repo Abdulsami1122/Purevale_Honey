@@ -81,14 +81,14 @@ const NetworkSection = () => {
             <div className="network-check-circle">
               <CheckCircle2 size={22} />
             </div>
-            <span><strong>35 Years</strong> of Experience</span>
+            <span><strong>10 Years</strong> of Experience</span>
           </div>
 
           <div className="network-stat-item">
             <div className="network-check-circle">
               <CheckCircle2 size={22} />
             </div>
-            <span>Reaching <strong>15 Million</strong> Customers Every Month</span>
+            <span>Reaching <strong>10K</strong> Customers Every Month</span>
           </div>
         </div>
 
