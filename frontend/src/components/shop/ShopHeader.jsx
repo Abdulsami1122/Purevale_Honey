@@ -21,6 +21,7 @@ import { FacebookIcon, InstagramIcon, TiktokIcon, YoutubeIcon } from './BrandIco
 import { useShop } from './ShopContext'
 import AuthDrawer from './AuthDrawer'
 import SearchDrawer from './SearchDrawer'
+import CartDrawer from './CartDrawer'
 import './ShopHeader.css'
 
 // 1. Home -> 2. Shop -> 3. Pure Honney [premium] -> 4. Dates [Fresh] -> 5. Jaggery (Gur) [Natural] -> 6. Shilajit [Gold] -> 7. Cosmetics [new]
@@ -52,6 +53,7 @@ const ShopHeader = () => {
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [authOpen, setAuthOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
+  const [cartOpen, setCartOpen] = useState(false)
   const [scrollState, setScrollState] = useState('top') // 'top' | 'down' | 'up'
   const { wishlist, cartCount } = useShop()
   const location = useLocation()
@@ -74,7 +76,7 @@ const ShopHeader = () => {
     if (mobileNavOpen) {
       document.body.classList.add('auth-drawer-open')
       document.documentElement.classList.add('auth-drawer-open')
-    } else if (!authOpen && !searchOpen) {
+    } else if (!authOpen && !searchOpen && !cartOpen) {
       document.body.classList.remove('auth-drawer-open')
       document.documentElement.classList.remove('auth-drawer-open')
     }
@@ -190,10 +192,16 @@ const ShopHeader = () => {
               <Heart size={22} strokeWidth={1.6} />
               <span className="nav-count">{wishlist.size}</span>
             </Link>
-            <Link to="/shop" aria-label="Cart" className="nav-action-counted">
+            <button
+              type="button"
+              aria-label="Cart"
+              className="nav-action-counted"
+              onClick={() => setCartOpen(true)}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', padding: 0 }}
+            >
               <ShoppingCart size={22} strokeWidth={1.6} />
               <span className="nav-count">{cartCount}</span>
-            </Link>
+            </button>
             <button
               type="button"
               className="nav-burger"
@@ -233,13 +241,13 @@ const ShopHeader = () => {
           </span>
           <span>Wishlist</span>
         </Link>
-        <Link to="/shop" className="bottom-nav-item" aria-label="Cart">
+        <button type="button" className="bottom-nav-item" aria-label="Cart" onClick={() => setCartOpen(true)}>
           <span className="bottom-nav-icon">
             <ShoppingCart size={22} strokeWidth={1.7} />
             {cartCount > 0 && <span className="bottom-nav-count">{cartCount}</span>}
           </span>
           <span>Cart</span>
-        </Link>
+        </button>
         <button
           type="button"
           className="bottom-nav-item"
@@ -285,6 +293,7 @@ const ShopHeader = () => {
 
       <AuthDrawer isOpen={authOpen} onClose={() => setAuthOpen(false)} />
       <SearchDrawer isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+      <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
     </>
   )
 }

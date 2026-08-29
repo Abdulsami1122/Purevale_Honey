@@ -18,6 +18,7 @@ const ALL_PRODUCTS = [
 ]
 
 const WISHLIST_STORAGE_KEY = 'purevale_wishlist'
+const CART_STORAGE_KEY = 'purevale_cart'
 
 const readStoredWishlist = () => {
   try {
@@ -29,9 +30,19 @@ const readStoredWishlist = () => {
   }
 }
 
+const readStoredCart = () => {
+  try {
+    const raw = localStorage.getItem(CART_STORAGE_KEY)
+    const items = raw ? JSON.parse(raw) : []
+    return Array.isArray(items) ? items : []
+  } catch {
+    return []
+  }
+}
+
 export const ShopProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState(readStoredWishlist)
-  const [cartCount, setCartCount] = useState(6)
+  const [cart, setCart] = useState(readStoredCart)
 
   // Keep the wishlist so it survives a page reload
   useEffect(() => {
@@ -42,6 +53,15 @@ export const ShopProvider = ({ children }) => {
     }
   }, [wishlist])
 
+  // Persist the cart the same way
+  useEffect(() => {
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart))
+    } catch {
+      /* ignore */
+    }
+  }, [cart])
+
   const toggleWishlist = useCallback((id) => {
     setWishlist((current) => {
       const next = new Set(current)
@@ -51,9 +71,58 @@ export const ShopProvider = ({ children }) => {
     })
   }, [])
 
-  const addToCart = useCallback((quantity = 1) => {
-    setCartCount((current) => current + quantity)
+  // addToCart(product, { variant, price, quantity })
+  const addToCart = useCallback((product, options = {}) => {
+    const { variant = null, price, quantity = 1 } = options
+    if (!product) return
+    const lineId = `${product.id}::${variant ?? 'default'}`
+    const unitPrice = typeof price === 'number' ? price : product.priceMin
+
+    setCart((current) => {
+      const existing = current.find((item) => item.lineId === lineId)
+      if (existing) {
+        return current.map((item) =>
+          item.lineId === lineId ? { ...item, quantity: item.quantity + quantity } : item,
+        )
+      }
+      return [
+        ...current,
+        {
+          lineId,
+          productId: product.id,
+          title: product.title,
+          image: product.image,
+          variant,
+          price: unitPrice,
+          quantity,
+        },
+      ]
+    })
   }, [])
+
+  const updateCartQuantity = useCallback((lineId, quantity) => {
+    setCart((current) =>
+      quantity <= 0
+        ? current.filter((item) => item.lineId !== lineId)
+        : current.map((item) => (item.lineId === lineId ? { ...item, quantity } : item)),
+    )
+  }, [])
+
+  const removeFromCart = useCallback((lineId) => {
+    setCart((current) => current.filter((item) => item.lineId !== lineId))
+  }, [])
+
+  const clearCart = useCallback(() => setCart([]), [])
+
+  const cartCount = useMemo(
+    () => cart.reduce((sum, item) => sum + item.quantity, 0),
+    [cart],
+  )
+
+  const cartTotal = useMemo(
+    () => cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
+    [cart],
+  )
 
   // Full product objects for everything currently wishlisted
   const wishlistProducts = useMemo(
@@ -62,8 +131,30 @@ export const ShopProvider = ({ children }) => {
   )
 
   const value = useMemo(
-    () => ({ wishlist, wishlistProducts, toggleWishlist, cartCount, addToCart }),
-    [wishlist, wishlistProducts, toggleWishlist, cartCount, addToCart],
+    () => ({
+      wishlist,
+      wishlistProducts,
+      toggleWishlist,
+      cart,
+      cartCount,
+      cartTotal,
+      addToCart,
+      updateCartQuantity,
+      removeFromCart,
+      clearCart,
+    }),
+    [
+      wishlist,
+      wishlistProducts,
+      toggleWishlist,
+      cart,
+      cartCount,
+      cartTotal,
+      addToCart,
+      updateCartQuantity,
+      removeFromCart,
+      clearCart,
+    ],
   )
 
   return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>

@@ -120,6 +120,34 @@
   background-color: var(--color-gold);
 }
 
+.product-pill-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.product-pill-row .product-pill {
+  flex: 1;
+}
+
+.product-quick-cart {
+  flex-shrink: 0;
+  width: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: none;
+  background-color: #ffffff;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.product-quick-cart:hover {
+  background-color: var(--color-gold);
+  color: #ffffff;
+}
+
 .product-card-body {
   padding-top: 1rem;
   text-align: center;
@@ -190,6 +218,14 @@
   .product-pill {
     padding: 0.45rem 0.6rem;
     font-size: 0.78rem;
+  }
+
+  .product-quick-cart {
+    width: 34px;
+  }
+
+  .product-pill-row {
+    gap: 0.35rem;
   }
 
   .product-wish {

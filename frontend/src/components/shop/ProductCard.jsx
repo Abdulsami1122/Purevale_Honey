@@ -1,7 +1,8 @@
-import React from 'react'
-import { Heart, Star, StarHalf } from 'lucide-react'
+import React, { useState } from 'react'
+import { Heart, Star, StarHalf, ShoppingCart } from 'lucide-react'
 import { discountPercent, formatPrice, priceLabel } from '../../data/products'
 import { useShop } from './ShopContext'
+import QuickShopModal from './QuickShopModal'
 import './ProductCard.css'
 
 const Stars = ({ rating }) => {
@@ -23,9 +24,10 @@ const Stars = ({ rating }) => {
 }
 
 const ProductCard = ({ product }) => {
-  const { wishlist, toggleWishlist, addToCart } = useShop()
+  const { wishlist, toggleWishlist } = useShop()
   const isWishlisted = wishlist.has(product.id)
   const discount = discountPercent(product)
+  const [quickShopOpen, setQuickShopOpen] = useState(false)
 
   return (
     <div className="product-card">
@@ -45,14 +47,34 @@ const ProductCard = ({ product }) => {
         <img src={product.image} alt={product.title} loading="lazy" />
 
         <div className="product-card-overlay">
-          <button type="button" className="product-pill">
+          <button type="button" className="product-pill" onClick={() => setQuickShopOpen(true)}>
             Quick view
           </button>
-          <button type="button" className="product-pill product-pill-solid" onClick={() => addToCart(1)}>
-            Quick shop
-          </button>
+          <div className="product-pill-row">
+            <button
+              type="button"
+              className="product-pill product-pill-solid"
+              onClick={() => setQuickShopOpen(true)}
+            >
+              Quick shop
+            </button>
+            <button
+              type="button"
+              className="product-quick-cart"
+              aria-label="Quick shop"
+              onClick={() => setQuickShopOpen(true)}
+            >
+              <ShoppingCart size={18} strokeWidth={1.8} />
+            </button>
+          </div>
         </div>
       </div>
+
+      <QuickShopModal
+        product={product}
+        isOpen={quickShopOpen}
+        onClose={() => setQuickShopOpen(false)}
+      />
 
       <div className="product-card-body">
         <h3 className="product-title">{product.title}</h3>

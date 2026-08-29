@@ -1,0 +1,223 @@
+.quick-shop-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 2000;
+  animation: quick-shop-fade 0.2s ease;
+}
+
+.quick-shop-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(560px, calc(100vw - 2rem));
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  background: #ffffff;
+  border-radius: 4px;
+  z-index: 2001;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  animation: quick-shop-pop 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes quick-shop-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes quick-shop-pop {
+  from { opacity: 0; transform: translate(-50%, -48%) scale(0.97); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+.quick-shop-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: #1a1a1a;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.quick-shop-body {
+  padding: 2.5rem 2.25rem 2.25rem;
+}
+
+.quick-shop-title {
+  font-size: 1.6rem;
+  line-height: 1.25;
+  margin: 0 2.5rem 0.75rem 0;
+  color: var(--color-text, #1a1a1a);
+}
+
+.quick-shop-price {
+  font-size: 1.5rem;
+  color: #7a7a7a;
+  margin: 0 0 1.5rem;
+}
+
+.quick-shop-size-label {
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--color-text, #1a1a1a);
+  margin: 0 0 0.75rem;
+}
+
+.quick-shop-size-label strong {
+  font-weight: 700;
+}
+
+.quick-shop-variants {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.75rem;
+}
+
+.quick-shop-variant {
+  min-width: 92px;
+  padding: 0.85rem 1.1rem;
+  border: 1px solid #d5d5d5;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #9a9a9a;
+  font-family: var(--font-heading, sans-serif);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.quick-shop-variant:hover {
+  border-color: #1a1a1a;
+  color: #1a1a1a;
+}
+
+.quick-shop-variant.is-active {
+  background: #1f1f1f;
+  border-color: #1f1f1f;
+  color: #ffffff;
+}
+
+.quick-shop-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.quick-shop-qty {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid #d5d5d5;
+  border-radius: 999px;
+  padding: 0.35rem 0.5rem;
+}
+
+.quick-shop-qty button {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #1a1a1a;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.quick-shop-qty button:hover {
+  background: #f0f0f0;
+}
+
+.quick-shop-qty span {
+  min-width: 28px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.quick-shop-circle {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d5d5d5;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #1a1a1a;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.quick-shop-circle:hover {
+  border-color: #1a1a1a;
+}
+
+.quick-shop-circle.is-active {
+  color: #e8552c;
+  border-color: #e8552c;
+}
+
+.quick-shop-btn {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border: none;
+  border-radius: 999px;
+  font-family: var(--font-heading, sans-serif);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: filter 0.15s ease, opacity 0.15s ease;
+}
+
+.quick-shop-btn + .quick-shop-btn {
+  margin-top: 0.85rem;
+}
+
+.quick-shop-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.quick-shop-btn-cart {
+  background: var(--color-gold, #e6a935);
+  color: #ffffff;
+}
+
+.quick-shop-btn-buy {
+  background: #1a1a1a;
+  color: #ffffff;
+}
+
+.quick-shop-btn:not(:disabled):hover {
+  filter: brightness(1.06);
+}
+
+@media (max-width: 600px) {
+  .quick-shop-body {
+    padding: 2.25rem 1.5rem 1.75rem;
+  }
+
+  .quick-shop-title {
+    font-size: 1.35rem;
+  }
+
+  .quick-shop-price {
+    font-size: 1.3rem;
+  }
+}
