@@ -19,7 +19,7 @@ const PrivacyPolicyPage = () => {
         <div className="info-section-card">
           <h2>1. Information We Collect</h2>
           <p>
-            When you place an order or subscribe to Purevale Natural, we collect basic order details including your full name, phone number, delivery address, and email address solely to dispatch your products and communicate tracking updates.
+            When you place an order or subscribe to Durrani Harvest, we collect basic order details including your full name, phone number, delivery address, and email address solely to dispatch your products and communicate tracking updates.
           </p>
 
           <h2>2. How Your Information Is Used</h2>
@@ -31,12 +31,12 @@ const PrivacyPolicyPage = () => {
 
           <h2>3. Zero Third-Party Sharing</h2>
           <p>
-            Purevale guarantees that your personal data is never sold, traded, rented, or distributed to any unauthorized external marketing entities.
+            Durrani Harvest guarantees that your personal data is never sold, traded, rented, or distributed to any unauthorized external marketing entities.
           </p>
 
           <h2>4. Data Deletion & Inquiries</h2>
           <p>
-            You may request the deletion of your account or contact data at any time by contacting our Hayatabad support desk at <strong>0333 9300672</strong> or emailing <strong>support@purevale.com</strong>.
+            You may request the deletion of your account or contact data at any time by contacting our Hayatabad support desk at <strong>0333 9300672</strong> or emailing <strong>support@durraniharvest.com</strong>.
           </p>
         </div>
       </div>

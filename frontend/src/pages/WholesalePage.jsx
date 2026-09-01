@@ -12,7 +12,7 @@ const WholesalePage = () => {
         </div>
         <h1 className="page-hero-title">Wholesale & International Export</h1>
         <p className="page-hero-subtitle">
-          Partner with Purevale for bulk raw honey, fresh dates, private labeling, and custom commercial packaging worldwide.
+          Partner with Durrani Harvest for bulk raw honey, fresh dates, private labeling, and custom commercial packaging worldwide.
         </p>
       </div>
 

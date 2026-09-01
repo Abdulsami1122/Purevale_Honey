@@ -1,28 +1,30 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { X, Search } from 'lucide-react';
-import {
-  honeyProducts,
-  datesProducts,
-  jaggeryProducts,
-  shilajitProducts,
-  cosmeticsProducts,
-  priceLabel
-} from '../../data/products';
+import { priceLabel } from '../../data/products';
+import { useShop } from './ShopContext';
 import './SearchDrawer.css';
 
-// Map collections to their routes
-const ALL_PRODUCTS = [
-  ...honeyProducts.map(p => ({ ...p, route: '/honey' })),
-  ...datesProducts.map(p => ({ ...p, route: '/dates' })),
-  ...jaggeryProducts.map(p => ({ ...p, route: '/jaggery' })),
-  ...shilajitProducts.map(p => ({ ...p, route: '/shilajit' })),
-  ...cosmeticsProducts.map(p => ({ ...p, route: '/cosmetics' }))
-];
+const COLLECTION_ROUTES = {
+  honey: '/honey',
+  dates: '/dates',
+  jaggery: '/jaggery',
+  shilajit: '/shilajit',
+  cosmetics: '/cosmetics',
+};
 
 const SearchDrawer = ({ isOpen, onClose }) => {
   const [query, setQuery] = useState('');
   const inputRef = useRef(null);
+  const { collections } = useShop();
+
+  const allProducts = useMemo(
+    () =>
+      Object.entries(collections).flatMap(([key, list]) =>
+        list.map((p) => ({ ...p, route: COLLECTION_ROUTES[key] || '/shop' })),
+      ),
+    [collections],
+  );
 
   // Focus input when drawer opens
   useEffect(() => {
@@ -47,10 +49,10 @@ const SearchDrawer = ({ isOpen, onClose }) => {
   const filteredProducts = useMemo(() => {
     if (!query.trim()) return [];
     const lowerQuery = query.toLowerCase().trim();
-    return ALL_PRODUCTS.filter(product =>
+    return allProducts.filter(product =>
       product.title.toLowerCase().includes(lowerQuery)
     ).slice(0, 10); // Limit to top 10 results
-  }, [query]);
+  }, [query, allProducts]);
 
   if (!isOpen) return null;
 

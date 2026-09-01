@@ -11,7 +11,7 @@ const TermsPage = () => {
         </div>
         <h1 className="page-hero-title">Terms & Conditions of Service</h1>
         <p className="page-hero-subtitle">
-          Please review the terms and user policies governing orders, delivery, and services at Purevale.
+          Please review the terms and user policies governing orders, delivery, and services at Durrani Harvest.
         </p>
       </div>
 
@@ -19,7 +19,7 @@ const TermsPage = () => {
         <div className="info-section-card">
           <h2>1. Authentic Natural Products</h2>
           <p>
-            All products listed on Purevale are 100% genuine and sourced ethically. Because our raw honey, unrefined dates, and Himalayan shilajit are natural products without chemical stabilization, slight seasonal variations in flavor, texture, color, and natural aroma may occur between harvests.
+            All products listed on Durrani Harvest are 100% genuine and sourced ethically. Because our raw honey, unrefined dates, and Himalayan shilajit are natural products without chemical stabilization, slight seasonal variations in flavor, texture, color, and natural aroma may occur between harvests.
           </p>
 
           <h2>2. Order Verification & Dispatch</h2>
@@ -29,7 +29,7 @@ const TermsPage = () => {
 
           <h2>3. Pricing & Availability</h2>
           <p>
-            All prices are listed in Pakistani Rupees (PKR). Purevale reserves the right to adjust product availability based on seasonal harvest yields.
+            All prices are listed in Pakistani Rupees (PKR). Durrani Harvest reserves the right to adjust product availability based on seasonal harvest yields.
           </p>
 
           <h2>4. Contact & Support</h2>
@@ -39,7 +39,7 @@ const TermsPage = () => {
           <ul className="info-list-styled">
             <li><strong>Headquarters:</strong> Hayatabad, Peshawar, KP, Pakistan</li>
             <li><strong>Support Phone & WhatsApp:</strong> <a href="tel:+923339300672" style={{color: '#EAA82C'}}>+92 333 9300672</a></li>
-            <li><strong>Email:</strong> <a href="mailto:support@purevale.com" style={{color: '#EAA82C'}}>support@purevale.com</a></li>
+            <li><strong>Email:</strong> <a href="mailto:support@durraniharvest.com" style={{color: '#EAA82C'}}>support@durraniharvest.com</a></li>
           </ul>
         </div>
       </div>

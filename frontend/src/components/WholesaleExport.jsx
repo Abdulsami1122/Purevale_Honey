@@ -47,7 +47,7 @@ const WholesaleExport = () => {
           <div className="wholesale-content">
             <h2 className="wholesale-title">Wholesale & Export</h2>
             <p className="wholesale-desc">
-              We specialize in bulk exports to the USA, UK, and worldwide. Whether you need bulk ingredients for restaurants, retail-ready packaged goods, or private labeling solutions, Purevale is your trusted international partner.
+              We specialize in bulk exports to the USA, UK, and worldwide. Whether you need bulk ingredients for restaurants, retail-ready packaged goods, or private labeling solutions, Durrani Harvest is your trusted international partner.
             </p>
             
             <div className="wholesale-features">

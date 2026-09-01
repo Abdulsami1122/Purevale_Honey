@@ -2,10 +2,11 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import CollectionSection from '../components/shop/CollectionSection'
 import QualitySection from '../components/QualitySection'
-import { honeyProducts } from '../data/products'
+import { useShop } from '../components/shop/ShopContext'
 import './Pages.css'
 
 const HoneyPage = () => {
+  const { collections } = useShop()
   return (
     <div className="page-container">
       <div className="page-hero-banner">
@@ -22,7 +23,7 @@ const HoneyPage = () => {
         id="honey-collection"
         title="Honey Collection"
         subtitle="Explore our pure Sidr, Acacia, Multi-flower, and Wildflower honeys"
-        products={honeyProducts}
+        products={collections.honey}
       />
 
       <QualitySection />

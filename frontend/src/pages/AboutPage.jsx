@@ -11,7 +11,7 @@ const AboutPage = () => {
         <div className="page-breadcrumbs">
           <Link to="/">Home</Link> / <span>About Us</span>
         </div>
-        <h1 className="page-hero-title">About Purevale Natural</h1>
+        <h1 className="page-hero-title">About Durrani Harvest</h1>
         <p className="page-hero-subtitle">
           Dedicated to purity, nature conservation, and delivering authentic honey and wellness products to your doorstep.
         </p>
@@ -21,7 +21,7 @@ const AboutPage = () => {
         <div className="info-section-card">
           <h2>Our Philosophy & Mission</h2>
           <p>
-            At <strong>Purevale Natural</strong>, based in <strong>Hayatabad, Peshawar</strong>, our journey began with a simple belief: nature provides the most potent nutrition in its unadulterated state. In a world full of artificial additives, ultra-processed sugars, and diluted products, Purevale stands as a trusted beacon of integrity.
+            At <strong>Durrani Harvest</strong>, based in <strong>Hayatabad, Peshawar</strong>, our journey began with a simple belief: nature provides the most potent nutrition in its unadulterated state. In a world full of artificial additives, ultra-processed sugars, and diluted products, Durrani Harvest stands as a trusted beacon of integrity.
           </p>
           <p>
             We work directly with traditional beekeeping families and alpine foragers across the Karakoram, Hindu Kush, and fertile plains of Pakistan. We ensure that our bees are never fed synthetic syrups, and our honey is never boiled or chemically altered.

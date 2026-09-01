@@ -1,10 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import CollectionSection from '../components/shop/CollectionSection'
-import { shilajitProducts } from '../data/products'
+import { useShop } from '../components/shop/ShopContext'
 import './Pages.css'
 
 const ShilajitPage = () => {
+  const { collections } = useShop()
   return (
     <div className="page-container">
       <div className="page-hero-banner">
@@ -21,7 +22,7 @@ const ShilajitPage = () => {
         id="shilajit-section"
         title="Shilajit Collection"
         subtitle="Natural vitality, endurance, and wellness boosters"
-        products={shilajitProducts}
+        products={collections.shilajit}
       />
     </div>
   )

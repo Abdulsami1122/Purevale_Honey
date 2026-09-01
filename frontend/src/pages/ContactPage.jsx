@@ -22,7 +22,7 @@ const ContactPage = () => {
         <div className="page-breadcrumbs">
           <Link to="/">Home</Link> / <span>Contact Us</span>
         </div>
-        <h1 className="page-hero-title">Get in Touch With Purevale</h1>
+        <h1 className="page-hero-title">Get in Touch With Durrani Harvest</h1>
         <p className="page-hero-subtitle">
           Have questions about our products, retail orders, or bulk export? Our Hayatabad Peshawar team is here to assist you.
         </p>
@@ -59,7 +59,7 @@ const ContactPage = () => {
               </div>
               <div className="contact-card-text">
                 <h4>Email Inquiries</h4>
-                <p><a href="mailto:support@purevale.com">support@purevale.com</a></p>
+                <p><a href="mailto:support@durraniharvest.com">support@durraniharvest.com</a></p>
               </div>
             </div>
 
@@ -109,7 +109,7 @@ const ContactPage = () => {
               <textarea
                 className="contact-input-field"
                 rows="4"
-                placeholder="How can we assist you with Purevale products?"
+                placeholder="How can we assist you with Durrani Harvest products?"
                 required
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}

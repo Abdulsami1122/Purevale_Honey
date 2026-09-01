@@ -9,16 +9,30 @@ import {
 
 const ShopContext = createContext(null)
 
-const ALL_PRODUCTS = [
-  ...honeyProducts,
-  ...datesProducts,
-  ...jaggeryProducts,
-  ...shilajitProducts,
-  ...cosmeticsProducts,
-]
+// Base catalogue shipped with the app, keyed by collection slug
+const BASE_COLLECTIONS = {
+  honey: honeyProducts,
+  dates: datesProducts,
+  jaggery: jaggeryProducts,
+  shilajit: shilajitProducts,
+  cosmetics: cosmeticsProducts,
+}
+
+export const COLLECTION_KEYS = Object.keys(BASE_COLLECTIONS)
 
 const WISHLIST_STORAGE_KEY = 'purevale_wishlist'
 const CART_STORAGE_KEY = 'purevale_cart'
+const CUSTOM_PRODUCTS_STORAGE_KEY = 'purevale_custom_products'
+
+const readStoredCustomProducts = () => {
+  try {
+    const raw = localStorage.getItem(CUSTOM_PRODUCTS_STORAGE_KEY)
+    const items = raw ? JSON.parse(raw) : []
+    return Array.isArray(items) ? items : []
+  } catch {
+    return []
+  }
+}
 
 const readStoredWishlist = () => {
   try {
@@ -43,6 +57,7 @@ const readStoredCart = () => {
 export const ShopProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState(readStoredWishlist)
   const [cart, setCart] = useState(readStoredCart)
+  const [customProducts, setCustomProducts] = useState(readStoredCustomProducts)
 
   // Keep the wishlist so it survives a page reload
   useEffect(() => {
@@ -61,6 +76,15 @@ export const ShopProvider = ({ children }) => {
       /* ignore */
     }
   }, [cart])
+
+  // Persist admin-added products
+  useEffect(() => {
+    try {
+      localStorage.setItem(CUSTOM_PRODUCTS_STORAGE_KEY, JSON.stringify(customProducts))
+    } catch {
+      /* ignore */
+    }
+  }, [customProducts])
 
   const toggleWishlist = useCallback((id) => {
     setWishlist((current) => {
@@ -114,6 +138,57 @@ export const ShopProvider = ({ children }) => {
 
   const clearCart = useCallback(() => setCart([]), [])
 
+  // ---- Admin: add / remove products (stored in this browser only) ----
+  const addCustomProduct = useCallback((draft) => {
+    const slug =
+      (draft.title || 'product')
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '') || 'product'
+
+    const product = {
+      id: `custom-${slug}-${Date.now()}`,
+      title: draft.title?.trim() || 'Untitled Product',
+      collection: COLLECTION_KEYS.includes(draft.collection) ? draft.collection : 'honey',
+      image: draft.image?.trim() || '/honey-jar.jpg',
+      priceMin: Number(draft.priceMin) || 0,
+      ...(draft.priceMax ? { priceMax: Number(draft.priceMax) } : {}),
+      rating: Number(draft.rating) || 0,
+      reviews: Number(draft.reviews) || 0,
+      available: draft.available !== false,
+      featured: 0,
+      variants:
+        draft.variants && draft.variants.trim()
+          ? draft.variants.split(',').map((v) => v.trim()).filter(Boolean)
+          : ['Default'],
+      isCustom: true,
+    }
+
+    setCustomProducts((current) => [product, ...current])
+    return product
+  }, [])
+
+  const removeCustomProduct = useCallback((id) => {
+    setCustomProducts((current) => current.filter((p) => p.id !== id))
+  }, [])
+
+  // Base catalogue + admin products, grouped by collection slug
+  const collections = useMemo(() => {
+    const merged = {}
+    for (const key of COLLECTION_KEYS) merged[key] = [...BASE_COLLECTIONS[key]]
+    for (const p of customProducts) {
+      const key = COLLECTION_KEYS.includes(p.collection) ? p.collection : 'honey'
+      merged[key] = [...merged[key], p]
+    }
+    return merged
+  }, [customProducts])
+
+  const allProducts = useMemo(
+    () => COLLECTION_KEYS.flatMap((key) => collections[key]),
+    [collections],
+  )
+
   const cartCount = useMemo(
     () => cart.reduce((sum, item) => sum + item.quantity, 0),
     [cart],
@@ -126,8 +201,8 @@ export const ShopProvider = ({ children }) => {
 
   // Full product objects for everything currently wishlisted
   const wishlistProducts = useMemo(
-    () => ALL_PRODUCTS.filter((product) => wishlist.has(product.id)),
-    [wishlist],
+    () => allProducts.filter((product) => wishlist.has(product.id)),
+    [wishlist, allProducts],
   )
 
   const value = useMemo(
@@ -142,6 +217,11 @@ export const ShopProvider = ({ children }) => {
       updateCartQuantity,
       removeFromCart,
       clearCart,
+      collections,
+      allProducts,
+      customProducts,
+      addCustomProduct,
+      removeCustomProduct,
     }),
     [
       wishlist,
@@ -154,6 +234,11 @@ export const ShopProvider = ({ children }) => {
       updateCartQuantity,
       removeFromCart,
       clearCart,
+      collections,
+      allProducts,
+      customProducts,
+      addCustomProduct,
+      removeCustomProduct,
     ],
   )
 

@@ -40,7 +40,7 @@ const NetworkSection = () => {
           <div className="network-map-wrapper">
             <img
               src="/network-map.jpg"
-              alt="Purevale Global Network - Pakistan to Worldwide Destinations"
+              alt="Durrani Harvest Global Network - Pakistan to Worldwide Destinations"
               className="network-map-image"
             />
 

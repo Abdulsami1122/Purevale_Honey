@@ -4,6 +4,28 @@
   gap: 2rem 1.5rem;
 }
 
+.product-grid-item {
+  animation: product-card-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--stagger, 0ms);
+}
+
+@keyframes product-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-grid-item {
+    animation: none;
+  }
+}
+
 @media (max-width: 992px) {
   .product-grid {
     grid-template-columns: repeat(min(var(--cols, 4), 3), 1fr);

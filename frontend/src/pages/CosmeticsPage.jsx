@@ -3,10 +3,11 @@ import { Link } from 'react-router-dom'
 import { CheckCircle2, Sparkles, ShieldCheck, HeartHandshake } from 'lucide-react'
 import CollectionSection from '../components/shop/CollectionSection'
 import QualitySection from '../components/QualitySection'
-import { cosmeticsProducts } from '../data/products'
+import { useShop } from '../components/shop/ShopContext'
 import './Pages.css'
 
 const CosmeticsPage = () => {
+  const { collections } = useShop()
   return (
     <div className="page-container">
       {/* 1. Hero Banner */}
@@ -14,7 +15,7 @@ const CosmeticsPage = () => {
         <div className="page-breadcrumbs">
           <Link to="/">Home</Link> / <Link to="/shop">Shop</Link> / <span>Natural Cosmetics</span>
         </div>
-        <h1 className="page-hero-title">Purevale Natural Cosmetics & Beauty</h1>
+        <h1 className="page-hero-title">Durrani Harvest Cosmetics & Beauty</h1>
         <p className="page-hero-subtitle">
           Pure raw honey, bee propolis, and organic mountain beeswax infused skincare crafted for radiant, nourished skin.
         </p>
@@ -25,7 +26,7 @@ const CosmeticsPage = () => {
         id="cosmetics-collection"
         title="Honey & Propolis Cosmetics"
         subtitle="100% organic, chemical-free beeswax creams, serums, and botanical elixirs"
-        products={cosmeticsProducts}
+        products={collections.cosmetics}
       />
 
       {/* 3. Product Benefits Info */}
@@ -33,7 +34,7 @@ const CosmeticsPage = () => {
         <div className="info-section-card">
           <h2>100% Organic & Chemical-Free Bee Skincare</h2>
           <p>
-            Purevale's natural beauty line harnesses the regenerative powers of wild Sidr honey, golden beeswax, and soothing propolis. Formulated with zero parabens, artificial fragrances, or petrochemicals.
+            Durrani Harvest's natural beauty line harnesses the regenerative powers of wild Sidr honey, golden beeswax, and soothing propolis. Formulated with zero parabens, artificial fragrances, or petrochemicals.
           </p>
           <ul className="info-list-styled">
             <li>

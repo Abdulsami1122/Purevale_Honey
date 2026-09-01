@@ -1,10 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import CollectionSection from '../components/shop/CollectionSection'
-import { datesProducts } from '../data/products'
+import { useShop } from '../components/shop/ShopContext'
 import './Pages.css'
 
 const DatesPage = () => {
+  const { collections } = useShop()
   return (
     <div className="page-container">
       <div className="page-hero-banner">
@@ -21,7 +22,7 @@ const DatesPage = () => {
         id="dates-section"
         title="Dates Collection"
         subtitle="Hand-picked for optimal softness, rich minerals, and authentic flavor"
-        products={datesProducts}
+        products={collections.dates}
       />
     </div>
   )

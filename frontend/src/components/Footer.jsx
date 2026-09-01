@@ -25,13 +25,13 @@ const Footer = () => {
         <div className="ih-footer-container">
           <div className="ih-footer-grid">
             
-            {/* 1. Purevale Brand & Contact Details */}
+            {/* 1. Durrani Harvest Brand & Contact Details */}
             <div className="ih-footer-col ih-brand-col">
               <div className="ih-logo-wrapper">
                 <Link to="/" className="pv-footer-brand">
-                  <img src="/logo.jpeg" alt="Purevale Natural" className="pv-footer-logo-img" />
+                  <img src="/logo.jpeg" alt="Durrani Harvest" className="pv-footer-logo-img" />
                   <div className="pv-brand-meta">
-                    <span className="pv-brand-name">PUREVALE</span>
+                    <span className="pv-brand-name">DURRANI HARVEST</span>
                     <span className="pv-brand-sub">100% PURE & NATURAL</span>
                   </div>
                 </Link>
@@ -47,11 +47,11 @@ const Footer = () => {
                   </span>
                 </Link>
 
-                <a href="mailto:support@purevale.com" className="ih-contact-item ih-contact-link">
+                <a href="mailto:support@durraniharvest.com" className="ih-contact-item ih-contact-link">
                   <span className="ih-contact-icon">
                     <Mail size={18} strokeWidth={1.8} />
                   </span>
-                  <span className="ih-contact-text">support@purevale.com</span>
+                  <span className="ih-contact-text">support@durraniharvest.com</span>
                 </a>
 
                 <a href="tel:+923339300672" className="ih-contact-item ih-contact-link">
@@ -95,7 +95,7 @@ const Footer = () => {
             <div className="ih-footer-col">
               <h3 className="ih-footer-heading">Information</h3>
               <ul className="ih-footer-links">
-                <li><Link to="/about">About Purevale</Link></li>
+                <li><Link to="/about">About Durrani Harvest</Link></li>
                 <li><Link to="/contact">Contact Us</Link></li>
                 <li><Link to="/faq">FAQ's</Link></li>
                 <li><Link to="/return-policy">Return Policy</Link></li>
@@ -139,7 +139,7 @@ const Footer = () => {
                 </div>
                 {subscribed && (
                   <div className="ih-subscribe-success">
-                    ✓ Thank you for subscribing to Purevale!
+                    ✓ Thank you for subscribing to Durrani Harvest!
                   </div>
                 )}
               </form>
@@ -171,7 +171,7 @@ const Footer = () => {
         <div className="ih-bottom-bar">
           <div className="ih-bottom-container">
             <p className="ih-copyright-text">
-              Copyright © 2026 <strong>Purevale Natural</strong>. All rights reserved.
+              Copyright © 2026 <strong>Durrani Harvest</strong>. All rights reserved.
             </p>
           </div>
         </div>

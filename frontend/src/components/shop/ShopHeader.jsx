@@ -43,7 +43,7 @@ const SOCIALS = [
 ]
 
 const ANNOUNCEMENT_MESSAGES = [
-  'Welcome to Purevale Natural',
+  'Welcome to Durrani Harvest',
   'Limited Time Offer Upto 25% Off '
 ]
 
@@ -155,7 +155,7 @@ const ShopHeader = () => {
           </a>
 
           <p className="info-message">
-            <strong>Purevale Honey</strong> is now <strong>PUREVALE NATURAL</strong>
+            <strong>DURRANI HARVEST</strong> — Natural · Pure · Premium
           </p>
 
           <div className="info-socials">
@@ -170,10 +170,10 @@ const ShopHeader = () => {
         {/* 3. Main Navigation Bar */}
         <div className="nav-bar">
           <Link className="brand" to="/">
-            <img className="brand-seal" src="/logo.jpeg" alt="Purevale" />
+            <img className="brand-seal" src="/logo.jpeg" alt="Durrani Harvest" />
             <span className="brand-word">
-              <span className="brand-word-main">PUREVALE</span>
-              <span className="brand-word-sub">N A T U R A L</span>
+              <span className="brand-word-main">DURRANI</span>
+              <span className="brand-word-sub">H A R V E S T</span>
             </span>
           </Link>
 
@@ -282,9 +282,9 @@ const ShopHeader = () => {
                 <Phone size={18} strokeWidth={1.7} />
                 <span>+92 3339300672</span>
               </a>
-              <a className="mobile-nav-contact-item" href="mailto:support@purevale.com">
+              <a className="mobile-nav-contact-item" href="mailto:support@durraniharvest.com">
                 <Mail size={18} strokeWidth={1.7} />
-                <span>support@purevale.com</span>
+                <span>support@durraniharvest.com</span>
               </a>
             </div>
           </div>

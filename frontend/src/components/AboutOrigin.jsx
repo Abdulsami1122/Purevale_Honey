@@ -24,7 +24,7 @@ const AboutOrigin = () => {
             <h4 className="subtitle">Our Story</h4>
             <h2 className="title">Rooted in Tradition. Crafted for the World.</h2>
             <p className="desc">
-              At Purevale, our journey begins in the lush, fertile landscapes of Pakistan. For generations, traditional farming communities have harvested honey from wild flora and crafted jaggery using time-honored methods. 
+              At Durrani Harvest, our journey begins in the lush, fertile landscapes of Pakistan. For generations, traditional farming communities have harvested honey from wild flora and crafted jaggery using time-honored methods. 
             </p>
             <p className="desc">
               We bridge the gap between these pristine origins and global markets. By combining age-old artisanal techniques with rigorous modern quality standards, we ensure that every product we export—from Lahore to London, from Karachi to New York—delivers an authentic, premium experience.

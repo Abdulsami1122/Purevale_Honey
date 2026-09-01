@@ -1,10 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import CollectionSection from '../components/shop/CollectionSection'
-import { jaggeryProducts } from '../data/products'
+import { useShop } from '../components/shop/ShopContext'
 import './Pages.css'
 
 const JaggeryPage = () => {
+  const { collections } = useShop()
   return (
     <div className="page-container">
       <div className="page-hero-banner">
@@ -21,7 +22,7 @@ const JaggeryPage = () => {
         id="jaggery-section"
         title="Jaggery (Gur) Collection"
         subtitle="Traditional handmade Gur, Dry Fruit Masala Gur, and Organic Shakkar"
-        products={jaggeryProducts}
+        products={collections.jaggery}
       />
     </div>
   )

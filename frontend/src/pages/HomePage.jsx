@@ -6,49 +6,62 @@ import QualitySection from '../components/QualitySection'
 import WholesaleExport from '../components/WholesaleExport'
 import AboutOrigin from '../components/AboutOrigin'
 import NetworkSection from '../components/NetworkSection'
-import { honeyProducts, datesProducts, jaggeryProducts, shilajitProducts, cosmeticsProducts } from '../data/products'
+import Reveal from '../components/Reveal'
+import { useShop } from '../components/shop/ShopContext'
 
 const HomePage = () => {
+  const { collections } = useShop()
+
   return (
     <div className="home-page">
       <HeroSection />
-      <PageBanner title="Our Collections" crumb="Shop" />
-      <CollectionSection
-        id="honey-collection"
-        title="Honey Collection"
-        subtitle="100% pure and natural raw honey"
-        products={honeyProducts}
-      />
-      <CollectionSection
-        id="dates"
-        title="Dates Collection"
-        subtitle="Hand-picked, naturally sweet fresh dates"
-        products={datesProducts}
-      />
-      <CollectionSection
-        id="jaggery"
-        title="Jaggery (Gur) Collection"
-        subtitle="100% organic, unrefined desi jaggery & shakkar"
-        products={jaggeryProducts}
-      />
-      <CollectionSection
-        id="shilajit"
-        title="Shilajit Collection"
-        subtitle="Pure Himalayan shilajit for daily vitality"
-        products={shilajitProducts}
-      />
-      <CollectionSection
-        id="cosmetics"
-        title="Natural Cosmetics Collection"
-        subtitle="Beeswax & propolis infused botanical skincare"
-        products={cosmeticsProducts}
-      />
-      <AboutOrigin />
-      <QualitySection />
-      <WholesaleExport />
-      
+      <Reveal><PageBanner title="Our Collections" crumb="Shop" /></Reveal>
+      <Reveal>
+        <CollectionSection
+          id="honey-collection"
+          title="Honey Collection"
+          subtitle="100% pure and natural raw honey"
+          products={collections.honey}
+        />
+      </Reveal>
+      <Reveal>
+        <CollectionSection
+          id="dates"
+          title="Dates Collection"
+          subtitle="Hand-picked, naturally sweet fresh dates"
+          products={collections.dates}
+        />
+      </Reveal>
+      <Reveal>
+        <CollectionSection
+          id="jaggery"
+          title="Jaggery (Gur) Collection"
+          subtitle="100% organic, unrefined desi jaggery & shakkar"
+          products={collections.jaggery}
+        />
+      </Reveal>
+      <Reveal>
+        <CollectionSection
+          id="shilajit"
+          title="Shilajit Collection"
+          subtitle="Pure Himalayan shilajit for daily vitality"
+          products={collections.shilajit}
+        />
+      </Reveal>
+      <Reveal>
+        <CollectionSection
+          id="cosmetics"
+          title="Natural Cosmetics Collection"
+          subtitle="Beeswax & propolis infused botanical skincare"
+          products={collections.cosmetics}
+        />
+      </Reveal>
+      <Reveal><AboutOrigin /></Reveal>
+      <Reveal><QualitySection /></Reveal>
+      <Reveal><WholesaleExport /></Reveal>
+
       {/* Handcrafted Our Network: World & Domestic Destinations */}
-      <NetworkSection />
+      <Reveal><NetworkSection /></Reveal>
     </div>
   )
 }

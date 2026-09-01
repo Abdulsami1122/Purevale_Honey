@@ -22,6 +22,7 @@ import ReturnPolicyPage from './pages/ReturnPolicyPage'
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage'
 import TermsPage from './pages/TermsPage'
 import CosmeticsPage from './pages/CosmeticsPage'
+import AdminPage from './pages/AdminPage'
 
 import './App.css'
 
@@ -62,6 +63,7 @@ function App() {
               <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
               <Route path="/terms" element={<TermsPage />} />
               <Route path="/cosmetics" element={<CosmeticsPage />} />
+              <Route path="/admin" element={<AdminPage />} />
               {/* Fallback */}
               <Route path="*" element={<HomePage />} />
             </Routes>
