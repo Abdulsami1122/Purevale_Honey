@@ -47,26 +47,14 @@ const ProductCard = ({ product }) => {
         <img src={product.image} alt={product.title} loading="lazy" />
 
         <div className="product-card-overlay">
-          <button type="button" className="product-pill" onClick={() => setQuickShopOpen(true)}>
-            Quick view
+          <button
+            type="button"
+            className="product-pill product-pill-solid"
+            onClick={() => setQuickShopOpen(true)}
+          >
+            <ShoppingCart size={18} strokeWidth={1.8} />
+            Quick shop
           </button>
-          <div className="product-pill-row">
-            <button
-              type="button"
-              className="product-pill product-pill-solid"
-              onClick={() => setQuickShopOpen(true)}
-            >
-              Quick shop
-            </button>
-            <button
-              type="button"
-              className="product-quick-cart"
-              aria-label="Quick shop"
-              onClick={() => setQuickShopOpen(true)}
-            >
-              <ShoppingCart size={18} strokeWidth={1.8} />
-            </button>
-          </div>
         </div>
       </div>
 

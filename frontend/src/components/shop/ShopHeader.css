@@ -86,6 +86,7 @@
     opacity: 0;
     transform: translateX(60px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -356,6 +357,7 @@
 
 /* Never show the mobile drawer on desktop */
 @media (min-width: 1201px) {
+
   .mobile-nav-backdrop,
   .mobile-nav-drawer {
     display: none !important;
@@ -383,8 +385,9 @@
 }
 
 .shop-nav-link.is-active {
-  color: #133827;
+  color: #E22B2B;
   font-weight: 700;
+  background-color: transparent;
 }
 
 .shop-nav-icon {
@@ -394,6 +397,25 @@
 
 .shop-nav-link:hover .shop-nav-icon {
   color: #133827;
+}
+
+.shop-nav-link.is-active .shop-nav-icon {
+  color: #E22B2B;
+}
+
+/* The red curli lamp effect */
+.shop-nav-link.is-active::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -8px;
+  right: -8px;
+  bottom: -4px;
+  border-top: 3px solid #E22B2B;
+  border-radius: 16px 16px 0 0;
+  background: linear-gradient(180deg, rgba(226, 43, 43, 0.15) 0%, rgba(226, 43, 43, 0) 80%);
+  pointer-events: none;
+  z-index: -1;
 }
 
 /* Badges */
@@ -486,6 +508,7 @@
 
 /* Responsive */
 @media (max-width: 1200px) {
+
   /* Desktop inline nav hidden; menu moves into the drawer */
   .shop-nav {
     display: none;

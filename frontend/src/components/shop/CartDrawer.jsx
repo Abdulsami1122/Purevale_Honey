@@ -29,6 +29,11 @@ const CartDrawer = ({ isOpen, onClose }) => {
     navigate('/shop')
   }
 
+  const goToCheckout = () => {
+    onClose()
+    navigate('/checkout')
+  }
+
   return (
     <>
       <div className="cart-backdrop" onClick={onClose}></div>
@@ -98,7 +103,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
                 <strong>{formatPrice(cartTotal)}</strong>
               </div>
               <p className="cart-tax-note">Shipping &amp; taxes calculated at checkout.</p>
-              <button type="button" className="cart-checkout-btn" onClick={goToShop}>
+              <button type="button" className="cart-checkout-btn" onClick={goToCheckout}>
                 CHECKOUT
               </button>
               <button type="button" className="cart-viewcart-btn" onClick={onClose}>

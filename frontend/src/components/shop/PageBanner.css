@@ -1,4 +1,5 @@
 .page-banner {
+  margin-top: clamp(2rem, 5vw, 4rem);
   background: linear-gradient(135deg, var(--color-green, #133827) 0%, var(--color-green-light, #2A5A44) 100%);
   padding: 3.5rem 1.5rem 2rem;
   text-align: center;

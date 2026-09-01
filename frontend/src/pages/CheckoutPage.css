@@ -1,0 +1,497 @@
+/* ==========================================================================
+   DURRANI HARVEST — CHECKOUT (Shopify-style)
+   ========================================================================== */
+
+.ck-page {
+  --ck-blue: #2b57d6;
+  --ck-blue-soft: #eef3ff;
+  --ck-border: #d9d9d9;
+  --ck-text: #1a1a1a;
+  --ck-muted: #6b7280;
+  background: #ffffff;
+  color: var(--ck-text);
+  min-height: 100vh;
+  font-family: var(--font-body, 'Inter', system-ui, sans-serif);
+}
+
+/* ---- Minimal header ---- */
+.ck-header {
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.ck-header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ck-brand {
+  font-family: var(--font-heading, sans-serif);
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: 0.3px;
+  color: #133827;
+  text-decoration: none;
+}
+
+.ck-header-cart {
+  position: relative;
+  color: #133827;
+  display: inline-flex;
+}
+
+.ck-header-cart-count {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---- Layout ---- */
+.ck-body {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.ck-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.ck-form {
+  padding: 2.5rem 3rem 3rem 1.5rem;
+  max-width: 560px;
+  margin-left: auto;
+  width: 100%;
+}
+
+/* right column visually extends to the viewport edge like Shopify */
+.ck-summary {
+  background: #f5f5f5;
+  border-left: 1px solid #e6e6e6;
+  position: relative;
+}
+
+.ck-summary::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 100%;
+  width: 100vw;
+  background: #f5f5f5;
+}
+
+.ck-summary-inner {
+  padding: 2.5rem 1.5rem 3rem 2.5rem;
+  max-width: 460px;
+  position: sticky;
+  top: 0;
+}
+
+/* ---- Sections ---- */
+.ck-section {
+  margin-bottom: 1.75rem;
+}
+
+.ck-section h2 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0 0 0.85rem;
+}
+
+.ck-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+}
+
+.ck-section-head h2 {
+  margin: 0;
+}
+
+.ck-link {
+  color: var(--ck-blue);
+  font-size: 0.85rem;
+  text-decoration: underline;
+}
+
+.ck-muted {
+  color: var(--ck-muted);
+  font-size: 0.82rem;
+  margin: 0 0 0.75rem;
+}
+
+/* ---- Fields ---- */
+.ck-field {
+  position: relative;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.ck-field input,
+.ck-field select {
+  width: 100%;
+  height: 3.15rem;
+  padding: 0 0.9rem;
+  font-size: 0.92rem;
+  color: var(--ck-text);
+  background: #fff;
+  border: 1px solid var(--ck-border);
+  border-radius: 5px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  appearance: none;
+}
+
+.ck-field input:focus,
+.ck-field select:focus {
+  border-color: var(--ck-blue);
+  box-shadow: 0 0 0 1px var(--ck-blue);
+}
+
+.ck-field input::placeholder {
+  color: #8a8a8a;
+}
+
+.ck-field-hint {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9a9a9a;
+  display: inline-flex;
+  pointer-events: none;
+}
+
+/* select with floating label */
+.ck-select {
+  position: relative;
+}
+
+.ck-select .ck-select-label {
+  position: absolute;
+  top: 6px;
+  left: 0.9rem;
+  font-size: 0.68rem;
+  color: var(--ck-muted);
+}
+
+.ck-select select {
+  padding-top: 1rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23555' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+}
+
+.ck-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.ck-row .ck-field {
+  margin-bottom: 0.75rem;
+}
+
+/* ---- Checkboxes ---- */
+.ck-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.85rem;
+  color: #444;
+  margin-top: 0.15rem;
+}
+
+.ck-checkbox input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--ck-blue);
+}
+
+/* ---- Radio cards ---- */
+.ck-radio-card {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  border: 1px solid var(--ck-border);
+  border-radius: 5px;
+  padding: 1rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-bottom: -1px;
+  background: #fff;
+}
+
+.ck-radio-card:first-of-type { border-radius: 5px 5px 0 0; }
+.ck-radio-card:last-of-type { border-radius: 0 0 5px 5px; margin-bottom: 0; }
+.ck-radio-card:only-of-type { border-radius: 5px; }
+
+.ck-radio-card input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--ck-blue);
+}
+
+.ck-radio-card.is-selected {
+  border-color: var(--ck-blue);
+  background: var(--ck-blue-soft);
+  position: relative;
+  z-index: 1;
+}
+
+.ck-shipping-row {
+  justify-content: space-between;
+  cursor: default;
+}
+
+.ck-free,
+.ck-summary-row .ck-free {
+  font-weight: 600;
+}
+
+/* ---- Submit ---- */
+.ck-submit {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 1.05rem;
+  border: none;
+  border-radius: 6px;
+  background: var(--ck-blue);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.15s ease, opacity 0.15s ease;
+}
+
+.ck-submit:hover:not(:disabled) { filter: brightness(1.07); }
+.ck-submit:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.ck-secure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  color: var(--ck-muted);
+  font-size: 0.78rem;
+  margin: 1rem 0 0;
+}
+
+/* ---- Footer ---- */
+.ck-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #e6e6e6;
+}
+
+.ck-footer a {
+  color: var(--ck-blue);
+  font-size: 0.8rem;
+  text-decoration: underline;
+}
+
+/* ---- Order summary ---- */
+.ck-line-list {
+  list-style: none;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.ck-line {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  gap: 0.9rem;
+  align-items: center;
+}
+
+.ck-line-thumb {
+  position: relative;
+  width: 48px;
+  height: 48px;
+}
+
+.ck-line-thumb img {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  background: #fff;
+}
+
+.ck-line-qty {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #4a4a4a;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ck-line-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ck-line-title {
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.ck-line-variant {
+  font-size: 0.78rem;
+  color: var(--ck-muted);
+}
+
+.ck-line-price {
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.ck-summary-rows {
+  border-top: 1px solid #e2e2e2;
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.ck-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.88rem;
+  color: #333;
+}
+
+.ck-summary-row span:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--ck-muted);
+}
+
+.ck-summary-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-top: 1px solid #e2e2e2;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  font-weight: 600;
+}
+
+.ck-summary-total > span:last-child {
+  font-size: 1.35rem;
+}
+
+.ck-total-currency {
+  font-size: 0.72rem;
+  color: var(--ck-muted);
+  font-weight: 500;
+}
+
+.ck-summary-empty {
+  color: var(--ck-muted);
+  font-size: 0.9rem;
+}
+
+/* ---- Confirmation ---- */
+.ck-confirm {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 5rem 1.5rem;
+  text-align: center;
+  color: #133827;
+}
+
+.ck-confirm h1 {
+  font-size: 1.6rem;
+  margin: 1rem 0 0.75rem;
+}
+
+.ck-confirm p {
+  color: #444;
+  line-height: 1.6;
+  margin-bottom: 1.75rem;
+}
+
+.ck-confirm-btn {
+  padding: 0.9rem 2rem;
+  border: none;
+  border-radius: 999px;
+  background: var(--ck-blue);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 860px) {
+  .ck-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* summary appears first on mobile, like Shopify's collapsible order block */
+  .ck-summary {
+    order: -1;
+    border-left: none;
+    border-bottom: 1px solid #e6e6e6;
+  }
+
+  .ck-summary::after { display: none; }
+
+  .ck-summary-inner {
+    position: static;
+    padding: 1.5rem 1.5rem;
+    max-width: none;
+  }
+
+  .ck-form {
+    padding: 1.75rem 1.5rem 2.5rem;
+    max-width: none;
+    margin: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .ck-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}

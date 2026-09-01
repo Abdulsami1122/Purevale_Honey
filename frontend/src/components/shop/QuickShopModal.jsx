@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
-import { X, Heart, Repeat, Minus, Plus } from 'lucide-react'
+import { X, Heart, Minus, Plus } from 'lucide-react'
 import { formatPrice } from '../../data/products'
 import { useShop } from './ShopContext'
 import './QuickShopModal.css'
@@ -56,10 +57,10 @@ const QuickShopModal = ({ product, isOpen, onClose }) => {
   const handleBuyNow = () => {
     addToCart(product, { variant: variants[variantIndex], price, quantity })
     onClose()
-    navigate('/shop')
+    navigate('/checkout')
   }
 
-  return (
+  return createPortal(
     <>
       <div className="quick-shop-backdrop" onClick={onClose}></div>
       <div className="quick-shop-modal" role="dialog" aria-modal="true" aria-label={`Quick shop ${product.title}`}>
@@ -115,10 +116,6 @@ const QuickShopModal = ({ product, isOpen, onClose }) => {
             >
               <Heart size={18} fill={isWishlisted ? 'currentColor' : 'none'} strokeWidth={1.8} />
             </button>
-
-            <button type="button" className="quick-shop-circle" aria-label="Compare product">
-              <Repeat size={18} strokeWidth={1.8} />
-            </button>
           </div>
 
           <button
@@ -139,7 +136,8 @@ const QuickShopModal = ({ product, isOpen, onClose }) => {
           </button>
         </div>
       </div>
-    </>
+    </>,
+    document.body,
   )
 }
 
