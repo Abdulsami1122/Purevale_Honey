@@ -293,6 +293,16 @@
   margin: 1rem 0 0;
 }
 
+.ck-error {
+  background: #fdecec;
+  border: 1px solid #f5c2c2;
+  color: #b42318;
+  padding: 0.7rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  margin: 0 0 0.85rem;
+}
+
 /* ---- Footer ---- */
 .ck-footer {
   display: flex;

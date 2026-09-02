@@ -1,9 +1,33 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { X } from 'lucide-react';
+import { useAdminAuth } from '../../admin/AdminAuthContext';
 import './AuthDrawer.css';
 
 const AuthDrawer = ({ isOpen, onClose }) => {
   const [mode, setMode] = useState('login'); // 'login' or 'register'
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
+  
+  const { login } = useAdminAuth();
+  const navigate = useNavigate();
+
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setBusy(true);
+    try {
+      await login(email.trim(), password);
+      onClose(); // Close the drawer
+      navigate('/admin'); // Redirect to admin panel
+    } catch (err) {
+      setError(err.message || 'Login failed');
+    } finally {
+      setBusy(false);
+    }
+  };
 
   React.useEffect(() => {
     if (isOpen) {
@@ -39,13 +63,26 @@ const AuthDrawer = ({ isOpen, onClose }) => {
 
         <div className="auth-drawer-body">
           {mode === 'login' ? (
-            <form className="auth-form" onSubmit={(e) => e.preventDefault()}>
+            <form className="auth-form" onSubmit={handleLoginSubmit}>
+              {error && <div style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
               <div className="form-group custom-placeholder">
-                <input type="email" placeholder=" " required />
+                <input 
+                  type="email" 
+                  placeholder=" " 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required 
+                />
                 <label>Email <span className="req">*</span></label>
               </div>
               <div className="form-group custom-placeholder">
-                <input type="password" placeholder=" " required />
+                <input 
+                  type="password" 
+                  placeholder=" " 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required 
+                />
                 <label>Password <span className="req">*</span></label>
               </div>
 
@@ -53,7 +90,9 @@ const AuthDrawer = ({ isOpen, onClose }) => {
                 <a href="#forgot" className="auth-link">Forgot your password?</a>
               </div>
 
-              <button type="submit" className="auth-submit-btn">Sign In</button>
+              <button type="submit" className="auth-submit-btn" disabled={busy}>
+                {busy ? 'Signing In...' : 'Sign In'}
+              </button>
 
               <div className="form-links">
                 <a href="#register" className="auth-link" onClick={toggleMode}>

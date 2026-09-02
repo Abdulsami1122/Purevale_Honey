@@ -6,6 +6,7 @@ import {
   shilajitProducts,
   cosmeticsProducts,
 } from '../../data/products'
+import api from '../../lib/api'
 
 const ShopContext = createContext(null)
 
@@ -22,17 +23,7 @@ export const COLLECTION_KEYS = Object.keys(BASE_COLLECTIONS)
 
 const WISHLIST_STORAGE_KEY = 'purevale_wishlist'
 const CART_STORAGE_KEY = 'purevale_cart'
-const CUSTOM_PRODUCTS_STORAGE_KEY = 'purevale_custom_products'
-
-const readStoredCustomProducts = () => {
-  try {
-    const raw = localStorage.getItem(CUSTOM_PRODUCTS_STORAGE_KEY)
-    const items = raw ? JSON.parse(raw) : []
-    return Array.isArray(items) ? items : []
-  } catch {
-    return []
-  }
-}
+const PRODUCTS_CACHE_KEY = 'dh_products_cache'
 
 const readStoredWishlist = () => {
   try {
@@ -54,10 +45,22 @@ const readStoredCart = () => {
   }
 }
 
+// Last successful product fetch — lets the storefront keep working if the API
+// is briefly unreachable.
+const readCachedProducts = () => {
+  try {
+    const raw = localStorage.getItem(PRODUCTS_CACHE_KEY)
+    const items = raw ? JSON.parse(raw) : []
+    return Array.isArray(items) ? items : []
+  } catch {
+    return []
+  }
+}
+
 export const ShopProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState(readStoredWishlist)
   const [cart, setCart] = useState(readStoredCart)
-  const [customProducts, setCustomProducts] = useState(readStoredCustomProducts)
+  const [adminProducts, setAdminProducts] = useState(readCachedProducts)
 
   // Keep the wishlist so it survives a page reload
   useEffect(() => {
@@ -77,14 +80,26 @@ export const ShopProvider = ({ children }) => {
     }
   }, [cart])
 
-  // Persist admin-added products
-  useEffect(() => {
+  // Load admin-managed products from the backend
+  const refreshProducts = useCallback(async () => {
     try {
-      localStorage.setItem(CUSTOM_PRODUCTS_STORAGE_KEY, JSON.stringify(customProducts))
+      const rows = await api.listProducts()
+      setAdminProducts(rows)
+      try {
+        localStorage.setItem(PRODUCTS_CACHE_KEY, JSON.stringify(rows))
+      } catch {
+        /* ignore */
+      }
+      return rows
     } catch {
-      /* ignore */
+      // keep whatever we already have (cache / previous fetch)
+      return null
     }
-  }, [customProducts])
+  }, [])
+
+  useEffect(() => {
+    refreshProducts()
+  }, [refreshProducts])
 
   const toggleWishlist = useCallback((id) => {
     setWishlist((current) => {
@@ -138,51 +153,16 @@ export const ShopProvider = ({ children }) => {
 
   const clearCart = useCallback(() => setCart([]), [])
 
-  // ---- Admin: add / remove products (stored in this browser only) ----
-  const addCustomProduct = useCallback((draft) => {
-    const slug =
-      (draft.title || 'product')
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)/g, '') || 'product'
-
-    const product = {
-      id: `custom-${slug}-${Date.now()}`,
-      title: draft.title?.trim() || 'Untitled Product',
-      collection: COLLECTION_KEYS.includes(draft.collection) ? draft.collection : 'honey',
-      image: draft.image?.trim() || '/honey-jar.jpg',
-      priceMin: Number(draft.priceMin) || 0,
-      ...(draft.priceMax ? { priceMax: Number(draft.priceMax) } : {}),
-      rating: Number(draft.rating) || 0,
-      reviews: Number(draft.reviews) || 0,
-      available: draft.available !== false,
-      featured: 0,
-      variants:
-        draft.variants && draft.variants.trim()
-          ? draft.variants.split(',').map((v) => v.trim()).filter(Boolean)
-          : ['Default'],
-      isCustom: true,
-    }
-
-    setCustomProducts((current) => [product, ...current])
-    return product
-  }, [])
-
-  const removeCustomProduct = useCallback((id) => {
-    setCustomProducts((current) => current.filter((p) => p.id !== id))
-  }, [])
-
   // Base catalogue + admin products, grouped by collection slug
   const collections = useMemo(() => {
     const merged = {}
     for (const key of COLLECTION_KEYS) merged[key] = [...BASE_COLLECTIONS[key]]
-    for (const p of customProducts) {
+    for (const p of adminProducts) {
       const key = COLLECTION_KEYS.includes(p.collection) ? p.collection : 'honey'
       merged[key] = [...merged[key], p]
     }
     return merged
-  }, [customProducts])
+  }, [adminProducts])
 
   const allProducts = useMemo(
     () => COLLECTION_KEYS.flatMap((key) => collections[key]),
@@ -219,9 +199,8 @@ export const ShopProvider = ({ children }) => {
       clearCart,
       collections,
       allProducts,
-      customProducts,
-      addCustomProduct,
-      removeCustomProduct,
+      adminProducts,
+      refreshProducts,
     }),
     [
       wishlist,
@@ -236,9 +215,8 @@ export const ShopProvider = ({ children }) => {
       clearCart,
       collections,
       allProducts,
-      customProducts,
-      addCustomProduct,
-      removeCustomProduct,
+      adminProducts,
+      refreshProducts,
     ],
   )
 

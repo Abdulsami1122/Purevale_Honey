@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { ShoppingBag, HelpCircle, CheckCircle2, Lock } from 'lucide-react'
 import { formatPrice } from '../data/products'
 import { useShop } from '../components/shop/ShopContext'
+import api from '../lib/api'
 import './CheckoutPage.css'
 
 const CheckoutPage = () => {
@@ -11,24 +12,66 @@ const CheckoutPage = () => {
 
   const [payment, setPayment] = useState('cod')
   const [billing, setBilling] = useState('same')
-  const [placed, setPlaced] = useState(false)
+  const [placedOrder, setPlacedOrder] = useState(null)
+  const [error, setError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    setPlaced(true)
-    clearCart()
-    window.scrollTo(0, 0)
+    if (cart.length === 0) return
+    setError('')
+    setSubmitting(true)
+
+    const f = new FormData(e.target)
+    const payload = {
+      customer: {
+        email: f.get('email')?.trim(),
+        firstName: f.get('firstName')?.trim() || '',
+        lastName: f.get('lastName')?.trim() || '',
+        phone: f.get('phone')?.trim() || '',
+      },
+      shipping: {
+        country: f.get('country') || '',
+        address: f.get('address')?.trim() || '',
+        apartment: f.get('apartment')?.trim() || '',
+        city: f.get('city')?.trim() || '',
+        postalCode: f.get('postalCode')?.trim() || '',
+      },
+      paymentMethod: payment,
+      billingSameAsShipping: billing === 'same',
+      shippingCost: 0,
+      items: cart.map((it) => ({
+        productId: it.productId,
+        title: it.title,
+        variant: it.variant,
+        price: it.price,
+        quantity: it.quantity,
+        image: it.image,
+      })),
+    }
+
+    try {
+      const order = await api.createOrder(payload)
+      setPlacedOrder(order)
+      clearCart()
+      window.scrollTo(0, 0)
+    } catch (err) {
+      setError(err.message || 'Could not place the order. Please try again.')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
-  if (placed) {
+  if (placedOrder) {
     return (
       <div className="ck-page">
         <div className="ck-confirm">
           <CheckCircle2 size={54} strokeWidth={1.6} />
           <h1>Thank you for your order!</h1>
           <p>
-            Your order has been placed with <strong>Durrani Harvest</strong>. We&apos;ll send a
-            confirmation and tracking details shortly.
+            Your order <strong>{placedOrder.id}</strong> has been placed with{' '}
+            <strong>Durrani Harvest</strong>. A confirmation will be sent to{' '}
+            <strong>{placedOrder.customer.email}</strong>.
           </p>
           <button type="button" className="ck-confirm-btn" onClick={() => navigate('/')}>
             Continue shopping
@@ -38,7 +81,7 @@ const CheckoutPage = () => {
     )
   }
 
-  const OrderSummary = () => (
+  const orderSummary = (
     <aside className="ck-summary">
       <div className="ck-summary-inner">
         {cart.length === 0 ? (
@@ -109,7 +152,7 @@ const CheckoutPage = () => {
                 <Link to="/shop" className="ck-link">Sign in</Link>
               </div>
               <label className="ck-field">
-                <input type="email" placeholder="Email" required />
+                <input type="email" name="email" placeholder="Email" required />
                 <span className="ck-field-hint"><HelpCircle size={16} strokeWidth={1.8} /></span>
               </label>
               <label className="ck-checkbox">
@@ -122,7 +165,7 @@ const CheckoutPage = () => {
               <h2>Delivery</h2>
               <label className="ck-field ck-select">
                 <span className="ck-select-label">Country/Region</span>
-                <select defaultValue="Pakistan">
+                <select name="country" defaultValue="Pakistan">
                   <option>Pakistan</option>
                   <option>United States</option>
                   <option>United Kingdom</option>
@@ -133,31 +176,31 @@ const CheckoutPage = () => {
 
               <div className="ck-row">
                 <label className="ck-field">
-                  <input type="text" placeholder="First name (optional)" />
+                  <input type="text" name="firstName" placeholder="First name (optional)" />
                 </label>
                 <label className="ck-field">
-                  <input type="text" placeholder="Last name" required />
+                  <input type="text" name="lastName" placeholder="Last name" required />
                 </label>
               </div>
 
               <label className="ck-field">
-                <input type="text" placeholder="Address" required />
+                <input type="text" name="address" placeholder="Address" required />
               </label>
               <label className="ck-field">
-                <input type="text" placeholder="Apartment, suite, etc. (optional)" />
+                <input type="text" name="apartment" placeholder="Apartment, suite, etc. (optional)" />
               </label>
 
               <div className="ck-row">
                 <label className="ck-field">
-                  <input type="text" placeholder="City" required />
+                  <input type="text" name="city" placeholder="City" required />
                 </label>
                 <label className="ck-field">
-                  <input type="text" placeholder="Postal code (optional)" />
+                  <input type="text" name="postalCode" placeholder="Postal code (optional)" />
                 </label>
               </div>
 
               <label className="ck-field">
-                <input type="tel" placeholder="Phone" required />
+                <input type="tel" name="phone" placeholder="Phone" required />
                 <span className="ck-field-hint"><HelpCircle size={16} strokeWidth={1.8} /></span>
               </label>
 
@@ -221,8 +264,14 @@ const CheckoutPage = () => {
               </label>
             </section>
 
-            <button type="submit" className="ck-submit" disabled={cart.length === 0}>
-              Complete order
+            {error && <p className="ck-error">{error}</p>}
+
+            <button
+              type="submit"
+              className="ck-submit"
+              disabled={cart.length === 0 || submitting}
+            >
+              {submitting ? 'Placing order…' : 'Complete order'}
             </button>
 
             <p className="ck-secure">
@@ -239,7 +288,7 @@ const CheckoutPage = () => {
           </form>
 
           {/* RIGHT: order summary */}
-          <OrderSummary />
+          {orderSummary}
         </div>
       </div>
     </div>

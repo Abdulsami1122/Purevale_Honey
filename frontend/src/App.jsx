@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { ShopProvider } from './components/shop/ShopContext'
+import { AdminAuthProvider } from './admin/AdminAuthContext'
+import RequireAdmin from './admin/RequireAdmin'
 import ShopHeader from './components/shop/ShopHeader'
 import Footer from './components/Footer'
 import FlyingBee from './components/FlyingBee'
 
-// Dedicated Pages
+// Storefront pages
 import HomePage from './pages/HomePage'
 import ShopPage from './pages/ShopPage'
 import WishlistPage from './pages/WishlistPage'
@@ -22,8 +24,15 @@ import ReturnPolicyPage from './pages/ReturnPolicyPage'
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage'
 import TermsPage from './pages/TermsPage'
 import CosmeticsPage from './pages/CosmeticsPage'
-import AdminPage from './pages/AdminPage'
 import CheckoutPage from './pages/CheckoutPage'
+
+// Admin pages
+import AdminLogin from './pages/admin/AdminLogin'
+import AdminLayout from './pages/admin/AdminLayout'
+import AdminDashboard from './pages/admin/AdminDashboard'
+import AdminProducts from './pages/admin/AdminProducts'
+import AdminOrders from './pages/admin/AdminOrders'
+import AdminSettings from './pages/admin/AdminSettings'
 
 import './App.css'
 
@@ -40,8 +49,8 @@ function ScrollToTop() {
 
 function Shell() {
   const { pathname } = useLocation()
-  // Checkout uses its own minimal header/footer, like a hosted checkout
-  const bareLayout = pathname === '/checkout'
+  // Checkout and the whole admin area render without the storefront chrome
+  const bareLayout = pathname === '/checkout' || pathname.startsWith('/admin')
 
   return (
     <div className="App">
@@ -65,8 +74,24 @@ function Shell() {
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/cosmetics" element={<CosmeticsPage />} />
-          <Route path="/admin" element={<AdminPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
+
+          {/* Admin */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route
+            path="/admin"
+            element={
+              <RequireAdmin>
+                <AdminLayout />
+              </RequireAdmin>
+            }
+          >
+            <Route index element={<AdminDashboard />} />
+            <Route path="products" element={<AdminProducts />} />
+            <Route path="orders" element={<AdminOrders />} />
+            <Route path="settings" element={<AdminSettings />} />
+          </Route>
+
           {/* Fallback */}
           <Route path="*" element={<HomePage />} />
         </Routes>
@@ -80,8 +105,10 @@ function App() {
   return (
     <BrowserRouter>
       <ShopProvider>
-        <ScrollToTop />
-        <Shell />
+        <AdminAuthProvider>
+          <ScrollToTop />
+          <Shell />
+        </AdminAuthProvider>
       </ShopProvider>
     </BrowserRouter>
   )
