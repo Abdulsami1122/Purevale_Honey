@@ -4,8 +4,8 @@
   "description": "Durrani Harvest store API + admin backend",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js",
+    "start": "npx kill-port 5000 && node server.js",
+    "dev": "npx kill-port 5000 && node --watch server.js",
     "migrate:postgres": "node src/migrate.js"
   },
   "keywords": [],

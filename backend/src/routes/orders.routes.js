@@ -39,8 +39,8 @@ router.post('/', async (req, res) => {
 
     const orderQuery = `
       INSERT INTO orders (
-        id, status, customer_email, "customer_firstName", "customer_lastName", customer_phone,
-        shipping_country, shipping_address, shipping_apartment, shipping_city, shipping_postalCode,
+        id, status, customer_email, customer_firstname, customer_lastname, customer_phone,
+        shipping_country, shipping_address, shipping_apartment, shipping_city, shipping_postalcode,
         "paymentMethod", "billingSameAsShipping", subtotal, "shippingCost", total
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
       RETURNING *
@@ -80,8 +80,8 @@ router.post('/', async (req, res) => {
       status: order.status,
       customer: {
         email: order.customer_email,
-        firstName: order.customer_firstName,
-        lastName: order.customer_lastName,
+        firstName: order.customer_firstname,
+        lastName: order.customer_lastname,
         phone: order.customer_phone
       },
       shipping: {
@@ -89,7 +89,7 @@ router.post('/', async (req, res) => {
         address: order.shipping_address,
         apartment: order.shipping_apartment,
         city: order.shipping_city,
-        postalCode: order.shipping_postalCode
+        postalCode: order.shipping_postalcode
       },
       paymentMethod: order.paymentMethod,
       billingSameAsShipping: order.billingSameAsShipping,
@@ -127,7 +127,7 @@ router.get('/', requireAuth, async (req, res) => {
       conditions.push(`(
         LOWER(id) LIKE $${values.length + 1} OR 
         LOWER(customer_email) LIKE $${values.length + 1} OR 
-        LOWER("customer_firstName" || ' ' || "customer_lastName") LIKE $${values.length + 1}
+        LOWER(customer_firstname || ' ' || customer_lastname) LIKE $${values.length + 1}
       )`)
       values.push(needle)
     }
@@ -148,8 +148,8 @@ router.get('/', requireAuth, async (req, res) => {
       status: order.status,
       customer: {
         email: order.customer_email,
-        firstName: order.customer_firstName,
-        lastName: order.customer_lastName,
+        firstName: order.customer_firstname,
+        lastName: order.customer_lastname,
         phone: order.customer_phone
       },
       shipping: {
@@ -157,7 +157,7 @@ router.get('/', requireAuth, async (req, res) => {
         address: order.shipping_address,
         apartment: order.shipping_apartment,
         city: order.shipping_city,
-        postalCode: order.shipping_postalCode
+        postalCode: order.shipping_postalcode
       },
       paymentMethod: order.paymentMethod,
       billingSameAsShipping: order.billingSameAsShipping,
@@ -190,8 +190,8 @@ router.get('/:id', requireAuth, async (req, res) => {
       status: order.status,
       customer: {
         email: order.customer_email,
-        firstName: order.customer_firstName,
-        lastName: order.customer_lastName,
+        firstName: order.customer_firstname,
+        lastName: order.customer_lastname,
         phone: order.customer_phone
       },
       shipping: {
@@ -199,7 +199,7 @@ router.get('/:id', requireAuth, async (req, res) => {
         address: order.shipping_address,
         apartment: order.shipping_apartment,
         city: order.shipping_city,
-        postalCode: order.shipping_postalCode
+        postalCode: order.shipping_postalcode
       },
       paymentMethod: order.paymentMethod,
       billingSameAsShipping: order.billingSameAsShipping,
@@ -237,8 +237,8 @@ router.patch('/:id', requireAuth, async (req, res) => {
       ...order,
       customer: {
         email: order.customer_email,
-        firstName: order.customer_firstName,
-        lastName: order.customer_lastName,
+        firstName: order.customer_firstname,
+        lastName: order.customer_lastname,
       }
     })
   } catch (err) {
