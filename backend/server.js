@@ -28,6 +28,7 @@ initDb()
 app.get('/api/health', (_req, res) => res.json({ ok: true, service: 'durrani-harvest-api' }))
 
 app.use('/api/auth', authRoutes)
+app.use('/api/customer', require('./src/routes/customer.routes'))
 app.use('/api/products', productRoutes)
 app.use('/api/orders', orderRoutes)
 app.use('/api/stats', statsRoutes)
@@ -48,6 +49,10 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ error: 'Internal server error' })
 })
 
-app.listen(PORT, () => {
+app.listen(PORT, (err) => {
+  if (err) {
+    console.error(`[Server Error] Failed to start server: ${err.message}`)
+    process.exit(1)
+  }
   console.log(`Durrani Harvest API running on http://localhost:${PORT}`)
 })

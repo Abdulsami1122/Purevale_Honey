@@ -64,6 +64,12 @@ export const api = {
       body: { currentPassword, newPassword },
     }),
 
+  // ---- customer auth ----
+  customerRegister: (firstName, lastName, email, password) =>
+    request('/api/customer/register', { method: 'POST', body: { firstName, lastName, email, password } }),
+  customerLogin: (email, password) =>
+    request('/api/customer/login', { method: 'POST', body: { email, password } }),
+
   // ---- products ----
   listProducts: () => request('/api/products'),
   createProduct: (payload) =>

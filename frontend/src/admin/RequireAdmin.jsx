@@ -10,7 +10,7 @@ const RequireAdmin = ({ children }) => {
     return <div className="admin-boot">Checking session…</div>
   }
   if (status !== 'authed') {
-    return <Navigate to="/admin/login" replace state={{ from: location.pathname }} />
+    return <Navigate to="/" replace state={{ from: location.pathname }} />
   }
   return children
 }

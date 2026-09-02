@@ -27,7 +27,6 @@ import CosmeticsPage from './pages/CosmeticsPage'
 import CheckoutPage from './pages/CheckoutPage'
 
 // Admin pages
-import AdminLogin from './pages/admin/AdminLogin'
 import AdminLayout from './pages/admin/AdminLayout'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminProducts from './pages/admin/AdminProducts'
@@ -77,7 +76,6 @@ function Shell() {
           <Route path="/checkout" element={<CheckoutPage />} />
 
           {/* Admin */}
-          <Route path="/admin/login" element={<AdminLogin />} />
           <Route
             path="/admin"
             element={

@@ -27,7 +27,7 @@ const AdminLayout = () => {
 
   const handleLogout = () => {
     logout()
-    navigate('/admin/login', { replace: true })
+    navigate('/', { replace: true })
   }
 
   return (
@@ -61,7 +61,7 @@ const AdminLayout = () => {
         </nav>
 
         <div className="admin-sidebar-foot">
-          <Link to="/" className="admin-nav-link" target="_blank" rel="noreferrer">
+          <Link to="/" className="admin-nav-link">
             <ExternalLink size={18} strokeWidth={1.8} />
             <span>View store</span>
           </Link>
