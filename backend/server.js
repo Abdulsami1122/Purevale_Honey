@@ -9,6 +9,7 @@ const authRoutes = require('./src/routes/auth.routes')
 const productRoutes = require('./src/routes/products.routes')
 const orderRoutes = require('./src/routes/orders.routes')
 const statsRoutes = require('./src/routes/stats.routes')
+const submissionsRoutes = require('./src/routes/submissions.routes')
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -32,14 +33,7 @@ app.use('/api/customer', require('./src/routes/customer.routes'))
 app.use('/api/products', productRoutes)
 app.use('/api/orders', orderRoutes)
 app.use('/api/stats', statsRoutes)
-
-// Legacy: wholesale export inquiry
-app.post('/api/inquiry', (req, res) => {
-  const { companyName, email, destination, product, message } = req.body || {}
-  console.log('--- New Export Inquiry ---')
-  console.log({ companyName, email, destination, product, message })
-  res.status(200).json({ success: true, message: 'Inquiry received successfully.' })
-})
+app.use('/api/submissions', submissionsRoutes)
 
 // 404 + error handlers
 app.use((_req, res) => res.status(404).json({ error: 'Not found' }))

@@ -125,8 +125,13 @@ const AdminProducts = () => {
     setSaving(true)
     setError('')
     try {
-      if (editingId) await api.updateProduct(editingId, form)
-      else await api.createProduct(form)
+      const payload = { ...form }
+      if (payload.image.startsWith('data:image/')) {
+        const uploaded = await api.uploadProductImage(payload.image)
+        payload.image = uploaded.url
+      }
+      if (editingId) await api.updateProduct(editingId, payload)
+      else await api.createProduct(payload)
       setModalOpen(false)
       load()
       refreshProducts?.()
@@ -286,7 +291,7 @@ const AdminProducts = () => {
               <div className="admin-col-full admin-modal-actions">
                 <button type="button" className="admin-btn" onClick={() => setModalOpen(false)}>Cancel</button>
                 <button type="submit" className="admin-btn admin-btn-primary" disabled={saving}>
-                  {saving ? 'Saving…' : editingId ? 'Save changes' : 'Create product'}
+                  {saving ? (form.image.startsWith('data:image/') ? 'Uploading…' : 'Saving…') : editingId ? 'Save changes' : 'Create product'}
                 </button>
               </div>
             </form>

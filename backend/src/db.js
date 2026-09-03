@@ -95,6 +95,29 @@ async function initDb() {
       )
     `)
 
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS export_inquiries (
+        id VARCHAR(80) PRIMARY KEY,
+        "companyName" VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        destination VARCHAR(100) NOT NULL,
+        product VARCHAR(100) NOT NULL,
+        message TEXT,
+        "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      )
+    `)
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS contact_submissions (
+        id VARCHAR(80) PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        phone VARCHAR(80) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        message TEXT NOT NULL,
+        "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      )
+    `)
+
     await client.query('COMMIT')
     console.log('[DB] Database schema initialized successfully')
   } catch (err) {

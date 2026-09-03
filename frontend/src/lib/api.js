@@ -78,6 +78,8 @@ export const api = {
     request(`/api/products/${id}`, { method: 'PUT', auth: true, body: payload }),
   deleteProduct: (id) =>
     request(`/api/products/${id}`, { method: 'DELETE', auth: true }),
+  uploadProductImage: (image) =>
+    request('/api/products/upload-image', { method: 'POST', auth: true, body: { image } }),
 
   // ---- orders ----
   createOrder: (payload) => request('/api/orders', { method: 'POST', body: payload }),
@@ -93,6 +95,12 @@ export const api = {
 
   // ---- dashboard ----
   stats: () => request('/api/stats', { auth: true }),
+
+  // ---- submissions ----
+  submitExportInquiry: (payload) => request('/api/submissions/export', { method: 'POST', body: payload }),
+  submitContactSubmission: (payload) => request('/api/submissions/contact', { method: 'POST', body: payload }),
+  listExportInquiries: () => request('/api/submissions/export', { auth: true }),
+  listContactSubmissions: () => request('/api/submissions/contact', { auth: true }),
 }
 
 export default api

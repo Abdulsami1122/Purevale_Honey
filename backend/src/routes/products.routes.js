@@ -1,6 +1,7 @@
 const express = require('express')
 const { pool, genId } = require('../db')
 const { requireAuth } = require('../auth')
+const cloudinary = require('../cloudinary')
 
 const router = express.Router()
 
@@ -55,6 +56,25 @@ router.get('/', async (_req, res) => {
   }
 })
 
+// POST /api/products/upload-image (admin) — stores product images in Cloudinary
+router.post('/upload-image', requireAuth, async (req, res) => {
+  const image = typeof req.body?.image === 'string' ? req.body.image : ''
+  if (!image.startsWith('data:image/')) {
+    return res.status(400).json({ error: 'A valid image is required' })
+  }
+
+  try {
+    const result = await cloudinary.uploader.upload(image, {
+      folder: 'practice-images',
+      resource_type: 'image',
+    })
+    res.json({ url: result.secure_url, publicId: result.public_id })
+  } catch (err) {
+    console.error('[cloudinary] Image upload failed', err)
+    res.status(502).json({ error: 'Could not upload image to Cloudinary' })
+  }
+})
+
 // POST /api/products  (admin)
 router.post('/', requireAuth, async (req, res) => {
   if (!req.body || !String(req.body.title || '').trim()) {
@@ -68,7 +88,7 @@ router.post('/', requireAuth, async (req, res) => {
       INSERT INTO products (
         id, title, collection, image, "priceMin", "priceMax", "discountPercent", variants, 
         rating, reviews, available, featured, "isCustom"
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
       RETURNING *
     `
     const values = [

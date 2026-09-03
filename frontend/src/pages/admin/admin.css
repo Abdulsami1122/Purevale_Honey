@@ -180,6 +180,30 @@
 .admin-btn-primary:hover { filter: brightness(1.12); background: var(--a-primary); }
 .admin-btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
 
+.admin-tabs {
+  display: flex;
+  gap: 0.35rem;
+  margin: 1rem 0;
+  border-bottom: 1px solid var(--a-border);
+}
+
+.admin-tabs button {
+  padding: 0.7rem 0.9rem;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--a-muted);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.admin-tabs button.is-active {
+  color: var(--a-primary);
+  border-bottom-color: var(--a-accent);
+}
+
+.admin-submission-message { min-width: 220px; white-space: pre-wrap; }
+
 .admin-page-head .admin-btn-primary,
 .admin-modal-actions .admin-btn-primary {
   width: auto;

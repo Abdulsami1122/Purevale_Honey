@@ -1,19 +1,28 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { MapPin, Phone, Mail, Send, Clock } from 'lucide-react'
+import api from '../lib/api'
 import './Pages.css'
 
 const ContactPage = () => {
   const [form, setForm] = useState({ name: '', phone: '', email: '', message: '' })
   const [sent, setSent] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [error, setError] = useState('')
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    setSent(true)
-    setTimeout(() => {
-      setSent(false)
+    setSending(true)
+    setError('')
+    try {
+      await api.submitContactSubmission(form)
+      setSent(true)
       setForm({ name: '', phone: '', email: '', message: '' })
-    }, 4000)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setSending(false)
+    }
   }
 
   return (
@@ -115,9 +124,11 @@ const ContactPage = () => {
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
               ></textarea>
 
-              <button type="submit" className="contact-btn-submit">
+              <button type="submit" className="contact-btn-submit" disabled={sending}>
                 <Send size={18} /> Send Message
               </button>
+
+              {error && <div className="contact-error-box">{error}</div>}
 
               {sent && (
                 <div className="contact-success-box">

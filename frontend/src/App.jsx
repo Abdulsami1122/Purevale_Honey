@@ -32,6 +32,7 @@ import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminProducts from './pages/admin/AdminProducts'
 import AdminOrders from './pages/admin/AdminOrders'
 import AdminSettings from './pages/admin/AdminSettings'
+import AdminSubmissions from './pages/admin/AdminSubmissions'
 
 import './App.css'
 
@@ -88,6 +89,7 @@ function Shell() {
             <Route path="products" element={<AdminProducts />} />
             <Route path="orders" element={<AdminOrders />} />
             <Route path="settings" element={<AdminSettings />} />
+            <Route path="submissions" element={<AdminSubmissions />} />
           </Route>
 
           {/* Fallback */}

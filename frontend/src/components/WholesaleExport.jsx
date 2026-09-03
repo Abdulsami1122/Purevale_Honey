@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { PackageOpen, Ship, ShieldCheck, Handshake } from 'lucide-react';
+import api from '../lib/api';
 import './WholesaleExport.css';
 
 const WholesaleExport = () => {
@@ -21,19 +22,9 @@ const WholesaleExport = () => {
     setStatus('submitting');
     
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      const response = await fetch(`${apiUrl}/api/inquiry`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-      
-      if (response.ok) {
-        setStatus('success');
-        setFormData({ companyName: '', email: '', destination: '', product: '', message: '' });
-      } else {
-        setStatus('error');
-      }
+      await api.submitExportInquiry(formData);
+      setStatus('success');
+      setFormData({ companyName: '', email: '', destination: '', product: '', message: '' });
     } catch (error) {
       console.error('Error submitting inquiry:', error);
       setStatus('error');
