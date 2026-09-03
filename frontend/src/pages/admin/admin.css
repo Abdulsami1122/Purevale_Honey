@@ -112,6 +112,32 @@
   box-shadow: 0 0 0 3px rgba(28, 81, 56, 0.12);
 }
 
+.admin-image-picker input[type="file"] { display: none; }
+
+.admin-file-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: fit-content;
+  padding: 0.65rem 0.8rem;
+  border: 1px dashed var(--a-primary-2);
+  border-radius: 8px;
+  color: var(--a-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-file-btn:hover { background: #f1f7f3; }
+
+.admin-image-preview {
+  width: 76px;
+  height: 76px;
+  object-fit: cover;
+  border: 1px solid var(--a-border);
+  border-radius: 8px;
+}
+
 .admin-checkbox {
   display: flex;
   align-items: center;

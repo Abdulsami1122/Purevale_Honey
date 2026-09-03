@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Pencil, Trash2, Plus, X } from 'lucide-react'
+import { Pencil, Trash2, Plus, X, ImagePlus } from 'lucide-react'
 import api from '../../lib/api'
 import { formatPrice } from '../../data/products'
 import { useShop } from '../../components/shop/ShopContext'
@@ -35,6 +35,26 @@ const toForm = (p) => ({
   rating: p.rating ?? '',
   reviews: p.reviews ?? '',
   available: p.available !== false,
+})
+
+const readProductImage = (file) => new Promise((resolve, reject) => {
+  const reader = new FileReader()
+  reader.onload = () => {
+    const image = new Image()
+    image.onload = () => {
+      const maxSize = 1200
+      const scale = Math.min(1, maxSize / Math.max(image.width, image.height))
+      const canvas = document.createElement('canvas')
+      canvas.width = Math.max(1, Math.round(image.width * scale))
+      canvas.height = Math.max(1, Math.round(image.height * scale))
+      canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height)
+      resolve(canvas.toDataURL('image/jpeg', 0.82))
+    }
+    image.onerror = () => reject(new Error('That image could not be read'))
+    image.src = reader.result
+  }
+  reader.onerror = () => reject(new Error('That image could not be read'))
+  reader.readAsDataURL(file)
 })
 
 const AdminProducts = () => {
@@ -75,6 +95,23 @@ const AdminProducts = () => {
   const update = (key) => (e) => {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
     setForm((f) => ({ ...f, [key]: value }))
+  }
+
+  const chooseImage = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (!file.type.startsWith('image/')) {
+      setError('Please choose an image file')
+      return
+    }
+    try {
+      const image = await readProductImage(file)
+      setForm((f) => ({ ...f, image }))
+      setError('')
+    } catch (err) {
+      setError(err.message)
+    }
+    e.target.value = ''
   }
 
   const submit = async (e) => {
@@ -202,9 +239,11 @@ const AdminProducts = () => {
                 </select>
               </label>
 
-              <label className="admin-input-group">
-                <span>Image URL</span>
-                <input type="text" value={form.image} onChange={update('image')} placeholder="/honey-jar.jpg or https://…" />
+              <label className="admin-input-group admin-image-picker">
+                <span>Product image</span>
+                <span className="admin-file-btn"><ImagePlus size={16} /> Choose from gallery</span>
+                <input type="file" accept="image/*" onChange={chooseImage} />
+                {form.image && <img className="admin-image-preview" src={form.image} alt="Selected product" />}
               </label>
 
               <label className="admin-input-group">

@@ -22,10 +22,15 @@ function normalize(body, existing = {}) {
   const priceMaxRaw = body.priceMax ?? existing.priceMax
   const priceMax = priceMaxRaw === '' || priceMaxRaw == null ? null : Number(priceMaxRaw)
 
+  const image = (body.image ?? existing.image ?? '').toString().trim()
+  if (image.startsWith('data:image/') && image.length > 4 * 1024 * 1024) {
+    throw new Error('Product image is too large')
+  }
+
   return {
     title: title || 'Untitled Product',
     collection,
-    image: (body.image ?? existing.image ?? '').toString().trim() || '/honey-jar.jpg',
+    image: image || '/honey-jar.jpg',
     priceMin,
     priceMax,
     variants: variants.length ? variants : ['Default'],

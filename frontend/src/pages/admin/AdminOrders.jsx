@@ -30,6 +30,7 @@ const AdminOrders = () => {
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
   const [updating, setUpdating] = useState(false)
+  const [loadingOrder, setLoadingOrder] = useState(false)
 
   const load = () => {
     setLoading(true)
@@ -60,11 +61,26 @@ const AdminOrders = () => {
     try {
       const updated = await api.updateOrderStatus(order.id, status)
       setOrders((rows) => rows.map((o) => (o.id === updated.id ? updated : o)))
-      setSelected((s) => (s && s.id === updated.id ? updated : s))
+      if (selected?.id === updated.id) {
+        const details = await api.getOrder(updated.id)
+        setSelected(details)
+      }
     } catch (e) {
       setError(e.message)
     } finally {
       setUpdating(false)
+    }
+  }
+
+  const openOrder = async (order) => {
+    setSelected(order)
+    setLoadingOrder(true)
+    try {
+      setSelected(await api.getOrder(order.id))
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setLoadingOrder(false)
     }
   }
 
@@ -111,7 +127,7 @@ const AdminOrders = () => {
             </thead>
             <tbody>
               {filtered.map((o) => (
-                <tr key={o.id} className="admin-row-click" onClick={() => setSelected(o)}>
+                <tr key={o.id} className="admin-row-click" onClick={() => openOrder(o)}>
                   <td>{o.id}</td>
                   <td>{fmtDate(o.createdAt)}</td>
                   <td>
@@ -119,7 +135,7 @@ const AdminOrders = () => {
                       ? `${o.customer.firstName} ${o.customer.lastName}`.trim()
                       : o.customer.email}
                   </td>
-                  <td>{o.items.reduce((n, it) => n + it.quantity, 0)}</td>
+                  <td>{o.items?.reduce((n, it) => n + it.quantity, 0) ?? '—'}</td>
                   <td>
                     <span className={`admin-badge admin-badge-${o.status}`}>
                       {STATUS_LABEL[o.status]}
@@ -143,6 +159,7 @@ const AdminOrders = () => {
               </button>
             </div>
 
+            {loadingOrder ? <p className="admin-empty">Loading order details…</p> : <>
             <div className="admin-order-meta">
               <div>
                 <p className="admin-order-label">Placed</p>
@@ -225,6 +242,7 @@ const AdminOrders = () => {
                 </tr>
               </tfoot>
             </table>
+            </>}
           </div>
         </div>
       )}
