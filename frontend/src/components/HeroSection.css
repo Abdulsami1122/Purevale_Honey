@@ -87,6 +87,10 @@
 }
 
 @media (max-width: 600px) {
+  .hero-content {
+    transform: translateY(-2.25rem);
+  }
+
   .hero-buttons {
     flex-direction: column;
     gap: 0.75rem;

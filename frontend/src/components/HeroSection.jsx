@@ -23,7 +23,7 @@ const HeroSection = () => {
           Premium natural products from Pakistan, delivered to the world.
         </p>
         <div className="hero-buttons">
-          <a href="#products" className="btn btn-gold">Shop Now</a>
+          <a href="/shop" className="btn btn-gold">Shop Now</a>
           <a href="#wholesale" className="btn btn-outline-white">Wholesale Enquiry</a>
         </div>
       </div>
