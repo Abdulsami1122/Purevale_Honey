@@ -43,6 +43,7 @@ async function initDb() {
         image TEXT,
         "priceMin" NUMERIC(10, 2) NOT NULL,
         "priceMax" NUMERIC(10, 2),
+        "discountPercent" NUMERIC(5, 2) DEFAULT 0,
         variants JSONB DEFAULT '["Default"]'::jsonb,
         rating NUMERIC(2, 1) DEFAULT 0,
         reviews INTEGER DEFAULT 0,
@@ -53,6 +54,8 @@ async function initDb() {
         "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       )
     `)
+
+    await client.query('ALTER TABLE products ADD COLUMN IF NOT EXISTS "discountPercent" NUMERIC(5, 2) DEFAULT 0')
 
     // Orders table
     await client.query(`

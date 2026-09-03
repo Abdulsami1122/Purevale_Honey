@@ -21,6 +21,7 @@ function normalize(body, existing = {}) {
   const priceMin = Number(body.priceMin ?? existing.priceMin) || 0
   const priceMaxRaw = body.priceMax ?? existing.priceMax
   const priceMax = priceMaxRaw === '' || priceMaxRaw == null ? null : Number(priceMaxRaw)
+  const discountPercent = Math.min(100, Math.max(0, Number(body.discountPercent ?? existing.discountPercent) || 0))
 
   const image = (body.image ?? existing.image ?? '').toString().trim()
   if (image.startsWith('data:image/') && image.length > 4 * 1024 * 1024) {
@@ -33,6 +34,7 @@ function normalize(body, existing = {}) {
     image: image || '/honey-jar.jpg',
     priceMin,
     priceMax,
+    discountPercent,
     variants: variants.length ? variants : ['Default'],
     rating: Number(body.rating ?? existing.rating) || 0,
     reviews: Number(body.reviews ?? existing.reviews) || 0,
@@ -64,14 +66,14 @@ router.post('/', requireAuth, async (req, res) => {
     
     const query = `
       INSERT INTO products (
-        id, title, collection, image, "priceMin", "priceMax", variants, 
+        id, title, collection, image, "priceMin", "priceMax", "discountPercent", variants, 
         rating, reviews, available, featured, "isCustom"
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       RETURNING *
     `
     const values = [
       product.id, product.title, product.collection, product.image,
-      product.priceMin, product.priceMax, JSON.stringify(product.variants),
+      product.priceMin, product.priceMax, product.discountPercent, JSON.stringify(product.variants),
       product.rating, product.reviews, product.available, product.featured, product.isCustom
     ]
     
@@ -94,13 +96,13 @@ router.put('/:id', requireAuth, async (req, res) => {
     const query = `
       UPDATE products SET
         title = $1, collection = $2, image = $3, "priceMin" = $4, "priceMax" = $5,
-        variants = $6, rating = $7, reviews = $8, available = $9, featured = $10,
-        "isCustom" = $11, "updatedAt" = CURRENT_TIMESTAMP
-      WHERE id = $12
+        "discountPercent" = $6, variants = $7, rating = $8, reviews = $9, available = $10, featured = $11,
+        "isCustom" = $12, "updatedAt" = CURRENT_TIMESTAMP
+      WHERE id = $13
       RETURNING *
     `
     const values = [
-      updated.title, updated.collection, updated.image, updated.priceMin, updated.priceMax,
+      updated.title, updated.collection, updated.image, updated.priceMin, updated.priceMax, updated.discountPercent,
       JSON.stringify(updated.variants), updated.rating, updated.reviews, updated.available,
       updated.featured, updated.isCustom, req.params.id
     ]

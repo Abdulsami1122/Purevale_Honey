@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import { X, Heart, Minus, Plus } from 'lucide-react'
-import { formatPrice } from '../../data/products'
+import { discountPercent, formatPrice, originalPrice, salePrice } from '../../data/products'
 import { useShop } from './ShopContext'
 import './QuickShopModal.css'
 
@@ -10,9 +10,9 @@ import './QuickShopModal.css'
 // available variants: first variant -> priceMin, last -> priceMax.
 const variantPrice = (product, index) => {
   const { priceMin, priceMax, variants = [] } = product
-  if (!priceMax || variants.length < 2) return priceMin
+  if (!priceMax || variants.length < 2) return salePrice(product, priceMin)
   const step = (priceMax - priceMin) / (variants.length - 1)
-  return Math.round(priceMin + step * index)
+  return salePrice(product, Math.round(originalPrice(product, priceMin) + step * index))
 }
 
 const QuickShopModal = ({ product, isOpen, onClose }) => {
@@ -48,6 +48,10 @@ const QuickShopModal = ({ product, isOpen, onClose }) => {
   const variants = product.variants && product.variants.length ? product.variants : ['Default']
   const isWishlisted = wishlist.has(product.id)
   const price = variantPrice(product, variantIndex)
+  const original = product.priceMax && variants.length > 1
+    ? Math.round(Number(product.priceMin) + ((Number(product.priceMax) - Number(product.priceMin)) / (variants.length - 1)) * variantIndex)
+    : originalPrice(product)
+  const discount = discountPercent(product)
 
   const handleAddToCart = () => {
     addToCart(product, { variant: variants[variantIndex], price, quantity })
@@ -70,7 +74,11 @@ const QuickShopModal = ({ product, isOpen, onClose }) => {
 
         <div className="quick-shop-body">
           <h2 className="quick-shop-title">{product.title}</h2>
-          <p className="quick-shop-price">{formatPrice(price)}</p>
+          <p className="quick-shop-price">
+            {discount > 0 && <span className="quick-shop-price-compare">{formatPrice(original)}</span>}
+            <span>{formatPrice(price)}</span>
+            {discount > 0 && <small>{discount}% off</small>}
+          </p>
 
           <p className="quick-shop-size-label">
             SIZE: <strong>{variants[variantIndex]}</strong>

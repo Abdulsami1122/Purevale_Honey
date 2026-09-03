@@ -19,6 +19,7 @@ const EMPTY = {
   image: '',
   priceMin: '',
   priceMax: '',
+  discountPercent: '0',
   variants: '',
   rating: '',
   reviews: '',
@@ -31,6 +32,7 @@ const toForm = (p) => ({
   image: p.image || '',
   priceMin: p.priceMin ?? '',
   priceMax: p.priceMax ?? '',
+  discountPercent: p.discountPercent ?? '0',
   variants: Array.isArray(p.variants) ? p.variants.join(', ') : '',
   rating: p.rating ?? '',
   reviews: p.reviews ?? '',
@@ -254,6 +256,11 @@ const AdminProducts = () => {
               <label className="admin-input-group">
                 <span>Price max (Rs.)</span>
                 <input type="number" min="0" value={form.priceMax} onChange={update('priceMax')} placeholder="optional (range)" />
+              </label>
+
+              <label className="admin-input-group">
+                <span>Discount (%)</span>
+                <input type="number" min="0" max="100" step="1" value={form.discountPercent} onChange={update('discountPercent')} placeholder="20" />
               </label>
 
               <label className="admin-input-group admin-col-full">

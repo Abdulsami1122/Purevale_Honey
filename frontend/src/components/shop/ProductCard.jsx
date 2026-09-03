@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Heart, Star, StarHalf, ShoppingCart } from 'lucide-react'
-import { discountPercent, formatPrice, priceLabel } from '../../data/products'
+import { discountPercent, originalPriceLabel, priceLabel } from '../../data/products'
 import { useShop } from './ShopContext'
 import QuickShopModal from './QuickShopModal'
 import './ProductCard.css'
@@ -67,10 +67,10 @@ const ProductCard = ({ product }) => {
       <div className="product-card-body">
         <h3 className="product-title">{product.title}</h3>
         <p className="product-price">
-          {product.compareAt && (
-            <span className="product-price-compare">{formatPrice(product.compareAt)}</span>
+          {discount > 0 && (
+            <span className="product-price-compare">{originalPriceLabel(product)}</span>
           )}
-          <span className={product.compareAt ? 'product-price-sale' : ''}>{priceLabel(product)}</span>
+          <span className={discount > 0 ? 'product-price-sale' : ''}>{priceLabel(product)}</span>
         </p>
 
         {product.reviews > 0 && (

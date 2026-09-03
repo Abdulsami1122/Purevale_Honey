@@ -424,14 +424,31 @@ export const cosmeticsProducts = [
 ]
 
 export const formatPrice = (value) =>
-  `Rs.${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+  `Rs.${Number(value || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+
+export const originalPrice = (product, price = product.priceMin) => {
+  if (product.compareAt && price === product.priceMin) return Number(product.compareAt)
+  return Number(price || 0)
+}
+
+export const salePrice = (product, price = product.priceMin) => {
+  const discount = Number(product.discountPercent || 0)
+  if (discount > 0) return Math.round(originalPrice(product, price) * (1 - discount / 100))
+  if (product.compareAt && price === product.priceMin) return Number(product.priceMin)
+  return Number(price || 0)
+}
 
 export const priceLabel = (product) =>
   product.priceMax
-    ? `${formatPrice(product.priceMin)} – ${formatPrice(product.priceMax)}`
-    : formatPrice(product.priceMin)
+    ? `${formatPrice(salePrice(product, product.priceMin))} – ${formatPrice(salePrice(product, product.priceMax))}`
+    : formatPrice(salePrice(product))
+
+export const originalPriceLabel = (product) =>
+  product.priceMax
+    ? `${formatPrice(originalPrice(product, product.priceMin))} – ${formatPrice(originalPrice(product, product.priceMax))}`
+    : formatPrice(originalPrice(product))
 
 export const discountPercent = (product) =>
-  product.compareAt
+  Number(product.discountPercent || 0) || (product.compareAt
     ? Math.round(((product.compareAt - product.priceMin) / product.compareAt) * 100)
-    : 0
+    : 0)

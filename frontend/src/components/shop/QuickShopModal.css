@@ -69,6 +69,20 @@
   margin: 0 0 1.5rem;
 }
 
+.quick-shop-price-compare {
+  margin-right: 0.6rem;
+  color: #9a9a9a;
+  font-size: 1rem;
+  text-decoration: line-through;
+}
+
+.quick-shop-price small {
+  margin-left: 0.6rem;
+  color: #b06418;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
 .quick-shop-size-label {
   font-size: 0.95rem;
   letter-spacing: 0.5px;
