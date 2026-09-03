@@ -1,7 +1,12 @@
 import React from 'react';
+import { useShop } from './shop/ShopContext';
+import { DEFAULT_SITE_SETTINGS } from '../lib/siteSettings';
 import './AboutOrigin.css';
 
 const AboutOrigin = () => {
+  const { siteSettings } = useShop();
+  const storyImage = siteSettings?.story?.image || DEFAULT_SITE_SETTINGS.story.image;
+
   return (
     <section className="section bg-cream" id="story">
       <div className="container">
@@ -10,7 +15,7 @@ const AboutOrigin = () => {
             <div className="origin-image-box">
               <img
                 className="origin-image"
-                src="/hero-bg.jpg"
+                src={storyImage}
                 alt="Traditional honey and jaggery harvesting in Pakistan"
               />
               <div className="experience-badge">

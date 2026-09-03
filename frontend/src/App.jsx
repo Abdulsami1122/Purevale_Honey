@@ -33,6 +33,7 @@ import AdminProducts from './pages/admin/AdminProducts'
 import AdminOrders from './pages/admin/AdminOrders'
 import AdminSettings from './pages/admin/AdminSettings'
 import AdminSubmissions from './pages/admin/AdminSubmissions'
+import AdminContent from './pages/admin/AdminContent'
 
 import './App.css'
 
@@ -88,6 +89,7 @@ function Shell() {
             <Route index element={<AdminDashboard />} />
             <Route path="products" element={<AdminProducts />} />
             <Route path="orders" element={<AdminOrders />} />
+            <Route path="content" element={<AdminContent />} />
             <Route path="settings" element={<AdminSettings />} />
             <Route path="submissions" element={<AdminSubmissions />} />
           </Route>

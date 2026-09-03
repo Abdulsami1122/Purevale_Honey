@@ -101,6 +101,11 @@ export const api = {
   submitContactSubmission: (payload) => request('/api/submissions/contact', { method: 'POST', body: payload }),
   listExportInquiries: () => request('/api/submissions/export', { auth: true }),
   listContactSubmissions: () => request('/api/submissions/contact', { auth: true }),
+
+  // ---- site content ----
+  getSiteSettings: () => request('/api/settings'),
+  updateSiteSettings: (payload) => request('/api/settings', { method: 'PUT', auth: true, body: payload }),
+  uploadSiteAsset: (file) => request('/api/settings/upload', { method: 'POST', auth: true, body: { file } }),
 }
 
 export default api

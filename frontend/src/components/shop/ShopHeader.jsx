@@ -15,36 +15,32 @@ import {
   ShoppingCart,
   Heart,
   User,
+  Tag,
   X,
 } from 'lucide-react'
 import { FacebookIcon, InstagramIcon, TiktokIcon, YoutubeIcon } from './BrandIcons'
 import { useShop } from './ShopContext'
+import { DEFAULT_SITE_SETTINGS, telHref } from '../../lib/siteSettings'
 import AuthDrawer from './AuthDrawer'
 import SearchDrawer from './SearchDrawer'
 import CartDrawer from './CartDrawer'
 import './ShopHeader.css'
 
-// 1. Home -> 2. Shop -> 3. Pure Honney [premium] -> 4. Dates [Fresh] -> 5. Jaggery (Gur) [Natural] -> 6. Shilajit [Gold] -> 7. Cosmetics [new]
-const NAV_ITEMS = [
+// Home and Shop are always present; the category links after them are
+// admin-managed (Site Content → Navigation categories).
+const STATIC_NAV_ITEMS = [
   { label: 'Home', icon: Home, href: '/' },
   { label: 'Shop', icon: ShoppingBag, href: '/shop' },
-  { label: 'Pure Honey', icon: Gem, badge: 'premium', badgeTone: 'cyan', href: '/honey' },
-  { label: 'Dates', icon: Gift, badge: 'Fresh', badgeTone: 'green', href: '/dates' },
-  { label: 'Jaggery (Gur)', icon: Cookie, badge: 'Natural', badgeTone: 'amber', href: '/jaggery' },
-  { label: 'Shilajit', icon: Mountain, badge: 'Gold', badgeTone: 'cyan', href: '/shilajit' },
-  { label: 'Cosmetics', icon: Sparkles, badge: 'new', badgeTone: 'amber', href: '/cosmetics' },
 ]
 
-const SOCIALS = [
-  { label: 'Facebook', href: 'https://facebook.com', Icon: FacebookIcon },
-  { label: 'Instagram', href: 'https://instagram.com', Icon: InstagramIcon },
-  { label: 'YouTube', href: 'https://youtube.com', Icon: YoutubeIcon },
-  { label: 'TikTok', href: 'https://tiktok.com', Icon: TiktokIcon },
-]
+// Icon names the admin can pick for a nav category -> lucide component
+const NAV_ICONS = { Gem, Gift, Cookie, Mountain, Sparkles, ShoppingBag, Home, Tag }
 
-const ANNOUNCEMENT_MESSAGES = [
-  'Welcome to Durrani Harvest',
-  'Limited Time Offer Upto 25% Off '
+const SOCIAL_ICONS = [
+  { key: 'facebook', label: 'Facebook', Icon: FacebookIcon },
+  { key: 'instagram', label: 'Instagram', Icon: InstagramIcon },
+  { key: 'youtube', label: 'YouTube', Icon: YoutubeIcon },
+  { key: 'tiktok', label: 'TikTok', Icon: TiktokIcon },
 ]
 
 const ShopHeader = () => {
@@ -55,17 +51,51 @@ const ShopHeader = () => {
   const [searchOpen, setSearchOpen] = useState(false)
   const [cartOpen, setCartOpen] = useState(false)
   const [scrollState, setScrollState] = useState('top') // 'top' | 'down' | 'up'
-  const { wishlist, cartCount } = useShop()
+  const { wishlist, cartCount, siteSettings } = useShop()
   const location = useLocation()
 
-  const navLinks = NAV_ITEMS.map(({ label, icon: Icon, badge, badgeTone, hideIcon, href }) => (
+  const announcements =
+    Array.isArray(siteSettings?.announcements) && siteSettings.announcements.filter(Boolean).length
+      ? siteSettings.announcements.filter(Boolean)
+      : DEFAULT_SITE_SETTINGS.announcements
+
+  const contact = { ...DEFAULT_SITE_SETTINGS.contact, ...(siteSettings?.contact || {}) }
+  const socials = { ...DEFAULT_SITE_SETTINGS.socials, ...(siteSettings?.socials || {}) }
+
+  // Built-in categories are fixed (but can be switched off by href); admin-added
+  // ones are appended after them and can carry enabled:false.
+  const disabledCats = new Set(
+    Array.isArray(siteSettings?.disabledCategories) ? siteSettings.disabledCategories : [],
+  )
+  const extraCategories = (
+    Array.isArray(siteSettings?.extraNavCategories) ? siteSettings.extraNavCategories : []
+  ).filter((c) => c && c.enabled !== false)
+  const categoryItems = [
+    ...DEFAULT_SITE_SETTINGS.navCategories.filter((c) => !disabledCats.has(c.href)),
+    ...extraCategories,
+  ]
+
+  const navItems = [
+    ...STATIC_NAV_ITEMS,
+    ...categoryItems
+      .filter((c) => c && c.label && c.href)
+      .map((c) => ({
+        label: c.label,
+        href: c.href,
+        icon: NAV_ICONS[c.icon] || Tag,
+        badge: c.badge,
+        badgeTone: c.badgeTone || 'green',
+      })),
+  ]
+
+  const navLinks = navItems.map(({ label, icon: Icon, badge, badgeTone, hideIcon, href }) => (
     <Link
       key={label}
       className={`shop-nav-link ${location.pathname === href ? 'is-active' : ''}`}
       to={href}
       onClick={() => setMobileNavOpen(false)}
     >
-      {!hideIcon && <Icon size={20} strokeWidth={1.7} className="shop-nav-icon" />}
+      {!hideIcon && Icon && <Icon size={20} strokeWidth={1.7} className="shop-nav-icon" />}
       <span className="shop-nav-text">{label}</span>
       {badge && <span className={`nav-badge nav-badge-${badgeTone}`}>{badge}</span>}
     </Link>
@@ -84,12 +114,12 @@ const ShopHeader = () => {
 
   // Rotate announcement message every 4 seconds
   useEffect(() => {
-    if (!announcementOpen) return
+    if (!announcementOpen || announcements.length < 2) return
     const timer = setInterval(() => {
-      setCurrentMsgIndex((prev) => (prev + 1) % ANNOUNCEMENT_MESSAGES.length)
+      setCurrentMsgIndex((prev) => (prev + 1) % announcements.length)
     }, 4000)
     return () => clearInterval(timer)
-  }, [announcementOpen])
+  }, [announcementOpen, announcements.length])
 
   // Smart Scroll Handler:
   // - Scrolling Down: Hides header completely
@@ -132,7 +162,7 @@ const ShopHeader = () => {
           <div className="announcement-bar">
             <div className="announcement-slider-wrap">
               <p key={currentMsgIndex} className="announcement-text animate-slide-right">
-                {ANNOUNCEMENT_MESSAGES[currentMsgIndex]}
+                {announcements[currentMsgIndex % announcements.length]}
               </p>
             </div>
             <button
@@ -149,9 +179,9 @@ const ShopHeader = () => {
 
         {/* 2. Middle Info Bar */}
         <div className="info-bar">
-          <a className="info-phone" href="tel:+923339300672">
+          <a className="info-phone" href={telHref(contact.phone)}>
             <Phone size={16} strokeWidth={1.8} />
-            <span>+92 3339300672</span>
+            <span>{contact.phone}</span>
           </a>
 
           <p className="info-message">
@@ -159,8 +189,8 @@ const ShopHeader = () => {
           </p>
 
           <div className="info-socials">
-            {SOCIALS.map(({ label, href, Icon }) => (
-              <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label}>
+            {SOCIAL_ICONS.filter(({ key }) => socials[key]).map(({ key, label, Icon }) => (
+              <a key={key} href={socials[key]} target="_blank" rel="noreferrer" aria-label={label}>
                 <Icon size={18} />
               </a>
             ))}
@@ -278,13 +308,13 @@ const ShopHeader = () => {
             <div className="mobile-nav-links">{navLinks}</div>
 
             <div className="mobile-nav-contact">
-              <a className="mobile-nav-contact-item" href="tel:+923339300672">
+              <a className="mobile-nav-contact-item" href={telHref(contact.phone)}>
                 <Phone size={18} strokeWidth={1.7} />
-                <span>+92 3339300672</span>
+                <span>{contact.phone}</span>
               </a>
-              <a className="mobile-nav-contact-item" href="mailto:support@durraniharvest.com">
+              <a className="mobile-nav-contact-item" href={`mailto:${contact.email}`}>
                 <Mail size={18} strokeWidth={1.7} />
-                <span>support@durraniharvest.com</span>
+                <span>{contact.email}</span>
               </a>
             </div>
           </div>

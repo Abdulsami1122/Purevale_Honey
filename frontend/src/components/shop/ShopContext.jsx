@@ -7,6 +7,7 @@ import {
   cosmeticsProducts,
 } from '../../data/products'
 import api from '../../lib/api'
+import { DEFAULT_SITE_SETTINGS } from '../../lib/siteSettings'
 
 const ShopContext = createContext(null)
 
@@ -24,6 +25,17 @@ export const COLLECTION_KEYS = Object.keys(BASE_COLLECTIONS)
 const WISHLIST_STORAGE_KEY = 'purevale_wishlist'
 const CART_STORAGE_KEY = 'purevale_cart'
 const PRODUCTS_CACHE_KEY = 'dh_products_cache'
+const SITE_SETTINGS_CACHE_KEY = 'dh_site_settings_cache'
+
+const readCachedSiteSettings = () => {
+  try {
+    const raw = localStorage.getItem(SITE_SETTINGS_CACHE_KEY)
+    const parsed = raw ? JSON.parse(raw) : null
+    return parsed && typeof parsed === 'object' ? { ...DEFAULT_SITE_SETTINGS, ...parsed } : DEFAULT_SITE_SETTINGS
+  } catch {
+    return DEFAULT_SITE_SETTINGS
+  }
+}
 
 const readStoredWishlist = () => {
   try {
@@ -61,6 +73,7 @@ export const ShopProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState(readStoredWishlist)
   const [cart, setCart] = useState(readStoredCart)
   const [adminProducts, setAdminProducts] = useState(readCachedProducts)
+  const [siteSettings, setSiteSettings] = useState(readCachedSiteSettings)
 
   // Keep the wishlist so it survives a page reload
   useEffect(() => {
@@ -100,6 +113,28 @@ export const ShopProvider = ({ children }) => {
   useEffect(() => {
     refreshProducts()
   }, [refreshProducts])
+
+  // Load admin-managed site content (announcement bar, hero, nav categories,
+  // story image, contact + socials)
+  const refreshSiteSettings = useCallback(async () => {
+    try {
+      const data = await api.getSiteSettings()
+      const next = { ...DEFAULT_SITE_SETTINGS, ...data }
+      setSiteSettings(next)
+      try {
+        localStorage.setItem(SITE_SETTINGS_CACHE_KEY, JSON.stringify(next))
+      } catch {
+        /* ignore */
+      }
+      return next
+    } catch {
+      return null
+    }
+  }, [])
+
+  useEffect(() => {
+    refreshSiteSettings()
+  }, [refreshSiteSettings])
 
   const toggleWishlist = useCallback((id) => {
     setWishlist((current) => {
@@ -201,6 +236,8 @@ export const ShopProvider = ({ children }) => {
       allProducts,
       adminProducts,
       refreshProducts,
+      siteSettings,
+      refreshSiteSettings,
     }),
     [
       wishlist,
@@ -217,6 +254,8 @@ export const ShopProvider = ({ children }) => {
       allProducts,
       adminProducts,
       refreshProducts,
+      siteSettings,
+      refreshSiteSettings,
     ],
   )
 

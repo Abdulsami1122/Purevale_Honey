@@ -2,9 +2,13 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { MapPin, Phone, Mail, Send, Clock } from 'lucide-react'
 import api from '../lib/api'
+import { useShop } from '../components/shop/ShopContext'
+import { DEFAULT_SITE_SETTINGS, telHref, waHref } from '../lib/siteSettings'
 import './Pages.css'
 
 const ContactPage = () => {
+  const { siteSettings } = useShop()
+  const contact = { ...DEFAULT_SITE_SETTINGS.contact, ...(siteSettings?.contact || {}) }
   const [form, setForm] = useState({ name: '', phone: '', email: '', message: '' })
   const [sent, setSent] = useState(false)
   const [sending, setSending] = useState(false)
@@ -47,7 +51,7 @@ const ContactPage = () => {
               </div>
               <div className="contact-card-text">
                 <h4>Main Office & Dispatch</h4>
-                <p>Hayatabad, Peshawar, Khyber Pakhtunkhwa, Pakistan</p>
+                <p>{contact.address}</p>
               </div>
             </div>
 
@@ -57,8 +61,8 @@ const ContactPage = () => {
               </div>
               <div className="contact-card-text">
                 <h4>Customer Support & Orders</h4>
-                <p><a href="tel:+923339300672">+92 333 9300672</a></p>
-                <p><a href="https://wa.me/923339300672" target="_blank" rel="noreferrer" style={{color: '#25D366', fontWeight: '600'}}>WhatsApp: 0333 9300672</a></p>
+                <p><a href={telHref(contact.phone)}>{contact.phone}</a></p>
+                <p><a href={waHref(contact.whatsapp)} target="_blank" rel="noreferrer" style={{color: '#25D366', fontWeight: '600'}}>WhatsApp: {contact.whatsapp}</a></p>
               </div>
             </div>
 
@@ -68,7 +72,7 @@ const ContactPage = () => {
               </div>
               <div className="contact-card-text">
                 <h4>Email Inquiries</h4>
-                <p><a href="mailto:support@durraniharvest.com">support@durraniharvest.com</a></p>
+                <p><a href={`mailto:${contact.email}`}>{contact.email}</a></p>
               </div>
             </div>
 

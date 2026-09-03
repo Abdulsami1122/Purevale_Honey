@@ -118,6 +118,30 @@ async function initDb() {
       )
     `)
 
+    // Reconcile legacy contact_submissions schema (older deploys used a SERIAL
+    // integer id, no phone column, and a subject column).
+    await client.query('ALTER TABLE contact_submissions ADD COLUMN IF NOT EXISTS phone VARCHAR(80)')
+    await client.query(`UPDATE contact_submissions SET phone = '' WHERE phone IS NULL`)
+    await client.query(`ALTER TABLE contact_submissions ALTER COLUMN phone SET DEFAULT ''`)
+    await client.query('ALTER TABLE contact_submissions ALTER COLUMN phone SET NOT NULL')
+    await client.query('ALTER TABLE contact_submissions ALTER COLUMN id DROP DEFAULT')
+    await client.query('ALTER TABLE contact_submissions ALTER COLUMN id TYPE VARCHAR(80) USING id::text')
+    await client.query('DROP SEQUENCE IF EXISTS contact_submissions_id_seq')
+    await client.query('ALTER TABLE contact_submissions DROP COLUMN IF EXISTS subject')
+
+    // Editable site content (announcement bar, hero video, nav categories,
+    // story image, contact details, social links) — a single JSON document.
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS site_settings (
+        id VARCHAR(20) PRIMARY KEY,
+        data JSONB NOT NULL DEFAULT '{}'::jsonb,
+        "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      )
+    `)
+    await client.query(
+      `INSERT INTO site_settings (id, data) VALUES ('site', '{}'::jsonb) ON CONFLICT (id) DO NOTHING`
+    )
+
     await client.query('COMMIT')
     console.log('[DB] Database schema initialized successfully')
   } catch (err) {

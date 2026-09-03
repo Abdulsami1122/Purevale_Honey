@@ -10,6 +10,7 @@ import {
   X,
   ExternalLink,
   Inbox,
+  Megaphone,
 } from 'lucide-react'
 import { useAdminAuth } from '../../admin/AdminAuthContext'
 import './admin.css'
@@ -18,6 +19,7 @@ const NAV = [
   { to: '/admin', label: 'Dashboard', icon: LayoutDashboard, end: true },
   { to: '/admin/products', label: 'Products', icon: Package },
   { to: '/admin/orders', label: 'Orders', icon: ShoppingCart },
+  { to: '/admin/content', label: 'Site Content', icon: Megaphone },
   { to: '/admin/settings', label: 'Settings', icon: Settings },
   { to: '/admin/submissions', label: 'Submissions', icon: Inbox },
 ]

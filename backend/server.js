@@ -10,11 +10,15 @@ const productRoutes = require('./src/routes/products.routes')
 const orderRoutes = require('./src/routes/orders.routes')
 const statsRoutes = require('./src/routes/stats.routes')
 const submissionsRoutes = require('./src/routes/submissions.routes')
+const settingsRoutes = require('./src/routes/settings.routes')
 
 const app = express()
 const PORT = process.env.PORT || 5000
 
 app.use(cors())
+// Site-content editing can carry a banner video upload, so this route gets a
+// roomier body limit than the rest of the API.
+app.use('/api/settings', express.json({ limit: '80mb' }), settingsRoutes)
 app.use(express.json({ limit: '5mb' }))
 
 // Initialize DB and ensure seed admin

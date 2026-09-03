@@ -2,9 +2,14 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Mail, Phone } from 'lucide-react';
 import { FacebookIcon, InstagramIcon, YoutubeIcon, TiktokIcon } from './shop/BrandIcons';
+import { useShop } from './shop/ShopContext';
+import { DEFAULT_SITE_SETTINGS, telHref, waHref } from '../lib/siteSettings';
 import './Footer.css';
 
 const Footer = () => {
+  const { siteSettings } = useShop();
+  const contact = { ...DEFAULT_SITE_SETTINGS.contact, ...(siteSettings?.contact || {}) };
+  const socials = { ...DEFAULT_SITE_SETTINGS.socials, ...(siteSettings?.socials || {}) };
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
@@ -43,28 +48,28 @@ const Footer = () => {
                     <MapPin size={18} strokeWidth={1.8} />
                   </span>
                   <span className="ih-contact-text">
-                    Hayatabad, Peshawar, Pakistan
+                    {contact.address}
                   </span>
                 </Link>
 
-                <a href="mailto:support@durraniharvest.com" className="ih-contact-item ih-contact-link">
+                <a href={`mailto:${contact.email}`} className="ih-contact-item ih-contact-link">
                   <span className="ih-contact-icon">
                     <Mail size={18} strokeWidth={1.8} />
                   </span>
-                  <span className="ih-contact-text">support@durraniharvest.com</span>
+                  <span className="ih-contact-text">{contact.email}</span>
                 </a>
 
-                <a href="tel:+923339300672" className="ih-contact-item ih-contact-link">
+                <a href={telHref(contact.phone)} className="ih-contact-item ih-contact-link">
                   <span className="ih-contact-icon">
                     <Phone size={18} strokeWidth={1.8} />
                   </span>
-                  <span className="ih-contact-text">+92 333 9300672</span>
+                  <span className="ih-contact-text">{contact.phone}</span>
                 </a>
 
-                <a 
-                  href="https://wa.me/923339300672" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
+                <a
+                  href={waHref(contact.whatsapp)}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="ih-contact-item ih-contact-link"
                 >
                   <span className="ih-contact-icon">
@@ -72,7 +77,7 @@ const Footer = () => {
                       <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
                     </svg>
                   </span>
-                  <span className="ih-contact-text">0333 9300672 (WhatsApp)</span>
+                  <span className="ih-contact-text">{contact.whatsapp} (WhatsApp)</span>
                 </a>
               </div>
             </div>
@@ -146,21 +151,29 @@ const Footer = () => {
 
               {/* Social Media Icons with aligned unified SVGs */}
               <div className="ih-social-row">
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="ih-social-icon" aria-label="Facebook">
-                  <FacebookIcon size={18} />
-                </a>
+                {socials.facebook && (
+                  <a href={socials.facebook} target="_blank" rel="noopener noreferrer" className="ih-social-icon" aria-label="Facebook">
+                    <FacebookIcon size={18} />
+                  </a>
+                )}
 
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="ih-social-icon" aria-label="Instagram">
-                  <InstagramIcon size={18} />
-                </a>
+                {socials.instagram && (
+                  <a href={socials.instagram} target="_blank" rel="noopener noreferrer" className="ih-social-icon" aria-label="Instagram">
+                    <InstagramIcon size={18} />
+                  </a>
+                )}
 
-                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="ih-social-icon" aria-label="YouTube">
-                  <YoutubeIcon size={18} />
-                </a>
+                {socials.youtube && (
+                  <a href={socials.youtube} target="_blank" rel="noopener noreferrer" className="ih-social-icon" aria-label="YouTube">
+                    <YoutubeIcon size={18} />
+                  </a>
+                )}
 
-                <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" className="ih-social-icon" aria-label="TikTok">
-                  <TiktokIcon size={18} />
-                </a>
+                {socials.tiktok && (
+                  <a href={socials.tiktok} target="_blank" rel="noopener noreferrer" className="ih-social-icon" aria-label="TikTok">
+                    <TiktokIcon size={18} />
+                  </a>
+                )}
               </div>
             </div>
 
@@ -178,12 +191,12 @@ const Footer = () => {
       </footer>
 
       {/* Floating WhatsApp Action Button (Bottom Left) */}
-      <a 
-        href="https://wa.me/923339300672" 
-        target="_blank" 
-        rel="noopener noreferrer" 
+      <a
+        href={waHref(contact.whatsapp)}
+        target="_blank"
+        rel="noopener noreferrer"
         className="ih-floating-whatsapp"
-        title="Chat on WhatsApp (0333 9300672)"
+        title={`Chat on WhatsApp (${contact.whatsapp})`}
         aria-label="Chat on WhatsApp"
       >
         <span className="ih-wa-ping"></span>
