@@ -31,14 +31,15 @@ const fmtDate = (iso) =>
   })
 
 const MyOrdersPage = () => {
-  const { status, isAuthed } = useAdminAuth()
+  const { status, isAuthed, user } = useAdminAuth()
+  const isAdmin = user?.role === 'admin'
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
   useEffect(() => {
     if (status === 'loading') return
-    if (!isAuthed) {
+    if (!isAuthed || isAdmin) {
       setLoading(false)
       return
     }
@@ -47,7 +48,7 @@ const MyOrdersPage = () => {
       .then((d) => setOrders(d.items || []))
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false))
-  }, [status, isAuthed])
+  }, [status, isAuthed, isAdmin])
 
   return (
     <div className="page-container">
@@ -65,6 +66,11 @@ const MyOrdersPage = () => {
         ) : !isAuthed ? (
           <p className="mo-empty">
             Please sign in to view your orders. Use the account icon in the header.
+          </p>
+        ) : isAdmin ? (
+          <p className="mo-empty">
+            You're signed in as an admin. Customer orders are managed in the{' '}
+            <Link to="/admin/orders">admin panel</Link>.
           </p>
         ) : error ? (
           <p className="mo-empty">{error}</p>

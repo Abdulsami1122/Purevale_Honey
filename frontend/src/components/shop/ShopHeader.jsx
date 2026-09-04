@@ -263,14 +263,15 @@ const ShopHeader = () => {
                     <span className="account-menu-name">{user?.name || 'Account'}</span>
                     <span className="account-menu-email">{user?.email}</span>
                   </div>
-                  {user?.role === 'admin' && (
+                  {user?.role === 'admin' ? (
                     <Link to="/admin" className="account-menu-item" role="menuitem">
                       <Package size={16} strokeWidth={1.8} /> Admin dashboard
                     </Link>
+                  ) : (
+                    <Link to="/orders" className="account-menu-item" role="menuitem">
+                      <Package size={16} strokeWidth={1.8} /> My orders
+                    </Link>
                   )}
-                  <Link to="/orders" className="account-menu-item" role="menuitem">
-                    <Package size={16} strokeWidth={1.8} /> My orders
-                  </Link>
                   <button type="button" className="account-menu-item account-menu-logout" onClick={handleLogout} role="menuitem">
                     <LogOut size={16} strokeWidth={1.8} /> Log out
                   </button>
@@ -339,8 +340,10 @@ const ShopHeader = () => {
         </button>
         {isAuthed ? (
           <Link
-            to="/orders"
-            className={`bottom-nav-item is-authed ${location.pathname === '/orders' ? 'is-active' : ''}`}
+            to={user?.role === 'admin' ? '/admin' : '/orders'}
+            className={`bottom-nav-item is-authed ${
+              location.pathname === (user?.role === 'admin' ? '/admin' : '/orders') ? 'is-active' : ''
+            }`}
           >
             <User size={22} strokeWidth={1.7} />
             <span>{firstName}</span>
@@ -375,14 +378,15 @@ const ShopHeader = () => {
             {isAuthed && (
               <div className="mobile-nav-account">
                 <p className="mobile-nav-account-name">{user?.name}</p>
-                <Link to="/orders" className="mobile-nav-contact-item" onClick={() => setMobileNavOpen(false)}>
-                  <Package size={18} strokeWidth={1.7} />
-                  <span>My orders</span>
-                </Link>
-                {user?.role === 'admin' && (
+                {user?.role === 'admin' ? (
                   <Link to="/admin" className="mobile-nav-contact-item" onClick={() => setMobileNavOpen(false)}>
                     <Package size={18} strokeWidth={1.7} />
                     <span>Admin dashboard</span>
+                  </Link>
+                ) : (
+                  <Link to="/orders" className="mobile-nav-contact-item" onClick={() => setMobileNavOpen(false)}>
+                    <Package size={18} strokeWidth={1.7} />
+                    <span>My orders</span>
                   </Link>
                 )}
                 <button
