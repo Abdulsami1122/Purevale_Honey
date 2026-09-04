@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ShoppingCart, Package, Wallet, Clock } from 'lucide-react'
+import { ShoppingCart, Package, Wallet, Clock, Users, AlertTriangle } from 'lucide-react'
 import api from '../../lib/api'
 import { formatPrice } from '../../data/products'
 import './admin.css'
 
 const STATUS_LABEL = {
   pending: 'Pending',
-  confirmed: 'Confirmed',
+  paid: 'Paid',
   shipped: 'Shipped',
   delivered: 'Delivered',
   cancelled: 'Cancelled',
@@ -18,19 +18,21 @@ const AdminDashboard = () => {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    api.stats().then(setStats).catch((e) => setError(e.message))
+    api
+      .adminStats()
+      .then((d) => setStats(d.stats))
+      .catch((e) => setError(e.message))
   }, [])
 
   if (error) return <div className="admin-alert">{error}</div>
   if (!stats) return <div className="admin-boot">Loading dashboard…</div>
 
-  const maxRevenue = Math.max(1, ...stats.revenueByDay.map((d) => d.revenue))
-
   const cards = [
-    { label: 'Total revenue', value: formatPrice(stats.totalRevenue), icon: Wallet },
-    { label: 'Orders', value: stats.totalOrders, icon: ShoppingCart },
+    { label: 'Revenue (paid+)', value: formatPrice(stats.revenue), icon: Wallet },
+    { label: 'Orders', value: stats.orders, icon: ShoppingCart },
     { label: 'Pending orders', value: stats.pendingOrders, icon: Clock },
-    { label: 'Products', value: stats.productCount, icon: Package },
+    { label: 'Products', value: stats.products, icon: Package },
+    { label: 'Customers', value: stats.users, icon: Users },
   ]
 
   return (
@@ -49,22 +51,6 @@ const AdminDashboard = () => {
             </div>
           </div>
         ))}
-      </div>
-
-      <div className="admin-panel">
-        <h2 className="admin-h2">Revenue — last 7 days</h2>
-        <div className="admin-chart">
-          {stats.revenueByDay.map((d) => (
-            <div className="admin-chart-col" key={d.date}>
-              <div
-                className="admin-chart-bar"
-                style={{ height: `${(d.revenue / maxRevenue) * 100}%` }}
-                title={`${d.date}: ${formatPrice(d.revenue)}`}
-              />
-              <span className="admin-chart-label">{d.date.slice(5)}</span>
-            </div>
-          ))}
-        </div>
       </div>
 
       <div className="admin-panel">
@@ -87,14 +73,48 @@ const AdminDashboard = () => {
             <tbody>
               {stats.recentOrders.map((o) => (
                 <tr key={o.id}>
-                  <td><Link to="/admin/orders" className="admin-link">{o.id}</Link></td>
-                  <td>{o.customer.email}</td>
+                  <td><Link to="/admin/orders" className="admin-link">{o.id.slice(0, 8)}</Link></td>
+                  <td>{o.user?.email || o.shippingName || '—'}</td>
                   <td>
                     <span className={`admin-badge admin-badge-${o.status}`}>
                       {STATUS_LABEL[o.status] || o.status}
                     </span>
                   </td>
                   <td className="admin-ta-right">{formatPrice(o.total)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+
+      <div className="admin-panel">
+        <div className="admin-panel-head">
+          <h2 className="admin-h2">
+            <AlertTriangle size={16} strokeWidth={1.9} style={{ verticalAlign: '-2px', marginRight: 6 }} />
+            Low stock
+          </h2>
+          <Link to="/admin/products" className="admin-link">Manage products</Link>
+        </div>
+        {stats.lowStock.length === 0 ? (
+          <p className="admin-empty">Nothing running low.</p>
+        ) : (
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th className="admin-ta-right">Stock left</th>
+              </tr>
+            </thead>
+            <tbody>
+              {stats.lowStock.map((p) => (
+                <tr key={p.id}>
+                  <td>{p.name}</td>
+                  <td className="admin-ta-right">
+                    <span className={`admin-badge admin-badge-${p.stock === 0 ? 'cancelled' : 'pending'}`}>
+                      {p.stock}
+                    </span>
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -22,7 +22,8 @@ const WholesaleExport = () => {
     setStatus('submitting');
     
     try {
-      await api.submitExportInquiry(formData);
+      const { companyName, ...rest } = formData;
+      await api.submitExportInquiry({ ...rest, company: companyName });
       setStatus('success');
       setFormData({ companyName: '', email: '', destination: '', product: '', message: '' });
     } catch (error) {

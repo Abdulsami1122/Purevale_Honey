@@ -1,30 +1,25 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import api, { getToken, setToken } from '../lib/api'
+import api from '../lib/api'
 
+// Cookie-based session shared by customers and admins. The name is kept for
+// backwards compatibility with existing imports.
 const AdminAuthContext = createContext(null)
 
 export const AdminAuthProvider = ({ children }) => {
-  const [admin, setAdmin] = useState(null)
+  const [user, setUser] = useState(null)
   const [status, setStatus] = useState('loading') // 'loading' | 'authed' | 'guest'
 
-  // On boot, validate any stored token
   useEffect(() => {
     let cancelled = false
-    const token = getToken()
-    if (!token) {
-      setStatus('guest')
-      return
-    }
     api
       .me()
       .then((res) => {
         if (cancelled) return
-        setAdmin(res.admin)
+        setUser(res.user)
         setStatus('authed')
       })
       .catch(() => {
         if (cancelled) return
-        setToken(null)
         setStatus('guest')
       })
     return () => {
@@ -34,21 +29,40 @@ export const AdminAuthProvider = ({ children }) => {
 
   const login = useCallback(async (email, password) => {
     const res = await api.login(email, password)
-    setToken(res.token)
-    setAdmin(res.admin)
+    setUser(res.user)
     setStatus('authed')
-    return res.admin
+    return res.user
   }, [])
 
-  const logout = useCallback(() => {
-    setToken(null)
-    setAdmin(null)
+  // Registration creates the account but does not start a session — the caller
+  // should send the user to the login form afterwards.
+  const register = useCallback(async (payload) => {
+    const res = await api.register(payload)
+    return res.user
+  }, [])
+
+  const logout = useCallback(async () => {
+    try {
+      await api.logout()
+    } catch {
+      /* ignore network errors on logout */
+    }
+    setUser(null)
     setStatus('guest')
   }, [])
 
   const value = useMemo(
-    () => ({ admin, status, isAuthed: status === 'authed', login, logout }),
-    [admin, status, login, logout],
+    () => ({
+      user,
+      admin: user, // alias kept for existing call sites
+      status,
+      isAuthed: status === 'authed',
+      isAdmin: status === 'authed' && user?.role === 'admin',
+      login,
+      register,
+      logout,
+    }),
+    [user, status, login, register, logout],
   )
 
   return <AdminAuthContext.Provider value={value}>{children}</AdminAuthContext.Provider>

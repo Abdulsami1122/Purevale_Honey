@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import React, { useState, useEffect, useRef } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
   Home,
   ShoppingBag,
@@ -16,10 +16,13 @@ import {
   Heart,
   User,
   Tag,
+  Package,
+  LogOut,
   X,
 } from 'lucide-react'
 import { FacebookIcon, InstagramIcon, TiktokIcon, YoutubeIcon } from './BrandIcons'
 import { useShop } from './ShopContext'
+import { useAdminAuth } from '../../admin/AdminAuthContext'
 import { DEFAULT_SITE_SETTINGS, telHref } from '../../lib/siteSettings'
 import AuthDrawer from './AuthDrawer'
 import SearchDrawer from './SearchDrawer'
@@ -52,7 +55,35 @@ const ShopHeader = () => {
   const [cartOpen, setCartOpen] = useState(false)
   const [scrollState, setScrollState] = useState('top') // 'top' | 'down' | 'up'
   const { wishlist, cartCount, siteSettings } = useShop()
+  const { isAuthed, user, logout } = useAdminAuth()
+  const [accountMenuOpen, setAccountMenuOpen] = useState(false)
+  const accountRef = useRef(null)
   const location = useLocation()
+  const navigate = useNavigate()
+
+  // Close the account dropdown on outside click or route change
+  useEffect(() => setAccountMenuOpen(false), [location.pathname])
+  useEffect(() => {
+    if (!accountMenuOpen) return
+    const onClick = (e) => {
+      if (accountRef.current && !accountRef.current.contains(e.target)) setAccountMenuOpen(false)
+    }
+    document.addEventListener('mousedown', onClick)
+    return () => document.removeEventListener('mousedown', onClick)
+  }, [accountMenuOpen])
+
+  const handleLogout = async () => {
+    setAccountMenuOpen(false)
+    await logout()
+    navigate('/')
+  }
+
+  const handleAccountClick = () => {
+    if (isAuthed) setAccountMenuOpen((v) => !v)
+    else setAuthOpen(true)
+  }
+
+  const firstName = (user?.name || '').trim().split(/\s+/)[0] || 'Account'
 
   const announcements =
     Array.isArray(siteSettings?.announcements) && siteSettings.announcements.filter(Boolean).length
@@ -200,7 +231,7 @@ const ShopHeader = () => {
         {/* 3. Main Navigation Bar */}
         <div className="nav-bar">
           <Link className="brand" to="/">
-            <img className="brand-seal" src="/logo.jpeg" alt="Durrani Harvest" />
+            <img className="brand-seal" src="/logo.png" alt="Durrani Harvest" />
             <span className="brand-word">
               <span className="brand-word-main">DURRANI</span>
               <span className="brand-word-sub">H A R V E S T</span>
@@ -215,9 +246,37 @@ const ShopHeader = () => {
             <button type="button" aria-label="Search" className="nav-action-btn" onClick={() => setSearchOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', padding: 0 }}>
               <Search size={22} strokeWidth={1.6} />
             </button>
-            <button type="button" aria-label="Account" className="nav-action-btn" onClick={() => setAuthOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', padding: 0 }}>
-              <User size={22} strokeWidth={1.6} />
-            </button>
+            <div className="account-wrap" ref={accountRef}>
+              <button
+                type="button"
+                aria-label="Account"
+                className={`nav-action-btn account-btn ${isAuthed ? 'is-authed' : ''}`}
+                onClick={handleAccountClick}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+              >
+                <User size={22} strokeWidth={1.6} />
+              </button>
+
+              {isAuthed && accountMenuOpen && (
+                <div className="account-menu" role="menu">
+                  <div className="account-menu-head">
+                    <span className="account-menu-name">{user?.name || 'Account'}</span>
+                    <span className="account-menu-email">{user?.email}</span>
+                  </div>
+                  {user?.role === 'admin' && (
+                    <Link to="/admin" className="account-menu-item" role="menuitem">
+                      <Package size={16} strokeWidth={1.8} /> Admin dashboard
+                    </Link>
+                  )}
+                  <Link to="/orders" className="account-menu-item" role="menuitem">
+                    <Package size={16} strokeWidth={1.8} /> My orders
+                  </Link>
+                  <button type="button" className="account-menu-item account-menu-logout" onClick={handleLogout} role="menuitem">
+                    <LogOut size={16} strokeWidth={1.8} /> Log out
+                  </button>
+                </div>
+              )}
+            </div>
             <Link to="/wishlist" aria-label="Wishlist" className="nav-action-counted nav-action-wishlist">
               <Heart size={22} strokeWidth={1.6} />
               <span className="nav-count">{wishlist.size}</span>
@@ -278,14 +337,20 @@ const ShopHeader = () => {
           </span>
           <span>Cart</span>
         </button>
-        <button
-          type="button"
-          className="bottom-nav-item"
-          onClick={() => setAuthOpen(true)}
-        >
-          <User size={22} strokeWidth={1.7} />
-          <span>Account</span>
-        </button>
+        {isAuthed ? (
+          <Link
+            to="/orders"
+            className={`bottom-nav-item is-authed ${location.pathname === '/orders' ? 'is-active' : ''}`}
+          >
+            <User size={22} strokeWidth={1.7} />
+            <span>{firstName}</span>
+          </Link>
+        ) : (
+          <button type="button" className="bottom-nav-item" onClick={() => setAuthOpen(true)}>
+            <User size={22} strokeWidth={1.7} />
+            <span>Account</span>
+          </button>
+        )}
       </nav>
 
       {/* Mobile Menu Drawer (rendered outside the header, closes on outside click) */}
@@ -306,6 +371,30 @@ const ShopHeader = () => {
             </div>
 
             <div className="mobile-nav-links">{navLinks}</div>
+
+            {isAuthed && (
+              <div className="mobile-nav-account">
+                <p className="mobile-nav-account-name">{user?.name}</p>
+                <Link to="/orders" className="mobile-nav-contact-item" onClick={() => setMobileNavOpen(false)}>
+                  <Package size={18} strokeWidth={1.7} />
+                  <span>My orders</span>
+                </Link>
+                {user?.role === 'admin' && (
+                  <Link to="/admin" className="mobile-nav-contact-item" onClick={() => setMobileNavOpen(false)}>
+                    <Package size={18} strokeWidth={1.7} />
+                    <span>Admin dashboard</span>
+                  </Link>
+                )}
+                <button
+                  type="button"
+                  className="mobile-nav-contact-item"
+                  onClick={() => { setMobileNavOpen(false); handleLogout() }}
+                >
+                  <LogOut size={18} strokeWidth={1.7} />
+                  <span>Log out</span>
+                </button>
+              </div>
+            )}
 
             <div className="mobile-nav-contact">
               <a className="mobile-nav-contact-item" href={telHref(contact.phone)}>

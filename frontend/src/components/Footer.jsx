@@ -34,7 +34,7 @@ const Footer = () => {
             <div className="ih-footer-col ih-brand-col">
               <div className="ih-logo-wrapper">
                 <Link to="/" className="pv-footer-brand">
-                  <img src="/logo.jpeg" alt="Durrani Harvest" className="pv-footer-logo-img" />
+                  <img src="/logo.png" alt="Durrani Harvest" className="pv-footer-logo-img" />
                   <div className="pv-brand-meta">
                     <span className="pv-brand-name">DURRANI HARVEST</span>
                     <span className="pv-brand-sub">100% PURE & NATURAL</span>

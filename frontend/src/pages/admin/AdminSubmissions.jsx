@@ -22,8 +22,8 @@ const AdminSubmissions = () => {
         api.listExportInquiries(),
         api.listContactSubmissions(),
       ])
-      setExportRows(exports)
-      setContactRows(contacts)
+      setExportRows(exports || [])
+      setContactRows(contacts || [])
     } catch (err) {
       setError(err.message)
     } finally {
@@ -63,7 +63,7 @@ const AdminSubmissions = () => {
             <tbody>{rows.map((row) => (
               <tr key={row.id}>
                 <td>{formatDate(row.createdAt)}</td>
-                <td>{row.companyName}</td>
+                <td>{row.company || row.name}</td>
                 <td><a href={`mailto:${row.email}`}>{row.email}</a></td>
                 <td>{row.destination}</td>
                 <td>{row.product}</td>
@@ -78,7 +78,7 @@ const AdminSubmissions = () => {
               <tr key={row.id}>
                 <td>{formatDate(row.createdAt)}</td>
                 <td>{row.name}</td>
-                <td>{row.phone}</td>
+                <td>{row.phone || '—'}</td>
                 <td><a href={`mailto:${row.email}`}><Mail size={14} /> {row.email}</a></td>
                 <td className="admin-submission-message">{row.message}</td>
               </tr>

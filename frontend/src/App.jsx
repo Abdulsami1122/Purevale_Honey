@@ -19,6 +19,7 @@ import HeartHealthPage from './pages/HeartHealthPage'
 import WholesalePage from './pages/WholesalePage'
 import AboutPage from './pages/AboutPage'
 import ContactPage from './pages/ContactPage'
+import MyOrdersPage from './pages/MyOrdersPage'
 import FaqPage from './pages/FaqPage'
 import ReturnPolicyPage from './pages/ReturnPolicyPage'
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage'
@@ -34,6 +35,8 @@ import AdminOrders from './pages/admin/AdminOrders'
 import AdminSettings from './pages/admin/AdminSettings'
 import AdminSubmissions from './pages/admin/AdminSubmissions'
 import AdminContent from './pages/admin/AdminContent'
+import AdminCategories from './pages/admin/AdminCategories'
+import AdminLogin from './pages/admin/AdminLogin'
 
 import './App.css'
 
@@ -70,6 +73,7 @@ function Shell() {
           <Route path="/wholesale" element={<WholesalePage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/orders" element={<MyOrdersPage />} />
           <Route path="/faq" element={<FaqPage />} />
           <Route path="/return-policy" element={<ReturnPolicyPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
@@ -78,6 +82,7 @@ function Shell() {
           <Route path="/checkout" element={<CheckoutPage />} />
 
           {/* Admin */}
+          <Route path="/admin/login" element={<AdminLogin />} />
           <Route
             path="/admin"
             element={
@@ -88,6 +93,7 @@ function Shell() {
           >
             <Route index element={<AdminDashboard />} />
             <Route path="products" element={<AdminProducts />} />
+            <Route path="categories" element={<AdminCategories />} />
             <Route path="orders" element={<AdminOrders />} />
             <Route path="content" element={<AdminContent />} />
             <Route path="settings" element={<AdminSettings />} />

@@ -3,6 +3,7 @@ import { NavLink, Outlet, useNavigate, Link } from 'react-router-dom'
 import {
   LayoutDashboard,
   Package,
+  Tags,
   ShoppingCart,
   Settings,
   LogOut,
@@ -18,6 +19,7 @@ import './admin.css'
 const NAV = [
   { to: '/admin', label: 'Dashboard', icon: LayoutDashboard, end: true },
   { to: '/admin/products', label: 'Products', icon: Package },
+  { to: '/admin/categories', label: 'Categories', icon: Tags },
   { to: '/admin/orders', label: 'Orders', icon: ShoppingCart },
   { to: '/admin/content', label: 'Site Content', icon: Megaphone },
   { to: '/admin/settings', label: 'Settings', icon: Settings },
@@ -38,7 +40,10 @@ const AdminLayout = () => {
     <div className={`admin-shell ${navOpen ? 'nav-open' : ''}`}>
       <aside className="admin-sidebar">
         <div className="admin-sidebar-brand">
-          <span>Durrani Harvest</span>
+          <span className="admin-brand-lockup">
+            <img src="/logo.png" alt="" className="admin-brand-logo" />
+            Durrani Harvest
+          </span>
           <button
             type="button"
             className="admin-nav-close"

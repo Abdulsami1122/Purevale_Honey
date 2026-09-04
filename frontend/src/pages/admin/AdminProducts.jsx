@@ -1,45 +1,33 @@
 import React, { useEffect, useState } from 'react'
 import { Pencil, Trash2, Plus, X, ImagePlus } from 'lucide-react'
-import api from '../../lib/api'
+import api, { errorMessage } from '../../lib/api'
 import { formatPrice } from '../../data/products'
 import { useShop } from '../../components/shop/ShopContext'
 import './admin.css'
 
-const COLLECTIONS = [
-  { key: 'honey', label: 'Pure Honey' },
-  { key: 'dates', label: 'Dates' },
-  { key: 'jaggery', label: 'Jaggery (Gur)' },
-  { key: 'shilajit', label: 'Shilajit' },
-  { key: 'cosmetics', label: 'Cosmetics' },
-]
-
 const EMPTY = {
-  title: '',
-  collection: 'honey',
+  name: '',
+  description: '',
+  price: '',
+  stock: '0',
+  categoryId: '',
   image: '',
-  priceMin: '',
-  priceMax: '',
-  discountPercent: '0',
   variants: '',
-  rating: '',
-  reviews: '',
-  available: true,
 }
 
 const toForm = (p) => ({
-  title: p.title || '',
-  collection: p.collection || 'honey',
-  image: p.image || '',
-  priceMin: p.priceMin ?? '',
-  priceMax: p.priceMax ?? '',
-  discountPercent: p.discountPercent ?? '0',
-  variants: Array.isArray(p.variants) ? p.variants.join(', ') : '',
-  rating: p.rating ?? '',
-  reviews: p.reviews ?? '',
-  available: p.available !== false,
+  name: p.name || '',
+  description: p.description || '',
+  price: p.price ?? '',
+  stock: p.stock ?? 0,
+  categoryId: p.categoryId || p.category?.id || '',
+  image: Array.isArray(p.images) ? p.images[0] || '' : '',
+  variants: Array.isArray(p.variants)
+    ? p.variants.map((v) => (typeof v === 'string' ? v : v.label)).join(', ')
+    : '',
 })
 
-const readProductImage = (file) => new Promise((resolve, reject) => {
+const readImage = (file) => new Promise((resolve, reject) => {
   const reader = new FileReader()
   reader.onload = () => {
     const image = new Image()
@@ -62,6 +50,7 @@ const readProductImage = (file) => new Promise((resolve, reject) => {
 const AdminProducts = () => {
   const { refreshProducts } = useShop()
   const [products, setProducts] = useState([])
+  const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
@@ -71,18 +60,22 @@ const AdminProducts = () => {
 
   const load = () => {
     setLoading(true)
-    api
-      .listProducts()
-      .then((rows) => setProducts(rows))
+    Promise.all([api.listProducts({ limit: 200 }), api.listCategories()])
+      .then(([p, c]) => {
+        setProducts(p.items || [])
+        setCategories(c.categories || [])
+      })
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false))
   }
 
   useEffect(load, [])
 
+  const catName = (id) => categories.find((c) => c.id === id)?.name || '—'
+
   const openCreate = () => {
     setEditingId(null)
-    setForm(EMPTY)
+    setForm({ ...EMPTY, categoryId: categories[0]?.id || '' })
     setError('')
     setModalOpen(true)
   }
@@ -94,10 +87,7 @@ const AdminProducts = () => {
     setModalOpen(true)
   }
 
-  const update = (key) => (e) => {
-    const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
-    setForm((f) => ({ ...f, [key]: value }))
-  }
+  const update = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }))
 
   const chooseImage = async (e) => {
     const file = e.target.files?.[0]
@@ -107,8 +97,8 @@ const AdminProducts = () => {
       return
     }
     try {
-      const image = await readProductImage(file)
-      setForm((f) => ({ ...f, image }))
+      const dataUrl = await readImage(file)
+      setForm((f) => ({ ...f, image: dataUrl }))
       setError('')
     } catch (err) {
       setError(err.message)
@@ -118,17 +108,30 @@ const AdminProducts = () => {
 
   const submit = async (e) => {
     e.preventDefault()
-    if (!form.title.trim() || form.priceMin === '') {
-      setError('Title and minimum price are required')
+    if (!form.name.trim() || !form.description.trim() || form.price === '') {
+      setError('Name, description and price are required')
       return
     }
     setSaving(true)
     setError('')
     try {
-      const payload = { ...form }
-      if (payload.image.startsWith('data:image/')) {
-        const uploaded = await api.uploadProductImage(payload.image)
-        payload.image = uploaded.url
+      let imageUrl = form.image
+      if (imageUrl.startsWith('data:image/')) {
+        const uploaded = await api.uploadImage(imageUrl)
+        imageUrl = uploaded.url
+      }
+      const payload = {
+        name: form.name.trim(),
+        description: form.description.trim(),
+        price: Number(form.price),
+        stock: Number(form.stock) || 0,
+        categoryId: form.categoryId || null,
+        images: imageUrl ? [imageUrl] : [],
+        variants: form.variants
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean)
+          .map((label) => ({ label })),
       }
       if (editingId) await api.updateProduct(editingId, payload)
       else await api.createProduct(payload)
@@ -136,14 +139,14 @@ const AdminProducts = () => {
       load()
       refreshProducts?.()
     } catch (err) {
-      setError(err.message)
+      setError(errorMessage(err))
     } finally {
       setSaving(false)
     }
   }
 
   const remove = async (p) => {
-    if (!window.confirm(`Delete “${p.title}”? This cannot be undone.`)) return
+    if (!window.confirm(`Delete "${p.name}"? This cannot be undone.`)) return
     try {
       await api.deleteProduct(p.id)
       load()
@@ -163,8 +166,8 @@ const AdminProducts = () => {
       </div>
 
       <p className="admin-hint">
-        Products added here are saved on the server and appear on the storefront home page and their
-        collection page.
+        Products are stored on the server and appear on the storefront home page and their category
+        page. {categories.length === 0 && 'Create a category first (Categories tab).'}
       </p>
 
       {error && !modalOpen && <div className="admin-alert">{error}</div>}
@@ -173,13 +176,13 @@ const AdminProducts = () => {
         {loading ? (
           <p className="admin-empty">Loading…</p>
         ) : products.length === 0 ? (
-          <p className="admin-empty">No products yet. Click “New product” to add one.</p>
+          <p className="admin-empty">No products yet. Click "New product" to add one.</p>
         ) : (
           <table className="admin-table">
             <thead>
               <tr>
                 <th>Product</th>
-                <th>Collection</th>
+                <th>Category</th>
                 <th>Price</th>
                 <th>Stock</th>
                 <th className="admin-ta-right">Actions</th>
@@ -190,18 +193,15 @@ const AdminProducts = () => {
                 <tr key={p.id}>
                   <td>
                     <div className="admin-cell-product">
-                      <img src={p.image} alt={p.title} />
-                      <span>{p.title}</span>
+                      <img src={p.images?.[0] || '/honey-jar.jpg'} alt={p.name} />
+                      <span>{p.name}</span>
                     </div>
                   </td>
-                  <td>{COLLECTIONS.find((c) => c.key === p.collection)?.label || p.collection}</td>
+                  <td>{p.category?.name || catName(p.categoryId)}</td>
+                  <td>{formatPrice(p.price)}</td>
                   <td>
-                    {formatPrice(p.priceMin)}
-                    {p.priceMax ? ` – ${formatPrice(p.priceMax)}` : ''}
-                  </td>
-                  <td>
-                    <span className={`admin-badge admin-badge-${p.available !== false ? 'delivered' : 'cancelled'}`}>
-                      {p.available !== false ? 'In stock' : 'Sold out'}
+                    <span className={`admin-badge admin-badge-${p.stock > 0 ? 'delivered' : 'cancelled'}`}>
+                      {p.stock > 0 ? `${p.stock} in stock` : 'Sold out'}
                     </span>
                   </td>
                   <td className="admin-ta-right">
@@ -233,15 +233,21 @@ const AdminProducts = () => {
 
             <form className="admin-form-grid" onSubmit={submit}>
               <label className="admin-input-group admin-col-full">
-                <span>Title *</span>
-                <input type="text" value={form.title} onChange={update('title')} required placeholder="Wildflower Raw Honey" />
+                <span>Name *</span>
+                <input type="text" value={form.name} onChange={update('name')} required placeholder="Wildflower Raw Honey" />
+              </label>
+
+              <label className="admin-input-group admin-col-full">
+                <span>Description *</span>
+                <textarea rows="3" value={form.description} onChange={update('description')} required placeholder="Short product description" />
               </label>
 
               <label className="admin-input-group">
-                <span>Collection *</span>
-                <select value={form.collection} onChange={update('collection')}>
-                  {COLLECTIONS.map((c) => (
-                    <option key={c.key} value={c.key}>{c.label}</option>
+                <span>Category</span>
+                <select value={form.categoryId} onChange={update('categoryId')}>
+                  <option value="">— none —</option>
+                  {categories.map((c) => (
+                    <option key={c.id} value={c.id}>{c.name}</option>
                   ))}
                 </select>
               </label>
@@ -254,38 +260,18 @@ const AdminProducts = () => {
               </label>
 
               <label className="admin-input-group">
-                <span>Price min (Rs.) *</span>
-                <input type="number" min="0" value={form.priceMin} onChange={update('priceMin')} required placeholder="850" />
+                <span>Price (Rs.) *</span>
+                <input type="number" min="0" step="0.01" value={form.price} onChange={update('price')} required placeholder="850" />
               </label>
 
               <label className="admin-input-group">
-                <span>Price max (Rs.)</span>
-                <input type="number" min="0" value={form.priceMax} onChange={update('priceMax')} placeholder="optional (range)" />
-              </label>
-
-              <label className="admin-input-group">
-                <span>Discount (%)</span>
-                <input type="number" min="0" max="100" step="1" value={form.discountPercent} onChange={update('discountPercent')} placeholder="20" />
+                <span>Stock</span>
+                <input type="number" min="0" value={form.stock} onChange={update('stock')} placeholder="0" />
               </label>
 
               <label className="admin-input-group admin-col-full">
                 <span>Sizes / variants (comma separated)</span>
                 <input type="text" value={form.variants} onChange={update('variants')} placeholder="250g, 500g, 1kg" />
-              </label>
-
-              <label className="admin-input-group">
-                <span>Rating (0–5)</span>
-                <input type="number" min="0" max="5" step="0.1" value={form.rating} onChange={update('rating')} placeholder="0" />
-              </label>
-
-              <label className="admin-input-group">
-                <span>Review count</span>
-                <input type="number" min="0" value={form.reviews} onChange={update('reviews')} placeholder="0" />
-              </label>
-
-              <label className="admin-checkbox admin-col-full">
-                <input type="checkbox" checked={form.available} onChange={update('available')} />
-                <span>In stock</span>
               </label>
 
               <div className="admin-col-full admin-modal-actions">

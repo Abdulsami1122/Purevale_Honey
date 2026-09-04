@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
-import { Lock, Loader2 } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { useAdminAuth } from '../../admin/AdminAuthContext'
 import './admin.css'
 
 const AdminLogin = () => {
-  const { login, isAuthed } = useAdminAuth()
+  const { login, logout, isAdmin } = useAdminAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const dest = location.state?.from || '/admin'
@@ -15,17 +15,22 @@ const AdminLogin = () => {
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
 
-  // If a valid session already exists, skip the form
+  // If an admin session already exists, skip the form
   useEffect(() => {
-    if (isAuthed) navigate(dest, { replace: true })
-  }, [isAuthed, dest, navigate])
+    if (isAdmin) navigate(dest, { replace: true })
+  }, [isAdmin, dest, navigate])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
     setBusy(true)
     try {
-      await login(email.trim(), password)
+      const user = await login(email.trim(), password)
+      if (user.role !== 'admin') {
+        await logout()
+        setError('This account does not have admin access.')
+        return
+      }
       navigate(dest, { replace: true })
     } catch (err) {
       setError(err.message || 'Login failed')
@@ -37,9 +42,7 @@ const AdminLogin = () => {
   return (
     <div className="admin-login-wrap">
       <form className="admin-login-card" onSubmit={handleSubmit}>
-        <div className="admin-login-badge">
-          <Lock size={22} strokeWidth={2} />
-        </div>
+        <img src="/logo.png" alt="Durrani Harvest" className="admin-login-logo" />
         <h1>Durrani Harvest</h1>
         <p className="admin-login-sub">Admin sign in</p>
 

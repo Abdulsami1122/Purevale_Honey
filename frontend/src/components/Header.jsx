@@ -29,7 +29,7 @@ const Header = () => {
     <header className={`header ${isVisible ? '' : 'header-hidden'}`}>
       <div className="container header-content">
         <a href="#home" className="logo">
-          <img src="/logo.jpeg" alt="Durrani Harvest" className="logo-img" />
+          <img src="/logo.png" alt="Durrani Harvest" className="logo-img" />
           <span className="logo-text">DURRANI HARVEST</span>
         </a>
 

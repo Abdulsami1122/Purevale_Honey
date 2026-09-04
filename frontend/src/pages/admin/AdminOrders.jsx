@@ -4,10 +4,10 @@ import api from '../../lib/api'
 import { formatPrice } from '../../data/products'
 import './admin.css'
 
-const STATUSES = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled']
+const STATUSES = ['pending', 'paid', 'shipped', 'delivered', 'cancelled']
 const STATUS_LABEL = {
   pending: 'Pending',
-  confirmed: 'Confirmed',
+  paid: 'Paid',
   shipped: 'Shipped',
   delivered: 'Delivered',
   cancelled: 'Cancelled',
@@ -30,13 +30,12 @@ const AdminOrders = () => {
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
   const [updating, setUpdating] = useState(false)
-  const [loadingOrder, setLoadingOrder] = useState(false)
 
   const load = () => {
     setLoading(true)
     api
-      .listOrders()
-      .then(setOrders)
+      .adminListOrders({ limit: 100 })
+      .then((d) => setOrders(d.items || []))
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false))
   }
@@ -50,8 +49,8 @@ const AdminOrders = () => {
       if (!needle) return true
       return (
         o.id.toLowerCase().includes(needle) ||
-        o.customer.email.toLowerCase().includes(needle) ||
-        `${o.customer.firstName} ${o.customer.lastName}`.toLowerCase().includes(needle)
+        (o.user?.email || '').toLowerCase().includes(needle) ||
+        (o.shippingName || '').toLowerCase().includes(needle)
       )
     })
   }, [orders, statusFilter, query])
@@ -59,28 +58,13 @@ const AdminOrders = () => {
   const changeStatus = async (order, status) => {
     setUpdating(true)
     try {
-      const updated = await api.updateOrderStatus(order.id, status)
-      setOrders((rows) => rows.map((o) => (o.id === updated.id ? updated : o)))
-      if (selected?.id === updated.id) {
-        const details = await api.getOrder(updated.id)
-        setSelected(details)
-      }
+      const { order: updated } = await api.updateOrderStatus(order.id, status)
+      setOrders((rows) => rows.map((o) => (o.id === updated.id ? { ...o, ...updated } : o)))
+      setSelected((s) => (s && s.id === updated.id ? { ...s, ...updated } : s))
     } catch (e) {
       setError(e.message)
     } finally {
       setUpdating(false)
-    }
-  }
-
-  const openOrder = async (order) => {
-    setSelected(order)
-    setLoadingOrder(true)
-    try {
-      setSelected(await api.getOrder(order.id))
-    } catch (e) {
-      setError(e.message)
-    } finally {
-      setLoadingOrder(false)
     }
   }
 
@@ -127,19 +111,22 @@ const AdminOrders = () => {
             </thead>
             <tbody>
               {filtered.map((o) => (
-                <tr key={o.id} className="admin-row-click" onClick={() => openOrder(o)}>
-                  <td>{o.id}</td>
+                <tr key={o.id} className="admin-row-click" onClick={() => setSelected(o)}>
+                  <td>{o.id.slice(0, 8)}</td>
                   <td>{fmtDate(o.createdAt)}</td>
-                  <td>
-                    {o.customer.firstName || o.customer.lastName
-                      ? `${o.customer.firstName} ${o.customer.lastName}`.trim()
-                      : o.customer.email}
-                  </td>
+                  <td>{o.shippingName || o.user?.email || '—'}</td>
                   <td>{o.items?.reduce((n, it) => n + it.quantity, 0) ?? '—'}</td>
-                  <td>
-                    <span className={`admin-badge admin-badge-${o.status}`}>
-                      {STATUS_LABEL[o.status]}
-                    </span>
+                  <td onClick={(e) => e.stopPropagation()}>
+                    <select
+                      className={`admin-status-select admin-badge-${o.status}`}
+                      value={o.status}
+                      disabled={updating}
+                      onChange={(e) => changeStatus(o, e.target.value)}
+                    >
+                      {STATUSES.map((s) => (
+                        <option key={s} value={s}>{STATUS_LABEL[s]}</option>
+                      ))}
+                    </select>
                   </td>
                   <td className="admin-ta-right">{formatPrice(o.total)}</td>
                 </tr>
@@ -153,21 +140,20 @@ const AdminOrders = () => {
         <div className="admin-modal-backdrop" onClick={() => setSelected(null)}>
           <div className="admin-modal admin-modal-wide" onClick={(e) => e.stopPropagation()}>
             <div className="admin-modal-head">
-              <h2>Order {selected.id}</h2>
+              <h2>Order {selected.id.slice(0, 8)}</h2>
               <button type="button" className="admin-icon-btn" onClick={() => setSelected(null)} aria-label="Close">
                 <X size={18} />
               </button>
             </div>
 
-            {loadingOrder ? <p className="admin-empty">Loading order details…</p> : <>
             <div className="admin-order-meta">
               <div>
                 <p className="admin-order-label">Placed</p>
                 <p>{fmtDate(selected.createdAt)}</p>
               </div>
               <div>
-                <p className="admin-order-label">Payment</p>
-                <p>{selected.paymentMethod === 'bank' ? 'Bank Deposit' : 'Cash on Delivery'}</p>
+                <p className="admin-order-label">Coupon</p>
+                <p>{selected.couponCode || '—'}</p>
               </div>
               <div>
                 <p className="admin-order-label">Status</p>
@@ -186,20 +172,14 @@ const AdminOrders = () => {
             <div className="admin-order-cols">
               <div>
                 <p className="admin-order-label">Customer</p>
-                <p>{`${selected.customer.firstName} ${selected.customer.lastName}`.trim() || '—'}</p>
-                <p>{selected.customer.email}</p>
-                <p>{selected.customer.phone || '—'}</p>
+                <p>{selected.shippingName || '—'}</p>
+                <p>{selected.user?.email || '—'}</p>
+                <p>{selected.shippingPhone || '—'}</p>
               </div>
               <div>
                 <p className="admin-order-label">Shipping address</p>
-                <p>{selected.shipping.address || '—'}</p>
-                {selected.shipping.apartment && <p>{selected.shipping.apartment}</p>}
-                <p>
-                  {[selected.shipping.city, selected.shipping.postalCode]
-                    .filter(Boolean)
-                    .join(', ')}
-                </p>
-                <p>{selected.shipping.country}</p>
+                <p>{selected.shippingAddress || '—'}</p>
+                <p>{[selected.shippingCity, selected.shippingCountry].filter(Boolean).join(', ')}</p>
               </div>
             </div>
 
@@ -213,10 +193,10 @@ const AdminOrders = () => {
                 </tr>
               </thead>
               <tbody>
-                {selected.items.map((it, i) => (
-                  <tr key={i}>
+                {(selected.items || []).map((it) => (
+                  <tr key={it.id}>
                     <td>
-                      {it.title}
+                      {it.name}
                       {it.variant ? <span className="admin-muted"> · {it.variant}</span> : null}
                     </td>
                     <td>{it.quantity}</td>
@@ -230,10 +210,16 @@ const AdminOrders = () => {
                   <td colSpan={3} className="admin-ta-right">Subtotal</td>
                   <td className="admin-ta-right">{formatPrice(selected.subtotal)}</td>
                 </tr>
+                {Number(selected.discount) > 0 && (
+                  <tr>
+                    <td colSpan={3} className="admin-ta-right">Discount</td>
+                    <td className="admin-ta-right">− {formatPrice(selected.discount)}</td>
+                  </tr>
+                )}
                 <tr>
                   <td colSpan={3} className="admin-ta-right">Shipping</td>
                   <td className="admin-ta-right">
-                    {selected.shippingCost ? formatPrice(selected.shippingCost) : 'FREE'}
+                    {Number(selected.shippingCost) ? formatPrice(selected.shippingCost) : 'FREE'}
                   </td>
                 </tr>
                 <tr>
@@ -242,7 +228,6 @@ const AdminOrders = () => {
                 </tr>
               </tfoot>
             </table>
-            </>}
           </div>
         </div>
       )}

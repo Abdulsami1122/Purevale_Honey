@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import api from '../../lib/api'
 import { useAdminAuth } from '../../admin/AdminAuthContext'
 import './admin.css'
 
 const AdminSettings = () => {
-  const { admin } = useAdminAuth()
+  const { admin, logout } = useAdminAuth()
+  const navigate = useNavigate()
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirm, setConfirm] = useState('')
@@ -21,10 +23,14 @@ const AdminSettings = () => {
     setBusy(true)
     try {
       await api.changePassword(currentPassword, newPassword)
-      setMsg({ type: 'ok', text: 'Password updated.' })
+      setMsg({ type: 'ok', text: 'Password updated. Redirecting to sign in…' })
       setCurrentPassword('')
       setNewPassword('')
       setConfirm('')
+      setTimeout(async () => {
+        await logout()
+        navigate('/admin/login', { replace: true })
+      }, 1200)
     } catch (err) {
       setMsg({ type: 'error', text: err.message })
     } finally {

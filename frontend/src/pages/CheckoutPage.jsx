@@ -3,11 +3,13 @@ import { Link, useNavigate } from 'react-router-dom'
 import { ShoppingBag, HelpCircle, CheckCircle2, Lock } from 'lucide-react'
 import { formatPrice } from '../data/products'
 import { useShop } from '../components/shop/ShopContext'
-import api from '../lib/api'
+import { useAdminAuth } from '../admin/AdminAuthContext'
+import api, { errorMessage } from '../lib/api'
 import './CheckoutPage.css'
 
 const CheckoutPage = () => {
   const { cart, cartTotal, cartCount, clearCart } = useShop()
+  const { isAuthed, user, login, register } = useAdminAuth()
   const navigate = useNavigate()
 
   const [payment, setPayment] = useState('cod')
@@ -16,6 +18,39 @@ const CheckoutPage = () => {
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
+  // Inline auth gate (checkout requires an account)
+  const [authMode, setAuthMode] = useState('login')
+  const [authForm, setAuthForm] = useState({ name: '', email: '', password: '' })
+  const [authBusy, setAuthBusy] = useState(false)
+  const [authError, setAuthError] = useState('')
+  const [authNotice, setAuthNotice] = useState('')
+
+  const handleAuth = async (e) => {
+    e.preventDefault()
+    setAuthError('')
+    setAuthNotice('')
+    setAuthBusy(true)
+    try {
+      if (authMode === 'login') {
+        await login(authForm.email.trim(), authForm.password)
+      } else {
+        await register({
+          name: authForm.name.trim(),
+          email: authForm.email.trim(),
+          password: authForm.password,
+        })
+        // Account created — switch to sign-in.
+        setAuthMode('login')
+        setAuthForm((f) => ({ ...f, password: '' }))
+        setAuthNotice('Account created — please sign in to finish your order.')
+      }
+    } catch (err) {
+      setAuthError(errorMessage(err) || 'Authentication failed')
+    } finally {
+      setAuthBusy(false)
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (cart.length === 0) return
@@ -23,40 +58,37 @@ const CheckoutPage = () => {
     setSubmitting(true)
 
     const f = new FormData(e.target)
-    const payload = {
-      customer: {
-        email: f.get('email')?.trim(),
-        firstName: f.get('firstName')?.trim() || '',
-        lastName: f.get('lastName')?.trim() || '',
-        phone: f.get('phone')?.trim() || '',
-      },
-      shipping: {
-        country: f.get('country') || '',
-        address: f.get('address')?.trim() || '',
-        apartment: f.get('apartment')?.trim() || '',
-        city: f.get('city')?.trim() || '',
-        postalCode: f.get('postalCode')?.trim() || '',
-      },
-      paymentMethod: payment,
-      billingSameAsShipping: billing === 'same',
-      shippingCost: 0,
-      items: cart.map((it) => ({
-        productId: it.productId,
-        title: it.title,
-        variant: it.variant,
-        price: it.price,
-        quantity: it.quantity,
-        image: it.image,
-      })),
+    const first = f.get('firstName')?.trim() || ''
+    const last = f.get('lastName')?.trim() || ''
+    const apartment = f.get('apartment')?.trim() || ''
+    const shipping = {
+      name: `${first} ${last}`.trim() || user?.name || 'Customer',
+      phone: f.get('phone')?.trim() || '',
+      address: [f.get('address')?.trim() || '', apartment].filter(Boolean).join(', '),
+      city: f.get('city')?.trim() || '',
+      country: f.get('country') || 'Pakistan',
     }
 
     try {
-      const order = await api.createOrder(payload)
-      setPlacedOrder(order)
+      // Push the local cart to the server cart, then place the order from it.
+      await api.clearCart()
+      for (const it of cart) {
+        await api.addCartItem({
+          productId: it.productId,
+          variant: it.variant || '',
+          quantity: it.quantity,
+        })
+      }
+      const { order } = await api.createOrder({ shipping, shippingCost: 0 })
+      setPlacedOrder({ ...order, email: user?.email })
       clearCart()
       window.scrollTo(0, 0)
     } catch (err) {
-      setError(err.message || 'Could not place the order. Please try again.')
+      if (err.status === 404) {
+        setError('Some items in your cart are no longer available. Please clear your cart and add them again.')
+      } else {
+        setError(err.message || 'Could not place the order. Please try again.')
+      }
     } finally {
       setSubmitting(false)
     }
@@ -69,13 +101,18 @@ const CheckoutPage = () => {
           <CheckCircle2 size={54} strokeWidth={1.6} />
           <h1>Thank you for your order!</h1>
           <p>
-            Your order <strong>{placedOrder.id}</strong> has been placed with{' '}
-            <strong>Durrani Harvest</strong>. A confirmation will be sent to{' '}
-            <strong>{placedOrder.customer.email}</strong>.
+            Your order <strong>{placedOrder.id?.slice(0, 8)}</strong> has been placed with{' '}
+            <strong>Durrani Harvest</strong>
+            {placedOrder.email ? <> — a confirmation will be sent to <strong>{placedOrder.email}</strong></> : null}.
           </p>
-          <button type="button" className="ck-confirm-btn" onClick={() => navigate('/')}>
-            Continue shopping
-          </button>
+          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <button type="button" className="ck-confirm-btn" onClick={() => navigate('/orders')}>
+              View my orders
+            </button>
+            <button type="button" className="ck-confirm-btn" onClick={() => navigate('/')} style={{ background: 'transparent', color: '#133827', border: '1px solid #133827' }}>
+              Continue shopping
+            </button>
+          </div>
         </div>
       </div>
     )
@@ -110,18 +147,14 @@ const CheckoutPage = () => {
                 <span>{formatPrice(cartTotal)}</span>
               </div>
               <div className="ck-summary-row">
-                <span>
-                  Shipping <HelpCircle size={14} strokeWidth={1.8} />
-                </span>
+                <span>Shipping <HelpCircle size={14} strokeWidth={1.8} /></span>
                 <span>FREE</span>
               </div>
             </div>
 
             <div className="ck-summary-total">
               <span>Total</span>
-              <span>
-                <span className="ck-total-currency">PKR</span> {formatPrice(cartTotal)}
-              </span>
+              <span><span className="ck-total-currency">PKR</span> {formatPrice(cartTotal)}</span>
             </div>
           </>
         )}
@@ -131,7 +164,6 @@ const CheckoutPage = () => {
 
   return (
     <div className="ck-page">
-      {/* Minimal checkout header */}
       <header className="ck-header">
         <div className="ck-header-inner">
           <Link to="/" className="ck-brand">Durrani Harvest</Link>
@@ -144,150 +176,162 @@ const CheckoutPage = () => {
 
       <div className="ck-body">
         <div className="ck-grid">
-          {/* LEFT: form */}
-          <form className="ck-form" onSubmit={handleSubmit}>
-            <section className="ck-section">
-              <div className="ck-section-head">
-                <h2>Contact</h2>
-                <Link to="/shop" className="ck-link">Sign in</Link>
-              </div>
-              <label className="ck-field">
-                <input type="email" name="email" placeholder="Email" required />
-                <span className="ck-field-hint"><HelpCircle size={16} strokeWidth={1.8} /></span>
-              </label>
-              <label className="ck-checkbox">
-                <input type="checkbox" defaultChecked />
-                <span>Email me with news and offers</span>
-              </label>
-            </section>
+          {!isAuthed ? (
+            <form className="ck-form" onSubmit={handleAuth}>
+              <section className="ck-section">
+                <div className="ck-section-head">
+                  <h2>{authMode === 'login' ? 'Sign in to check out' : 'Create an account'}</h2>
+                  <button
+                    type="button"
+                    className="ck-link"
+                    onClick={() => { setAuthMode(authMode === 'login' ? 'register' : 'login'); setAuthError('') }}
+                  >
+                    {authMode === 'login' ? 'Create account' : 'Have an account? Sign in'}
+                  </button>
+                </div>
 
-            <section className="ck-section">
-              <h2>Delivery</h2>
-              <label className="ck-field ck-select">
-                <span className="ck-select-label">Country/Region</span>
-                <select name="country" defaultValue="Pakistan">
-                  <option>Pakistan</option>
-                  <option>United States</option>
-                  <option>United Kingdom</option>
-                  <option>United Arab Emirates</option>
-                  <option>Saudi Arabia</option>
-                </select>
-              </label>
-
-              <div className="ck-row">
+                {authMode === 'register' && (
+                  <label className="ck-field">
+                    <input
+                      type="text"
+                      placeholder="Full name"
+                      required
+                      value={authForm.name}
+                      onChange={(e) => setAuthForm({ ...authForm, name: e.target.value })}
+                    />
+                  </label>
+                )}
                 <label className="ck-field">
-                  <input type="text" name="firstName" placeholder="First name (optional)" />
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    required
+                    value={authForm.email}
+                    onChange={(e) => setAuthForm({ ...authForm, email: e.target.value })}
+                  />
                 </label>
                 <label className="ck-field">
-                  <input type="text" name="lastName" placeholder="Last name" required />
+                  <input
+                    type="password"
+                    placeholder="Password (min 8 characters)"
+                    required
+                    minLength={8}
+                    value={authForm.password}
+                    onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
+                  />
                 </label>
-              </div>
 
-              <label className="ck-field">
-                <input type="text" name="address" placeholder="Address" required />
-              </label>
-              <label className="ck-field">
-                <input type="text" name="apartment" placeholder="Apartment, suite, etc. (optional)" />
-              </label>
+                {authNotice && <p className="ck-muted" style={{ color: '#1c7a3f' }}>{authNotice}</p>}
+                {authError && <p className="ck-error">{authError}</p>}
 
-              <div className="ck-row">
+                <button type="submit" className="ck-submit" disabled={authBusy}>
+                  {authBusy ? 'Please wait…' : authMode === 'login' ? 'Sign in & continue' : 'Create account & continue'}
+                </button>
+              </section>
+            </form>
+          ) : (
+            <form className="ck-form" onSubmit={handleSubmit}>
+              <section className="ck-section">
+                <div className="ck-section-head">
+                  <h2>Contact</h2>
+                  <span className="ck-muted">{user?.email}</span>
+                </div>
+              </section>
+
+              <section className="ck-section">
+                <h2>Delivery</h2>
+                <label className="ck-field ck-select">
+                  <span className="ck-select-label">Country/Region</span>
+                  <select name="country" defaultValue="Pakistan">
+                    <option>Pakistan</option>
+                    <option>United States</option>
+                    <option>United Kingdom</option>
+                    <option>United Arab Emirates</option>
+                    <option>Saudi Arabia</option>
+                  </select>
+                </label>
+
+                <div className="ck-row">
+                  <label className="ck-field">
+                    <input type="text" name="firstName" placeholder="First name (optional)" />
+                  </label>
+                  <label className="ck-field">
+                    <input type="text" name="lastName" placeholder="Last name" required />
+                  </label>
+                </div>
+
                 <label className="ck-field">
-                  <input type="text" name="city" placeholder="City" required />
+                  <input type="text" name="address" placeholder="Address" required />
                 </label>
                 <label className="ck-field">
-                  <input type="text" name="postalCode" placeholder="Postal code (optional)" />
+                  <input type="text" name="apartment" placeholder="Apartment, suite, etc. (optional)" />
                 </label>
-              </div>
 
-              <label className="ck-field">
-                <input type="tel" name="phone" placeholder="Phone" required />
-                <span className="ck-field-hint"><HelpCircle size={16} strokeWidth={1.8} /></span>
-              </label>
+                <div className="ck-row">
+                  <label className="ck-field">
+                    <input type="text" name="city" placeholder="City" required />
+                  </label>
+                  <label className="ck-field">
+                    <input type="text" name="postalCode" placeholder="Postal code (optional)" />
+                  </label>
+                </div>
 
-              <label className="ck-checkbox">
-                <input type="checkbox" />
-                <span>Save this information for next time</span>
-              </label>
-            </section>
+                <label className="ck-field">
+                  <input type="tel" name="phone" placeholder="Phone" required />
+                </label>
+              </section>
 
-            <section className="ck-section">
-              <h2>Shipping method</h2>
-              <div className="ck-radio-card is-selected ck-shipping-row">
-                <span>Free Shipping</span>
-                <span className="ck-free">FREE</span>
-              </div>
-            </section>
+              <section className="ck-section">
+                <h2>Shipping method</h2>
+                <div className="ck-radio-card is-selected ck-shipping-row">
+                  <span>Free Shipping</span>
+                  <span className="ck-free">FREE</span>
+                </div>
+              </section>
 
-            <section className="ck-section">
-              <h2>Payment</h2>
-              <p className="ck-muted">All transactions are secure and encrypted.</p>
+              <section className="ck-section">
+                <h2>Payment</h2>
+                <p className="ck-muted">All transactions are secure and encrypted.</p>
+                <label className={`ck-radio-card ${payment === 'cod' ? 'is-selected' : ''}`}>
+                  <input type="radio" name="payment" checked={payment === 'cod'} onChange={() => setPayment('cod')} />
+                  <span>Cash on Delivery (COD)</span>
+                </label>
+                <label className={`ck-radio-card ${payment === 'bank' ? 'is-selected' : ''}`}>
+                  <input type="radio" name="payment" checked={payment === 'bank'} onChange={() => setPayment('bank')} />
+                  <span>Bank Deposit</span>
+                </label>
+              </section>
 
-              <label className={`ck-radio-card ${payment === 'cod' ? 'is-selected' : ''}`}>
-                <input
-                  type="radio"
-                  name="payment"
-                  checked={payment === 'cod'}
-                  onChange={() => setPayment('cod')}
-                />
-                <span>Cash on Delivery (COD)</span>
-              </label>
-              <label className={`ck-radio-card ${payment === 'bank' ? 'is-selected' : ''}`}>
-                <input
-                  type="radio"
-                  name="payment"
-                  checked={payment === 'bank'}
-                  onChange={() => setPayment('bank')}
-                />
-                <span>Bank Deposit</span>
-              </label>
-            </section>
+              <section className="ck-section">
+                <h2>Billing address</h2>
+                <label className={`ck-radio-card ${billing === 'same' ? 'is-selected' : ''}`}>
+                  <input type="radio" name="billing" checked={billing === 'same'} onChange={() => setBilling('same')} />
+                  <span>Same as shipping address</span>
+                </label>
+                <label className={`ck-radio-card ${billing === 'diff' ? 'is-selected' : ''}`}>
+                  <input type="radio" name="billing" checked={billing === 'diff'} onChange={() => setBilling('diff')} />
+                  <span>Use a different billing address</span>
+                </label>
+              </section>
 
-            <section className="ck-section">
-              <h2>Billing address</h2>
-              <label className={`ck-radio-card ${billing === 'same' ? 'is-selected' : ''}`}>
-                <input
-                  type="radio"
-                  name="billing"
-                  checked={billing === 'same'}
-                  onChange={() => setBilling('same')}
-                />
-                <span>Same as shipping address</span>
-              </label>
-              <label className={`ck-radio-card ${billing === 'diff' ? 'is-selected' : ''}`}>
-                <input
-                  type="radio"
-                  name="billing"
-                  checked={billing === 'diff'}
-                  onChange={() => setBilling('diff')}
-                />
-                <span>Use a different billing address</span>
-              </label>
-            </section>
+              {error && <p className="ck-error">{error}</p>}
 
-            {error && <p className="ck-error">{error}</p>}
+              <button type="submit" className="ck-submit" disabled={cart.length === 0 || submitting}>
+                {submitting ? 'Placing order…' : 'Complete order'}
+              </button>
 
-            <button
-              type="submit"
-              className="ck-submit"
-              disabled={cart.length === 0 || submitting}
-            >
-              {submitting ? 'Placing order…' : 'Complete order'}
-            </button>
+              <p className="ck-secure"><Lock size={13} strokeWidth={2} /> Secure checkout</p>
 
-            <p className="ck-secure">
-              <Lock size={13} strokeWidth={2} /> Secure checkout
-            </p>
+              <footer className="ck-footer">
+                <Link to="/return-policy">Refund policy</Link>
+                <Link to="/return-policy">Shipping</Link>
+                <Link to="/privacy-policy">Privacy policy</Link>
+                <Link to="/terms">Terms of service</Link>
+                <Link to="/contact">Contact</Link>
+              </footer>
+            </form>
+          )}
 
-            <footer className="ck-footer">
-              <Link to="/return-policy">Refund policy</Link>
-              <Link to="/return-policy">Shipping</Link>
-              <Link to="/privacy-policy">Privacy policy</Link>
-              <Link to="/terms">Terms of service</Link>
-              <Link to="/contact">Contact</Link>
-            </footer>
-          </form>
-
-          {/* RIGHT: order summary */}
           {orderSummary}
         </div>
       </div>

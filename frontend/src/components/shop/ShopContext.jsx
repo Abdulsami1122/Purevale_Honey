@@ -22,9 +22,46 @@ const BASE_COLLECTIONS = {
 
 export const COLLECTION_KEYS = Object.keys(BASE_COLLECTIONS)
 
+// Map a backend category name to one of the 5 storefront collection slugs.
+const toCollectionKey = (name = '') => {
+  const n = String(name).toLowerCase()
+  return COLLECTION_KEYS.find((k) => n.includes(k)) || 'honey'
+}
+
+// Backend product -> the shape the storefront components expect.
+const adaptProduct = (p) => {
+  const variantObjs = Array.isArray(p.variants) ? p.variants : []
+  return {
+    id: p.id,
+    title: p.name,
+    description: p.description || '',
+    image: (p.images && p.images[0]) || '/honey-jar.jpg',
+    images: Array.isArray(p.images) ? p.images : [],
+    priceMin: Number(p.price) || 0,
+    priceMax: null,
+    compareAt: null,
+    discountPercent: 0,
+    rating: p.ratingAverage ?? 0,
+    reviews: p._count?.reviews ?? p.ratingCount ?? 0,
+    available: (p.stock ?? 0) > 0,
+    stock: p.stock ?? 0,
+    variants: variantObjs.length
+      ? variantObjs.map((v) => (typeof v === 'string' ? v : v.label)).filter(Boolean)
+      : ['Default'],
+    variantPrices: Object.fromEntries(
+      variantObjs
+        .filter((v) => v && typeof v === 'object' && v.price != null)
+        .map((v) => [v.label, Number(v.price)]),
+    ),
+    collection: toCollectionKey(p.category?.name || ''),
+    categoryId: p.categoryId || p.category?.id || null,
+    featured: 0,
+  }
+}
+
 const WISHLIST_STORAGE_KEY = 'purevale_wishlist'
 const CART_STORAGE_KEY = 'purevale_cart'
-const PRODUCTS_CACHE_KEY = 'dh_products_cache'
+const PRODUCTS_CACHE_KEY = 'dh_products_cache_v2'
 const SITE_SETTINGS_CACHE_KEY = 'dh_site_settings_cache'
 
 const readCachedSiteSettings = () => {
@@ -93,10 +130,11 @@ export const ShopProvider = ({ children }) => {
     }
   }, [cart])
 
-  // Load admin-managed products from the backend
+  // Load the catalogue from the backend and normalise it for the storefront.
   const refreshProducts = useCallback(async () => {
     try {
-      const rows = await api.listProducts()
+      const res = await api.listProducts({ limit: 200 })
+      const rows = (res.items || []).map(adaptProduct)
       setAdminProducts(rows)
       try {
         localStorage.setItem(PRODUCTS_CACHE_KEY, JSON.stringify(rows))
@@ -188,15 +226,21 @@ export const ShopProvider = ({ children }) => {
 
   const clearCart = useCallback(() => setCart([]), [])
 
-  // Base catalogue + admin products, grouped by collection slug
+  // Catalogue grouped by collection slug. Backend products are the source of
+  // truth; the shipped static catalogue is only a fallback when the API has
+  // returned nothing yet (first load offline).
   const collections = useMemo(() => {
-    const merged = {}
-    for (const key of COLLECTION_KEYS) merged[key] = [...BASE_COLLECTIONS[key]]
+    const grouped = {}
+    for (const key of COLLECTION_KEYS) grouped[key] = []
+    if (adminProducts.length === 0) {
+      for (const key of COLLECTION_KEYS) grouped[key] = [...BASE_COLLECTIONS[key]]
+      return grouped
+    }
     for (const p of adminProducts) {
       const key = COLLECTION_KEYS.includes(p.collection) ? p.collection : 'honey'
-      merged[key] = [...merged[key], p]
+      grouped[key].push(p)
     }
-    return merged
+    return grouped
   }, [adminProducts])
 
   const allProducts = useMemo(

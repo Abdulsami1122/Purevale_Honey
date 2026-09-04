@@ -1,24 +1,35 @@
 {
-  "name": "backend",
-  "version": "1.0.0",
-  "description": "Durrani Harvest store API + admin backend",
-  "main": "server.js",
-  "scripts": {
-    "start": "npx kill-port 5000 && node server.js",
-    "dev": "npx kill-port 5000 && node --watch server.js",
-    "migrate:postgres": "node src/migrate.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "name": "purevale-honey-backend",
+  "version": "2.0.0",
+  "description": "Purevale Honey store API — secure rebuild (Express + Prisma)",
+  "private": true,
   "type": "commonjs",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "prisma:generate": "prisma generate --schema=src/models/schema.prisma",
+    "prisma:migrate": "prisma migrate dev --schema=src/models/schema.prisma",
+    "prisma:deploy": "prisma migrate deploy --schema=src/models/schema.prisma",
+    "prisma:studio": "prisma studio --schema=src/models/schema.prisma",
+    "seed:admin": "node src/seed/createAdmin.js",
+    "seed:admin:reset": "node src/seed/createAdmin.js --reset-password",
+    "seed:catalog": "node src/seed/seedCatalog.js"
+  },
   "dependencies": {
-    "bcryptjs": "^3.0.3",
+    "@prisma/client": "^6.2.1",
+    "bcryptjs": "^3.0.2",
     "cloudinary": "^2.11.0",
-    "cors": "^2.8.6",
-    "dotenv": "^17.4.2",
-    "express": "^5.2.1",
-    "jsonwebtoken": "^9.0.3",
-    "pg": "^8.23.0"
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "prisma": "^6.2.1"
   }
 }

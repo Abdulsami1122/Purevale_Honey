@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { X } from 'lucide-react';
-import { api } from '../../lib/api';
 import { useAdminAuth } from '../../admin/AdminAuthContext';
+import { errorMessage } from '../../lib/api';
 import './AuthDrawer.css';
 
 const AuthDrawer = ({ isOpen, onClose }) => {
@@ -24,7 +24,7 @@ const AuthDrawer = ({ isOpen, onClose }) => {
   const [busy, setBusy] = useState(false);
   
   const navigate = useNavigate();
-  const { login: adminLogin } = useAdminAuth();
+  const { login, register } = useAdminAuth();
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -32,29 +32,19 @@ const AuthDrawer = ({ isOpen, onClose }) => {
     setSuccessMsg('');
     setBusy(true);
     try {
-      // 1. Try Customer Login
-      const res = await api.customerLogin(email.trim(), password);
-      localStorage.setItem('dh_customer_token', res.token);
-      setSuccessMsg('Logged in successfully!');
-      setTimeout(() => {
-        onClose(); 
-      }, 1500);
-    } catch (custErr) {
-      // 2. If Customer Login fails, try Admin Login
-      if (custErr.status === 401 || custErr.message.toLowerCase().includes('invalid')) {
-        try {
-          await adminLogin(email.trim(), password);
-          setSuccessMsg('Logged in as Admin!');
-          setTimeout(() => {
-            onClose();
-            navigate('/admin');
-          }, 1500);
-        } catch (adminErr) {
-          setError('Invalid email or password');
-        }
+      const user = await login(email.trim(), password);
+      if (user.role === 'admin') {
+        setSuccessMsg('Logged in as Admin!');
+        setTimeout(() => {
+          onClose();
+          navigate('/admin');
+        }, 1200);
       } else {
-        setError(custErr.message || 'Login failed');
+        setSuccessMsg('Logged in successfully!');
+        setTimeout(() => onClose(), 1200);
       }
+    } catch (err) {
+      setError(errorMessage(err) || 'Invalid email or password');
     } finally {
       setBusy(false);
     }
@@ -65,15 +55,25 @@ const AuthDrawer = ({ isOpen, onClose }) => {
     setError('');
     setSuccessMsg('');
     setBusy(true);
+    if (regPassword.length < 8) {
+      setError('Password must be at least 8 characters');
+      setBusy(false);
+      return;
+    }
     try {
-      const res = await api.customerRegister(firstName.trim(), lastName.trim(), regEmail.trim(), regPassword);
-      localStorage.setItem('dh_customer_token', res.token);
-      setSuccessMsg('Registered successfully!');
-      setTimeout(() => {
-        onClose(); 
-      }, 1500);
+      await register({
+        name: `${firstName.trim()} ${lastName.trim()}`.trim(),
+        email: regEmail.trim(),
+        password: regPassword,
+      });
+      // Account created — send them to the login form (prefill the email).
+      setEmail(regEmail.trim());
+      setPassword('');
+      setRegPassword('');
+      setMode('login');
+      setSuccessMsg('Account created — please sign in.');
     } catch (err) {
-      setError(err.message || 'Registration failed');
+      setError(errorMessage(err) || 'Registration failed');
     } finally {
       setBusy(false);
     }
@@ -192,15 +192,19 @@ const AuthDrawer = ({ isOpen, onClose }) => {
                 <label>Email <span className="req">*</span></label>
               </div>
               <div className="form-group custom-placeholder">
-                <input 
-                  type="password" 
-                  placeholder=" " 
+                <input
+                  type="password"
+                  placeholder=" "
                   value={regPassword}
                   onChange={(e) => setRegPassword(e.target.value)}
-                  required 
+                  minLength={8}
+                  required
                 />
                 <label>Password <span className="req">*</span></label>
               </div>
+              <p style={{ margin: '-6px 0 12px', fontSize: '0.8rem', color: '#888' }}>
+                At least 8 characters.
+              </p>
 
               <button type="submit" className="auth-submit-btn" disabled={busy}>
                 {busy ? 'Registering...' : 'Register'}
