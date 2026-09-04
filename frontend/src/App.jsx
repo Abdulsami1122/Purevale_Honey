@@ -20,6 +20,7 @@ import WholesalePage from './pages/WholesalePage'
 import AboutPage from './pages/AboutPage'
 import ContactPage from './pages/ContactPage'
 import MyOrdersPage from './pages/MyOrdersPage'
+import ResetPasswordPage from './pages/ResetPasswordPage'
 import FaqPage from './pages/FaqPage'
 import ReturnPolicyPage from './pages/ReturnPolicyPage'
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage'
@@ -74,6 +75,7 @@ function Shell() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/orders" element={<MyOrdersPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/faq" element={<FaqPage />} />
           <Route path="/return-policy" element={<ReturnPolicyPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />

@@ -1,30 +1,52 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { X } from 'lucide-react';
 import { useAdminAuth } from '../../admin/AdminAuthContext';
-import { errorMessage } from '../../lib/api';
+import api, { errorMessage } from '../../lib/api';
 import './AuthDrawer.css';
 
 const AuthDrawer = ({ isOpen, onClose }) => {
-  const [mode, setMode] = useState('login'); // 'login' or 'register'
-  
+  const [mode, setMode] = useState('login'); // 'login' | 'register' | 'forgot'
+
   // Login State
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
+
   // Register State
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [regEmail, setRegEmail] = useState('');
   const [regPassword, setRegPassword] = useState('');
-  
+
+  // Forgot-password State
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [resetLink, setResetLink] = useState('');
+
   // Shared State
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const [busy, setBusy] = useState(false);
-  
+
   const navigate = useNavigate();
   const { login, register } = useAdminAuth();
+
+  const handleForgotSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccessMsg('');
+    setResetLink('');
+    setBusy(true);
+    try {
+      const res = await api.forgotPassword(forgotEmail.trim());
+      setSuccessMsg('If an account exists for that email, a reset link has been sent.');
+      // In development the backend returns the link directly (no mail server).
+      if (res && res.resetUrl) setResetLink(res.resetUrl);
+    } catch (err) {
+      setError(errorMessage(err) || 'Could not start password reset');
+    } finally {
+      setBusy(false);
+    }
+  };
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -91,6 +113,8 @@ const AuthDrawer = ({ isOpen, onClose }) => {
       setSuccessMsg('');
       setPassword('');
       setRegPassword('');
+      setResetLink('');
+      setMode('login');
     }
     return () => {
       document.body.classList.remove('auth-drawer-open');
@@ -107,12 +131,22 @@ const AuthDrawer = ({ isOpen, onClose }) => {
     setMode(mode === 'login' ? 'register' : 'login');
   };
 
+  const goTo = (next) => (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccessMsg('');
+    setResetLink('');
+    setMode(next);
+  };
+
+  const TITLE = { login: 'LOGIN', register: 'REGISTER', forgot: 'RESET PASSWORD' };
+
   return (
     <>
       <div className="auth-backdrop" onClick={onClose}></div>
       <div className={`auth-drawer ${isOpen ? 'is-open' : ''}`}>
         <div className="auth-drawer-header">
-          <h2>{mode === 'login' ? 'LOGIN' : 'REGISTER'}</h2>
+          <h2>{TITLE[mode]}</h2>
           <button type="button" className="auth-drawer-close" onClick={onClose} aria-label="Close">
             <X size={24} strokeWidth={1.5} />
           </button>
@@ -121,8 +155,47 @@ const AuthDrawer = ({ isOpen, onClose }) => {
         <div className="auth-drawer-body">
           {error && <div style={{ color: '#d9534f', marginBottom: '15px', fontWeight: 'bold' }}>{error}</div>}
           {successMsg && <div style={{ color: '#5cb85c', marginBottom: '15px', fontWeight: 'bold' }}>{successMsg}</div>}
-          
-          {mode === 'login' ? (
+
+          {mode === 'forgot' ? (
+            <form className="auth-form" onSubmit={handleForgotSubmit}>
+              <p style={{ marginTop: 0, fontSize: '0.9rem', color: '#666' }}>
+                Enter your account email and we'll send you a link to set a new password.
+              </p>
+              <div className="form-group custom-placeholder">
+                <input
+                  type="email"
+                  placeholder=" "
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
+                  required
+                />
+                <label>Email <span className="req">*</span></label>
+              </div>
+
+              {resetLink && (
+                <div style={{ margin: '4px 0 14px', fontSize: '0.82rem', wordBreak: 'break-all' }}>
+                  Dev link:{' '}
+                  <Link
+                    to={resetLink.replace(/^https?:\/\/[^/]+/, '')}
+                    className="auth-link"
+                    onClick={onClose}
+                  >
+                    {resetLink}
+                  </Link>
+                </div>
+              )}
+
+              <button type="submit" className="auth-submit-btn" disabled={busy}>
+                {busy ? 'Sending…' : 'Send reset link'}
+              </button>
+
+              <div className="form-links">
+                <a href="#login" className="auth-link" onClick={goTo('login')}>
+                  ← Back to sign in
+                </a>
+              </div>
+            </form>
+          ) : mode === 'login' ? (
             <form className="auth-form" onSubmit={handleLoginSubmit}>
               <div className="form-group custom-placeholder">
                 <input 
@@ -146,7 +219,7 @@ const AuthDrawer = ({ isOpen, onClose }) => {
               </div>
 
               <div className="form-links">
-                <a href="#forgot" className="auth-link">Forgot your password?</a>
+                <a href="#forgot" className="auth-link" onClick={goTo('forgot')}>Forgot your password?</a>
               </div>
 
               <button type="submit" className="auth-submit-btn" disabled={busy}>

@@ -20,6 +20,8 @@ const schema = z.object({
   // Comma-separated whitelist of allowed browser origins for CORS.
   CORS_ORIGINS: z.string().default('http://localhost:5173'),
   COOKIE_DOMAIN: z.string().optional(),
+  // Public URL of the storefront — used to build password-reset links in emails.
+  APP_URL: z.string().url().default('http://localhost:5173'),
 
   RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(15 * 60 * 1000),
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(100),

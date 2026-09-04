@@ -28,4 +28,21 @@ const changePasswordSchema = z.object({
   }),
 })
 
-module.exports = { registerSchema, loginSchema, changePasswordSchema }
+const forgotPasswordSchema = z.object({
+  body: z.object({ email }),
+})
+
+const resetPasswordSchema = z.object({
+  body: z.object({
+    token: z.string().min(16, 'Invalid reset token'),
+    password,
+  }),
+})
+
+module.exports = {
+  registerSchema,
+  loginSchema,
+  changePasswordSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+}

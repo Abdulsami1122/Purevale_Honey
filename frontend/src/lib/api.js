@@ -79,6 +79,10 @@ export const api = {
   me: () => request('/api/auth/me'),
   changePassword: (currentPassword, newPassword) =>
     request('/api/auth/password', { method: 'PATCH', body: { currentPassword, newPassword } }),
+  forgotPassword: (email) =>
+    request('/api/auth/forgot-password', { method: 'POST', body: { email } }),
+  resetPassword: (token, password) =>
+    request('/api/auth/reset-password', { method: 'POST', body: { token, password } }),
 
   // ---- products ----
   listProducts: (params) => request(`/api/products${qs(params)}`),

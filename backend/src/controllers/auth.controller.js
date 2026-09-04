@@ -4,7 +4,7 @@ const { sendSuccess } = require('../utils/apiResponse')
 const env = require('../config/env')
 const authService = require('../services/auth.service')
 const tokenService = require('../services/token.service')
-const { sendWelcomeEmail } = require('../services/email.service')
+const { sendWelcomeEmail, sendPasswordResetEmail } = require('../services/email.service')
 
 const cookieBase = {
   httpOnly: true,
@@ -77,4 +77,34 @@ const changePassword = asyncHandler(async (req, res) => {
   sendSuccess(res, 200, 'Password changed — please sign in again')
 })
 
-module.exports = { register, login, refresh, logout, me, changePassword }
+const GENERIC_RESET_MSG = 'If an account exists for that email, a reset link has been sent'
+
+const forgotPassword = asyncHandler(async (req, res) => {
+  const result = await authService.createPasswordReset(req.body)
+  if (result) {
+    const resetUrl = `${env.APP_URL}/reset-password?token=${result.rawToken}`
+    sendPasswordResetEmail(result.user, resetUrl).catch(() => {})
+    // Dev convenience: return the link so it's usable without a real mail server.
+    if (!env.isProd) {
+      return sendSuccess(res, 200, GENERIC_RESET_MSG, { resetUrl })
+    }
+  }
+  sendSuccess(res, 200, GENERIC_RESET_MSG)
+})
+
+const resetPassword = asyncHandler(async (req, res) => {
+  await authService.resetPasswordWithToken(req.body)
+  clearAuthCookies(res)
+  sendSuccess(res, 200, 'Password updated — please sign in with your new password')
+})
+
+module.exports = {
+  register,
+  login,
+  refresh,
+  logout,
+  me,
+  changePassword,
+  forgotPassword,
+  resetPassword,
+}

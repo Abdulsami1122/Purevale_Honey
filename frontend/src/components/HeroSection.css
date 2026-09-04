@@ -87,8 +87,15 @@
 }
 
 @media (max-width: 600px) {
+  /* shorter hero so the video ends above the fixed bottom nav bar */
+  .hero {
+    min-height: 72vh;
+    padding: 1.25rem 1rem 1.75rem;
+  }
+
+  /* nudge the overlay text further up */
   .hero-content {
-    transform: translateY(-2.25rem);
+    transform: translateY(-3.5rem);
   }
 
   .hero-buttons {

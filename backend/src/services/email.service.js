@@ -21,4 +21,16 @@ const sendOrderConfirmationEmail = (user, order) =>
     text: `Thanks ${user.name}, we've received your order totalling ${order.total}.`,
   })
 
-module.exports = { sendEmail, sendWelcomeEmail, sendOrderConfirmationEmail }
+const sendPasswordResetEmail = (user, resetUrl) =>
+  sendEmail({
+    to: user.email,
+    subject: 'Reset your Purevale Honey password',
+    text: `Hi ${user.name}, use this link to reset your password (valid for 1 hour): ${resetUrl}`,
+  })
+
+module.exports = {
+  sendEmail,
+  sendWelcomeEmail,
+  sendOrderConfirmationEmail,
+  sendPasswordResetEmail,
+}
