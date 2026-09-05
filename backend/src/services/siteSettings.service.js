@@ -51,6 +51,24 @@ async function getSettings() {
   return deepMerge(DEFAULTS, await readStored())
 }
 
+// Nav categories are just links, but admins think of them as "creating a
+// category" — so make sure a real Category row exists for each one, which is
+// what the product-form dropdown and /:slug storefront pages read from.
+async function syncCategoriesFromNav(extraNavCategories) {
+  if (!Array.isArray(extraNavCategories)) return
+  const names = [...new Set(extraNavCategories.map((c) => c?.label?.trim()).filter(Boolean))]
+  // Sequential + case-insensitive lookup so "Jams" doesn't create a duplicate
+  // of an existing "jams" (Postgres unique constraints are case-sensitive).
+  for (const name of names) {
+    const existing = await prisma.category.findFirst({
+      where: { name: { equals: name, mode: 'insensitive' } },
+    })
+    if (!existing) {
+      await prisma.category.create({ data: { name } }).catch(() => {})
+    }
+  }
+}
+
 async function updateSettings(patch) {
   const next = deepMerge(await readStored(), patch && typeof patch === 'object' ? patch : {})
   await prisma.siteSetting.upsert({
@@ -58,6 +76,9 @@ async function updateSettings(patch) {
     create: { key: KEY, data: next },
     update: { data: next },
   })
+  if (patch && Array.isArray(patch.extraNavCategories)) {
+    await syncCategoriesFromNav(patch.extraNavCategories)
+  }
   return deepMerge(DEFAULTS, next)
 }
 

@@ -21,6 +21,7 @@ import AboutPage from './pages/AboutPage'
 import ContactPage from './pages/ContactPage'
 import MyOrdersPage from './pages/MyOrdersPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
+import CategoryPage from './pages/CategoryPage'
 import FaqPage from './pages/FaqPage'
 import ReturnPolicyPage from './pages/ReturnPolicyPage'
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage'
@@ -101,6 +102,9 @@ function Shell() {
             <Route path="settings" element={<AdminSettings />} />
             <Route path="submissions" element={<AdminSubmissions />} />
           </Route>
+
+          {/* Admin-created categories (e.g. /achar) — any unmatched single segment */}
+          <Route path="/:slug" element={<CategoryPage />} />
 
           {/* Fallback */}
           <Route path="*" element={<HomePage />} />

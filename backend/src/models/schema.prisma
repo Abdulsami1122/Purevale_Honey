@@ -77,6 +77,11 @@ model Product {
   name        String
   description String
   price       Decimal  @db.Decimal(10, 2)
+  // percentage off, 0 = no discount
+  discountPercent Int   @default(0)
+  // admin-set display rating + review count (independent of real Review rows)
+  rating      Float    @default(0)
+  reviewCount Int      @default(0)
   // weight / size variants, e.g. [{ "label": "500g", "price": 1200 }]
   variants    Json     @default("[]")
   stock       Int      @default(0)

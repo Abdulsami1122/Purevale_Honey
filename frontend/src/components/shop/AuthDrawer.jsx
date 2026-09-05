@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { X } from 'lucide-react';
 import { useAdminAuth } from '../../admin/AdminAuthContext';
 import api, { errorMessage } from '../../lib/api';
@@ -20,7 +20,6 @@ const AuthDrawer = ({ isOpen, onClose }) => {
 
   // Forgot-password State
   const [forgotEmail, setForgotEmail] = useState('');
-  const [resetLink, setResetLink] = useState('');
 
   // Shared State
   const [error, setError] = useState('');
@@ -34,13 +33,16 @@ const AuthDrawer = ({ isOpen, onClose }) => {
     e.preventDefault();
     setError('');
     setSuccessMsg('');
-    setResetLink('');
     setBusy(true);
     try {
       const res = await api.forgotPassword(forgotEmail.trim());
-      setSuccessMsg('If an account exists for that email, a reset link has been sent.');
-      // In development the backend returns the link directly (no mail server).
-      if (res && res.resetUrl) setResetLink(res.resetUrl);
+      if (res && res.resetUrl) {
+        // No real mail server yet — go straight to the "set new password" screen.
+        onClose();
+        navigate(res.resetUrl.replace(/^https?:\/\/[^/]+/, ''));
+      } else {
+        setSuccessMsg('If an account exists for that email, a reset link has been sent.');
+      }
     } catch (err) {
       setError(errorMessage(err) || 'Could not start password reset');
     } finally {
@@ -113,7 +115,6 @@ const AuthDrawer = ({ isOpen, onClose }) => {
       setSuccessMsg('');
       setPassword('');
       setRegPassword('');
-      setResetLink('');
       setMode('login');
     }
     return () => {
@@ -135,7 +136,6 @@ const AuthDrawer = ({ isOpen, onClose }) => {
     e.preventDefault();
     setError('');
     setSuccessMsg('');
-    setResetLink('');
     setMode(next);
   };
 
@@ -171,19 +171,6 @@ const AuthDrawer = ({ isOpen, onClose }) => {
                 />
                 <label>Email <span className="req">*</span></label>
               </div>
-
-              {resetLink && (
-                <div style={{ margin: '4px 0 14px', fontSize: '0.82rem', wordBreak: 'break-all' }}>
-                  Dev link:{' '}
-                  <Link
-                    to={resetLink.replace(/^https?:\/\/[^/]+/, '')}
-                    className="auth-link"
-                    onClick={onClose}
-                  >
-                    {resetLink}
-                  </Link>
-                </div>
-              )}
 
               <button type="submit" className="auth-submit-btn" disabled={busy}>
                 {busy ? 'Sending…' : 'Send reset link'}

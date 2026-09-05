@@ -14,7 +14,15 @@ const listCategories = asyncHandler(async (_req, res) => {
 
 // POST /api/categories  (admin)
 const createCategory = asyncHandler(async (req, res) => {
-  const category = await prisma.category.create({ data: { name: req.body.name } })
+  const name = req.body.name.trim()
+  // Case-insensitive existence check — Postgres unique constraints are
+  // case-sensitive, so without this "Jams" and "jams" would both be created.
+  const existing = await prisma.category.findFirst({
+    where: { name: { equals: name, mode: 'insensitive' } },
+  })
+  if (existing) return sendSuccess(res, 200, 'Category already exists', { category: existing })
+
+  const category = await prisma.category.create({ data: { name } })
   sendSuccess(res, 201, 'Category created', { category })
 })
 

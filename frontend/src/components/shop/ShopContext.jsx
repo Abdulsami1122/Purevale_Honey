@@ -22,6 +22,14 @@ const BASE_COLLECTIONS = {
 
 export const COLLECTION_KEYS = Object.keys(BASE_COLLECTIONS)
 
+// "Achar Special" -> "achar-special"
+export const slugify = (value = '') =>
+  String(value)
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
+
 // Map a backend category name to one of the 5 storefront collection slugs.
 const toCollectionKey = (name = '') => {
   const n = String(name).toLowerCase()
@@ -31,6 +39,7 @@ const toCollectionKey = (name = '') => {
 // Backend product -> the shape the storefront components expect.
 const adaptProduct = (p) => {
   const variantObjs = Array.isArray(p.variants) ? p.variants : []
+  const categoryName = p.category?.name || ''
   return {
     id: p.id,
     title: p.name,
@@ -40,9 +49,9 @@ const adaptProduct = (p) => {
     priceMin: Number(p.price) || 0,
     priceMax: null,
     compareAt: null,
-    discountPercent: 0,
-    rating: p.ratingAverage ?? 0,
-    reviews: p._count?.reviews ?? p.ratingCount ?? 0,
+    discountPercent: Number(p.discountPercent) || 0,
+    rating: Number(p.rating) || p.ratingAverage || 0,
+    reviews: Number(p.reviewCount) || p._count?.reviews || p.ratingCount || 0,
     available: (p.stock ?? 0) > 0,
     stock: p.stock ?? 0,
     variants: variantObjs.length
@@ -53,15 +62,17 @@ const adaptProduct = (p) => {
         .filter((v) => v && typeof v === 'object' && v.price != null)
         .map((v) => [v.label, Number(v.price)]),
     ),
-    collection: toCollectionKey(p.category?.name || ''),
+    collection: toCollectionKey(categoryName),
     categoryId: p.categoryId || p.category?.id || null,
+    categoryName,
+    categorySlug: slugify(categoryName),
     featured: 0,
   }
 }
 
 const WISHLIST_STORAGE_KEY = 'purevale_wishlist'
 const CART_STORAGE_KEY = 'purevale_cart'
-const PRODUCTS_CACHE_KEY = 'dh_products_cache_v2'
+const PRODUCTS_CACHE_KEY = 'dh_products_cache_v3'
 const SITE_SETTINGS_CACHE_KEY = 'dh_site_settings_cache'
 
 const readCachedSiteSettings = () => {

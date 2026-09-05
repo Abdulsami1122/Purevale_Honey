@@ -7,8 +7,10 @@ import './admin.css'
 
 const EMPTY = {
   name: '',
-  description: '',
   price: '',
+  discountPercent: '0',
+  rating: '0',
+  reviewCount: '0',
   stock: '0',
   categoryId: '',
   image: '',
@@ -17,8 +19,10 @@ const EMPTY = {
 
 const toForm = (p) => ({
   name: p.name || '',
-  description: p.description || '',
   price: p.price ?? '',
+  discountPercent: p.discountPercent ?? 0,
+  rating: p.rating ?? 0,
+  reviewCount: p.reviewCount ?? 0,
   stock: p.stock ?? 0,
   categoryId: p.categoryId || p.category?.id || '',
   image: Array.isArray(p.images) ? p.images[0] || '' : '',
@@ -57,6 +61,8 @@ const AdminProducts = () => {
   const [editingId, setEditingId] = useState(null)
   const [form, setForm] = useState(EMPTY)
   const [saving, setSaving] = useState(false)
+  const [newCat, setNewCat] = useState('')
+  const [addingCat, setAddingCat] = useState(false)
 
   const load = () => {
     setLoading(true)
@@ -89,6 +95,24 @@ const AdminProducts = () => {
 
   const update = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }))
 
+  const addCategory = async () => {
+    const name = newCat.trim()
+    if (!name) return
+    setAddingCat(true)
+    setError('')
+    try {
+      const { category } = await api.createCategory(name)
+      const next = [...categories, category].sort((a, b) => a.name.localeCompare(b.name))
+      setCategories(next)
+      setForm((f) => ({ ...f, categoryId: category.id }))
+      setNewCat('')
+    } catch (err) {
+      setError(errorMessage(err))
+    } finally {
+      setAddingCat(false)
+    }
+  }
+
   const chooseImage = async (e) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -108,8 +132,8 @@ const AdminProducts = () => {
 
   const submit = async (e) => {
     e.preventDefault()
-    if (!form.name.trim() || !form.description.trim() || form.price === '') {
-      setError('Name, description and price are required')
+    if (!form.name.trim() || form.price === '') {
+      setError('Name and price are required')
       return
     }
     setSaving(true)
@@ -122,8 +146,10 @@ const AdminProducts = () => {
       }
       const payload = {
         name: form.name.trim(),
-        description: form.description.trim(),
         price: Number(form.price),
+        discountPercent: Math.max(0, Math.min(95, Math.round(Number(form.discountPercent) || 0))),
+        rating: Math.max(0, Math.min(5, Number(form.rating) || 0)),
+        reviewCount: Math.max(0, Math.round(Number(form.reviewCount) || 0)),
         stock: Number(form.stock) || 0,
         categoryId: form.categoryId || null,
         images: imageUrl ? [imageUrl] : [],
@@ -167,7 +193,7 @@ const AdminProducts = () => {
 
       <p className="admin-hint">
         Products are stored on the server and appear on the storefront home page and their category
-        page. {categories.length === 0 && 'Create a category first (Categories tab).'}
+        page. {categories.length === 0 && 'No categories exist yet — open /admin/categories to add one.'}
       </p>
 
       {error && !modalOpen && <div className="admin-alert">{error}</div>}
@@ -198,7 +224,19 @@ const AdminProducts = () => {
                     </div>
                   </td>
                   <td>{p.category?.name || catName(p.categoryId)}</td>
-                  <td>{formatPrice(p.price)}</td>
+                  <td>
+                    {formatPrice(p.price)}
+                    {p.discountPercent > 0 && (
+                      <span className="admin-badge admin-badge-paid" style={{ marginLeft: 6 }}>
+                        -{p.discountPercent}%
+                      </span>
+                    )}
+                    {p.reviewCount > 0 && (
+                      <div style={{ fontSize: '0.72rem', color: '#888' }}>
+                        ★ {p.rating} · {p.reviewCount} reviews
+                      </div>
+                    )}
+                  </td>
                   <td>
                     <span className={`admin-badge admin-badge-${p.stock > 0 ? 'delivered' : 'cancelled'}`}>
                       {p.stock > 0 ? `${p.stock} in stock` : 'Sold out'}
@@ -237,12 +275,7 @@ const AdminProducts = () => {
                 <input type="text" value={form.name} onChange={update('name')} required placeholder="Wildflower Raw Honey" />
               </label>
 
-              <label className="admin-input-group admin-col-full">
-                <span>Description *</span>
-                <textarea rows="3" value={form.description} onChange={update('description')} required placeholder="Short product description" />
-              </label>
-
-              <label className="admin-input-group">
+              <div className="admin-input-group admin-col-full">
                 <span>Category</span>
                 <select value={form.categoryId} onChange={update('categoryId')}>
                   <option value="">— none —</option>
@@ -250,7 +283,21 @@ const AdminProducts = () => {
                     <option key={c.id} value={c.id}>{c.name}</option>
                   ))}
                 </select>
-              </label>
+                <div className="admin-inline-add">
+                  <input
+                    type="text"
+                    value={newCat}
+                    onChange={(e) => setNewCat(e.target.value)}
+                    placeholder="…or type a new category name"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') { e.preventDefault(); addCategory() }
+                    }}
+                  />
+                  <button type="button" className="admin-btn" onClick={addCategory} disabled={addingCat || !newCat.trim()}>
+                    <Plus size={14} /> Add
+                  </button>
+                </div>
+              </div>
 
               <label className="admin-input-group admin-image-picker">
                 <span>Product image</span>
@@ -262,6 +309,21 @@ const AdminProducts = () => {
               <label className="admin-input-group">
                 <span>Price (Rs.) *</span>
                 <input type="number" min="0" step="0.01" value={form.price} onChange={update('price')} required placeholder="850" />
+              </label>
+
+              <label className="admin-input-group">
+                <span>Discount %</span>
+                <input type="number" min="0" max="95" step="1" value={form.discountPercent} onChange={update('discountPercent')} placeholder="0" />
+              </label>
+
+              <label className="admin-input-group">
+                <span>Rating (0–5)</span>
+                <input type="number" min="0" max="5" step="0.1" value={form.rating} onChange={update('rating')} placeholder="0" />
+              </label>
+
+              <label className="admin-input-group">
+                <span>Review count</span>
+                <input type="number" min="0" step="1" value={form.reviewCount} onChange={update('reviewCount')} placeholder="0" />
               </label>
 
               <label className="admin-input-group">
