@@ -122,6 +122,11 @@ export const ShopProvider = ({ children }) => {
   const [cart, setCart] = useState(readStoredCart)
   const [adminProducts, setAdminProducts] = useState(readCachedProducts)
   const [siteSettings, setSiteSettings] = useState(readCachedSiteSettings)
+  // Lets any component (e.g. the home page testimonials CTA) open the header's
+  // sign-in drawer without prop-drilling.
+  const [authDrawerOpen, setAuthDrawerOpen] = useState(false)
+  const openAuthDrawer = useCallback(() => setAuthDrawerOpen(true), [])
+  const closeAuthDrawer = useCallback(() => setAuthDrawerOpen(false), [])
 
   // Keep the wishlist so it survives a page reload
   useEffect(() => {
@@ -293,6 +298,9 @@ export const ShopProvider = ({ children }) => {
       refreshProducts,
       siteSettings,
       refreshSiteSettings,
+      authDrawerOpen,
+      openAuthDrawer,
+      closeAuthDrawer,
     }),
     [
       wishlist,
@@ -311,6 +319,9 @@ export const ShopProvider = ({ children }) => {
       refreshProducts,
       siteSettings,
       refreshSiteSettings,
+      authDrawerOpen,
+      openAuthDrawer,
+      closeAuthDrawer,
     ],
   )
 

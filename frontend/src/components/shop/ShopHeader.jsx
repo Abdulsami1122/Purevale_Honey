@@ -50,11 +50,10 @@ const ShopHeader = () => {
   const [announcementOpen, setAnnouncementOpen] = useState(true)
   const [currentMsgIndex, setCurrentMsgIndex] = useState(0)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
-  const [authOpen, setAuthOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [cartOpen, setCartOpen] = useState(false)
   const [scrollState, setScrollState] = useState('top') // 'top' | 'down' | 'up'
-  const { wishlist, cartCount, siteSettings } = useShop()
+  const { wishlist, cartCount, siteSettings, authDrawerOpen, openAuthDrawer, closeAuthDrawer } = useShop()
   const { isAuthed, user, logout } = useAdminAuth()
   const [accountMenuOpen, setAccountMenuOpen] = useState(false)
   const accountRef = useRef(null)
@@ -80,7 +79,7 @@ const ShopHeader = () => {
 
   const handleAccountClick = () => {
     if (isAuthed) setAccountMenuOpen((v) => !v)
-    else setAuthOpen(true)
+    else openAuthDrawer()
   }
 
   const firstName = (user?.name || '').trim().split(/\s+/)[0] || 'Account'
@@ -137,7 +136,7 @@ const ShopHeader = () => {
     if (mobileNavOpen) {
       document.body.classList.add('auth-drawer-open')
       document.documentElement.classList.add('auth-drawer-open')
-    } else if (!authOpen && !searchOpen && !cartOpen) {
+    } else if (!authDrawerOpen && !searchOpen && !cartOpen) {
       document.body.classList.remove('auth-drawer-open')
       document.documentElement.classList.remove('auth-drawer-open')
     }
@@ -349,7 +348,7 @@ const ShopHeader = () => {
             <span>{firstName}</span>
           </Link>
         ) : (
-          <button type="button" className="bottom-nav-item" onClick={() => setAuthOpen(true)}>
+          <button type="button" className="bottom-nav-item" onClick={openAuthDrawer}>
             <User size={22} strokeWidth={1.7} />
             <span>Account</span>
           </button>
@@ -414,7 +413,7 @@ const ShopHeader = () => {
         </>
       )}
 
-      <AuthDrawer isOpen={authOpen} onClose={() => setAuthOpen(false)} />
+      <AuthDrawer isOpen={authDrawerOpen} onClose={closeAuthDrawer} />
       <SearchDrawer isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
       <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
     </>

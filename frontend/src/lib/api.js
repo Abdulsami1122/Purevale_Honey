@@ -119,6 +119,13 @@ export const api = {
     request(`/api/reviews/product/${productId}`, { method: 'PUT', body: payload }),
   deleteReview: (id) => request(`/api/reviews/${id}`, { method: 'DELETE' }),
 
+  // ---- testimonials (public list, admin-managed) ----
+  listTestimonials: () => request('/api/testimonials'),
+  createTestimonial: (payload) => request('/api/testimonials', { method: 'POST', body: payload }),
+  updateTestimonial: (id, payload) =>
+    request(`/api/testimonials/${id}`, { method: 'PATCH', body: payload }),
+  deleteTestimonial: (id) => request(`/api/testimonials/${id}`, { method: 'DELETE' }),
+
   // ---- admin ----
   adminStats: () => request('/api/admin/stats'),
   adminListUsers: (params) => request(`/api/admin/users${qs(params)}`),

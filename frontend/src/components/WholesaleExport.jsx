@@ -7,6 +7,7 @@ const WholesaleExport = () => {
   const [formData, setFormData] = useState({
     companyName: '',
     email: '',
+    phone: '',
     destination: '',
     product: '',
     message: ''
@@ -25,7 +26,7 @@ const WholesaleExport = () => {
       const { companyName, ...rest } = formData;
       await api.submitExportInquiry({ ...rest, company: companyName });
       setStatus('success');
-      setFormData({ companyName: '', email: '', destination: '', product: '', message: '' });
+      setFormData({ companyName: '', email: '', phone: '', destination: '', product: '', message: '' });
     } catch (error) {
       console.error('Error submitting inquiry:', error);
       setStatus('error');
@@ -79,6 +80,9 @@ const WholesaleExport = () => {
               </div>
               <div className="form-group">
                 <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email Address" required />
+              </div>
+              <div className="form-group">
+                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="Contact Number" required />
               </div>
               <div className="form-group">
                 <select name="destination" value={formData.destination} onChange={handleChange} required>

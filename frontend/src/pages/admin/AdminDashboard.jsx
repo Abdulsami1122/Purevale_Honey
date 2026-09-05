@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ShoppingCart, Package, Wallet, Clock, Users, AlertTriangle } from 'lucide-react'
+import { ShoppingCart, Package, Wallet, Clock, Users } from 'lucide-react'
 import api from '../../lib/api'
 import { formatPrice } from '../../data/products'
 import './admin.css'
@@ -12,6 +12,8 @@ const STATUS_LABEL = {
   delivered: 'Delivered',
   cancelled: 'Cancelled',
 }
+
+const stockTone = (stock) => (stock === 0 ? 'cancelled' : stock <= 5 ? 'pending' : 'delivered')
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState(null)
@@ -31,9 +33,13 @@ const AdminDashboard = () => {
     { label: 'Revenue (paid+)', value: formatPrice(stats.revenue), icon: Wallet },
     { label: 'Orders', value: stats.orders, icon: ShoppingCart },
     { label: 'Pending orders', value: stats.pendingOrders, icon: Clock },
-    { label: 'Products', value: stats.products, icon: Package },
+    { label: 'Total products', value: stats.products, icon: Package },
     { label: 'Customers', value: stats.users, icon: Users },
   ]
+
+  const revenueByDay = stats.revenueByDay || []
+  const maxRevenue = Math.max(1, ...revenueByDay.map((d) => d.revenue))
+  const productStock = stats.productStock || []
 
   return (
     <div className="admin-page-inner">
@@ -51,6 +57,29 @@ const AdminDashboard = () => {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="admin-panel">
+        <h2 className="admin-h2">Revenue — last 7 days</h2>
+        {revenueByDay.every((d) => d.revenue === 0) ? (
+          <p className="admin-empty">No paid orders in the last 7 days.</p>
+        ) : (
+          <div className="admin-chart">
+            {revenueByDay.map((d) => (
+              <div className="admin-chart-col" key={d.date}>
+                <span className="admin-chart-value">{d.revenue > 0 ? formatPrice(d.revenue) : ''}</span>
+                <div
+                  className="admin-chart-bar"
+                  style={{ height: `${Math.max(4, (d.revenue / maxRevenue) * 100)}%` }}
+                  title={`${d.date}: ${formatPrice(d.revenue)}`}
+                />
+                <span className="admin-chart-label">
+                  {new Date(d.date).toLocaleDateString(undefined, { weekday: 'short' })}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="admin-panel">
@@ -90,35 +119,41 @@ const AdminDashboard = () => {
 
       <div className="admin-panel">
         <div className="admin-panel-head">
-          <h2 className="admin-h2">
-            <AlertTriangle size={16} strokeWidth={1.9} style={{ verticalAlign: '-2px', marginRight: 6 }} />
-            Low stock
-          </h2>
+          <h2 className="admin-h2">Product stock ({productStock.length})</h2>
           <Link to="/admin/products" className="admin-link">Manage products</Link>
         </div>
-        {stats.lowStock.length === 0 ? (
-          <p className="admin-empty">Nothing running low.</p>
+        {productStock.length === 0 ? (
+          <p className="admin-empty">No products yet.</p>
         ) : (
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Product</th>
-                <th className="admin-ta-right">Stock left</th>
-              </tr>
-            </thead>
-            <tbody>
-              {stats.lowStock.map((p) => (
-                <tr key={p.id}>
-                  <td>{p.name}</td>
-                  <td className="admin-ta-right">
-                    <span className={`admin-badge admin-badge-${p.stock === 0 ? 'cancelled' : 'pending'}`}>
-                      {p.stock}
-                    </span>
-                  </td>
+          <div className="admin-scroll-table">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Category</th>
+                  <th className="admin-ta-right">Stock</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {productStock.map((p) => (
+                  <tr key={p.id}>
+                    <td>
+                      <div className="admin-cell-product">
+                        <img src={p.images?.[0] || '/honey-jar.jpg'} alt={p.name} />
+                        <span>{p.name}</span>
+                      </div>
+                    </td>
+                    <td>{p.category?.name || '—'}</td>
+                    <td className="admin-ta-right">
+                      <span className={`admin-badge admin-badge-${stockTone(p.stock)}`}>
+                        {p.stock === 0 ? 'Out of stock' : `${p.stock} left`}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

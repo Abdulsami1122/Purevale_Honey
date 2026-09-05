@@ -844,3 +844,52 @@
   font-size: 0.85rem;
 }
 .admin-inline-add .admin-btn { width: auto; white-space: nowrap; }
+
+.admin-chart-value {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--a-primary);
+  white-space: nowrap;
+}
+
+.admin-scroll-table {
+  max-height: 420px;
+  overflow-y: auto;
+  border-radius: 8px;
+}
+.admin-scroll-table .admin-table thead th {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 1;
+}
+
+.admin-star-picker { display: flex; gap: 0.25rem; }
+.admin-star-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--a-accent);
+  padding: 0.15rem;
+}
+.admin-star-btn:hover { transform: scale(1.1); }
+
+.admin-avatar-fallback {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--a-primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.admin-image-preview-round {
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+}

@@ -13,12 +13,13 @@ const createContact = asyncHandler(async (req, res) => {
 
 // POST /api/submissions/export  (public)
 const createExport = asyncHandler(async (req, res) => {
-  const { name, company, email, destination, product, message } = req.body
+  const { name, company, email, phone, destination, product, message } = req.body
   const submission = await prisma.submission.create({
     data: {
       type: 'export',
       name: name || company,
       email,
+      phone,
       company,
       destination,
       product,

@@ -3,6 +3,33 @@ const ApiError = require('../utils/ApiError')
 const { sendSuccess } = require('../utils/apiResponse')
 const { prisma, paginate, paginatedResult } = require('../models')
 
+const DAY_MS = 24 * 60 * 60 * 1000
+const PAID_STATUSES = ['paid', 'shipped', 'delivered']
+
+// Revenue for each of the last 7 days (today inclusive), zero-filled.
+async function getRevenueByDay() {
+  const since = new Date(Date.now() - 6 * DAY_MS)
+  since.setHours(0, 0, 0, 0)
+
+  const orders = await prisma.order.findMany({
+    where: { status: { in: PAID_STATUSES }, createdAt: { gte: since } },
+    select: { total: true, createdAt: true },
+  })
+
+  const days = Array.from({ length: 7 }, (_, i) => {
+    const date = new Date(since.getTime() + i * DAY_MS).toISOString().slice(0, 10)
+    return { date, revenue: 0 }
+  })
+  const byDate = Object.fromEntries(days.map((d) => [d.date, d]))
+
+  for (const order of orders) {
+    const key = order.createdAt.toISOString().slice(0, 10)
+    if (byDate[key]) byDate[key].revenue += Number(order.total)
+  }
+
+  return days
+}
+
 // GET /api/admin/stats
 const dashboardStats = asyncHandler(async (_req, res) => {
   const [
@@ -11,28 +38,34 @@ const dashboardStats = asyncHandler(async (_req, res) => {
     orderCount,
     pendingOrders,
     revenueAgg,
-    lowStock,
+    productStock,
     recentOrders,
+    revenueByDay,
   ] = await Promise.all([
     prisma.user.count(),
     prisma.product.count(),
     prisma.order.count(),
     prisma.order.count({ where: { status: 'pending' } }),
     prisma.order.aggregate({
-      where: { status: { in: ['paid', 'shipped', 'delivered'] } },
+      where: { status: { in: PAID_STATUSES } },
       _sum: { total: true },
     }),
     prisma.product.findMany({
-      where: { stock: { lte: 5 } },
       orderBy: { stock: 'asc' },
-      take: 10,
-      select: { id: true, name: true, stock: true },
+      select: {
+        id: true,
+        name: true,
+        stock: true,
+        images: true,
+        category: { select: { name: true } },
+      },
     }),
     prisma.order.findMany({
       orderBy: { createdAt: 'desc' },
       take: 10,
       include: { user: { select: { id: true, name: true, email: true } } },
     }),
+    getRevenueByDay(),
   ])
 
   sendSuccess(res, 200, 'Dashboard stats', {
@@ -42,8 +75,9 @@ const dashboardStats = asyncHandler(async (_req, res) => {
       orders: orderCount,
       pendingOrders,
       revenue: Number(revenueAgg._sum.total || 0),
-      lowStock,
+      productStock,
       recentOrders,
+      revenueByDay,
     },
   })
 })

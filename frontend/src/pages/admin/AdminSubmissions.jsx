@@ -59,12 +59,13 @@ const AdminSubmissions = () => {
           <p className="admin-empty">No submissions yet.</p>
         ) : tab === 'export' ? (
           <table className="admin-table">
-            <thead><tr><th>Date</th><th>Company</th><th>Email</th><th>Destination</th><th>Product</th><th>Message</th></tr></thead>
+            <thead><tr><th>Date</th><th>Company</th><th>Email</th><th>Phone</th><th>Destination</th><th>Product</th><th>Message</th></tr></thead>
             <tbody>{rows.map((row) => (
               <tr key={row.id}>
                 <td>{formatDate(row.createdAt)}</td>
                 <td>{row.company || row.name}</td>
                 <td><a href={`mailto:${row.email}`}>{row.email}</a></td>
+                <td>{row.phone || '—'}</td>
                 <td>{row.destination}</td>
                 <td>{row.product}</td>
                 <td className="admin-submission-message">{row.message || '—'}</td>
