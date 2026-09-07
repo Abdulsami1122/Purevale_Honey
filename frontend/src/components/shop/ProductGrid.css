@@ -35,14 +35,16 @@
 
 @media (max-width: 768px) {
   .product-grid {
-    grid-template-columns: repeat(var(--cols, 2), 1fr);
+    /* max 2 across on phones no matter what --cols asks for
+       (a 1-column "list view", where offered, still works) */
+    grid-template-columns: repeat(min(var(--cols, 2), 2), 1fr);
     gap: 1.25rem 0.85rem;
   }
 }
 
 @media (max-width: 480px) {
   .product-grid {
-    grid-template-columns: repeat(var(--cols, 2), 1fr);
+    grid-template-columns: repeat(min(var(--cols, 2), 2), 1fr);
     gap: 1rem 0.65rem;
   }
 }

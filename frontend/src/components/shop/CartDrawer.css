@@ -146,6 +146,7 @@
   padding: 0.25rem;
   display: flex;
   align-items: center;
+  justify-content: center;
   transition: color 0.15s ease;
 }
 
@@ -253,4 +254,45 @@
 
 .cart-continue-btn:hover {
   filter: brightness(1.06);
+}
+
+/* ---- Phone layout: keep the delete button reachable & tappable ---- */
+@media (max-width: 600px) {
+  .cart-drawer-body {
+    padding: 0.5rem 1rem;
+  }
+
+  /* 2-column line; the subtotal drops to its own row so the controls
+     (qty stepper + delete) get the full width and never overflow/clip */
+  .cart-line {
+    grid-template-columns: 60px 1fr;
+    column-gap: 0.8rem;
+    row-gap: 0.35rem;
+  }
+
+  .cart-line-img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .cart-line-subtotal {
+    grid-column: 2;
+    text-align: right;
+  }
+
+  .cart-line-controls {
+    flex-wrap: wrap;
+    gap: 0.5rem 0.6rem;
+  }
+
+  /* proper 40px tap target, clearly visible, pushed to the far right */
+  .cart-line-remove {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    margin-left: auto;
+    border: 1px solid #ecdada;
+    border-radius: 10px;
+    color: #d9342b;
+  }
 }
