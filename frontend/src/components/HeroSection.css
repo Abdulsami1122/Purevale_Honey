@@ -86,6 +86,63 @@
   color: var(--color-green);
 }
 
+/* ---------- hover star burst on the hero buttons ---------- */
+.hero-btn {
+  position: relative;
+  overflow: visible;
+}
+
+.btn-sparkles {
+  position: absolute;
+  inset: -16px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.btn-sparkle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  clip-path: polygon(
+    50% 0%, 60% 40%, 100% 50%, 60% 60%,
+    50% 100%, 40% 60%, 0% 50%, 40% 40%
+  );
+  opacity: 0;
+  transform: scale(0);
+  filter: drop-shadow(0 0 5px #f5c542);
+}
+
+.btn-sparkle:nth-child(3n) { width: 8px; height: 8px; }
+.btn-sparkle:nth-child(1) { top: -6px;  left: 6%; }
+.btn-sparkle:nth-child(2) { top: -2px;  left: 32%; }
+.btn-sparkle:nth-child(3) { top: -10px; left: 66%; }
+.btn-sparkle:nth-child(4) { top: 20%;   left: -8px; }
+.btn-sparkle:nth-child(5) { top: 52%;   right: -8px; }
+.btn-sparkle:nth-child(6) { bottom: -8px; left: 12%; }
+.btn-sparkle:nth-child(7) { bottom: -3px; left: 48%; }
+.btn-sparkle:nth-child(8) { bottom: -9px; left: 80%; }
+
+.hero-btn:hover .btn-sparkle,
+.hero-btn:focus-visible .btn-sparkle {
+  animation: btn-spark 1.3s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * 0.13s);
+}
+
+@keyframes btn-spark {
+  0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+  35%      { opacity: 1; transform: scale(1) rotate(120deg); }
+  65%      { opacity: 0.35; transform: scale(0.55) rotate(200deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-btn:hover .btn-sparkle,
+  .hero-btn:focus-visible .btn-sparkle {
+    animation: none;
+    opacity: 0;
+  }
+}
+
 @media (max-width: 600px) {
   /* shorter hero so the video ends above the fixed bottom nav bar */
   .hero {
