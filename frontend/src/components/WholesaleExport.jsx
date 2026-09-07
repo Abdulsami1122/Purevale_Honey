@@ -87,17 +87,20 @@ const WholesaleExport = () => {
               <div className="form-group">
                 <select name="destination" value={formData.destination} onChange={handleChange} required>
                   <option value="" disabled>Destination Country</option>
-                  <option value="us">United States</option>
-                  <option value="uk">United Kingdom</option>
-                  <option value="other">Other / Worldwide</option>
+                  <option value="Pakistan">Pakistan</option>
+                  <option value="United States">United States</option>
+                  <option value="United Kingdom">United Kingdom</option>
+                  <option value="Other / Worldwide">Other / Worldwide</option>
                 </select>
               </div>
               <div className="form-group">
                 <select name="product" value={formData.product} onChange={handleChange} required>
                   <option value="" disabled>Product of Interest</option>
-                  <option value="honey">Pure Raw Honey</option>
-                  <option value="jaggery">Natural Jaggery</option>
-                  <option value="both">Both</option>
+                  <option value="Pure Raw Honey">Pure Raw Honey</option>
+                  <option value="Natural Jaggery">Natural Jaggery</option>
+                  <option value="Shilajit">Shilajit</option>
+                  <option value="Dates">Dates</option>
+                  <option value="All Products">All Products</option>
                 </select>
               </div>
               <div className="form-group">

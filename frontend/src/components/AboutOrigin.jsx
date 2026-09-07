@@ -16,7 +16,7 @@ const AboutOrigin = () => {
               <img
                 className="origin-image"
                 src={storyImage}
-                alt="Traditional honey and jaggery harvesting in Pakistan"
+                alt="A jar of Durrani Harvest raw honey with a wooden dipper, beside blocks of natural jaggery and wild botanicals"
               />
               <div className="experience-badge">
                 <span className="years">100%</span>
@@ -29,10 +29,23 @@ const AboutOrigin = () => {
             <h4 className="subtitle">Our Story</h4>
             <h2 className="title">Rooted in Tradition. Crafted for the World.</h2>
             <p className="desc">
-              At Durrani Harvest, our journey begins in the lush, fertile landscapes of Pakistan. For generations, traditional farming communities have harvested honey from wild flora and crafted jaggery using time-honored methods. 
+              Durrani Harvest begins where the honey does — in the wildflower meadows and
+              mountain foothills of Pakistan, tended by beekeeping families who have read these
+              landscapes for generations. Our raw honey is lifted straight from the comb, still
+              carrying the scent of the herbs and blossoms it was drawn from, while our jaggery
+              is pressed from freshly cut sugarcane and set into blocks the way village makers
+              have always done it.
             </p>
             <p className="desc">
-              We bridge the gap between these pristine origins and global markets. By combining age-old artisanal techniques with rigorous modern quality standards, we ensure that every product we export—from Lahore to London, from Karachi to New York—delivers an authentic, premium experience.
+              Nothing is over-heated, filtered, or blended into anonymity. Each jar is
+              cold-extracted and hand-poured; every block of gur is unrefined and whole. We keep
+              each batch traceable to the apiary or field it came from — so what reaches your
+              table is exactly what left the farm.
+            </p>
+            <p className="desc">
+              From these origins we carry it outward — from Peshawar to London, from Islamabad to
+              New York. Wherever it travels, the promise stays the same: real Pakistani honey,
+              jaggery, dates and natural harvests, with nothing added and nothing hidden.
             </p>
             
             <div className="stats-grid">
