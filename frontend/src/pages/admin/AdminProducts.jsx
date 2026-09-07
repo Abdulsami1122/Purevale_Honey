@@ -13,36 +13,48 @@ const EMPTY = {
   reviewCount: '0',
   stock: '0',
   categoryId: '',
-  image: '',
+  images: [],
   variants: '',
 }
 
-const toForm = (p) => ({
-  name: p.name || '',
-  price: p.price ?? '',
-  discountPercent: p.discountPercent ?? 0,
-  rating: p.rating ?? 0,
-  reviewCount: p.reviewCount ?? 0,
-  stock: p.stock ?? 0,
-  categoryId: p.categoryId || p.category?.id || '',
-  image: Array.isArray(p.images) ? p.images[0] || '' : '',
-  variants: Array.isArray(p.variants)
-    ? p.variants.map((v) => (typeof v === 'string' ? v : v.label)).join(', ')
-    : '',
-})
+const toForm = (p) => {
+  const existingImages = Array.isArray(p.images) && p.images.length > 0
+    ? p.images
+    : (p.image ? [p.image] : [])
+
+  return {
+    name: p.name || '',
+    price: p.price ?? '',
+    discountPercent: p.discountPercent ?? 0,
+    rating: p.rating ?? 0,
+    reviewCount: p.reviewCount ?? 0,
+    stock: p.stock ?? 0,
+    categoryId: p.categoryId || p.category?.id || '',
+    images: existingImages.map((url) => ({
+      id: Math.random().toString(36).slice(2),
+      url,
+      preview: url,
+      status: 'done',
+    })),
+    variants: Array.isArray(p.variants)
+      ? p.variants.map((v) => (typeof v === 'string' ? v : v.label)).join(', ')
+      : '',
+  }
+}
 
 const readImage = (file) => new Promise((resolve, reject) => {
   const reader = new FileReader()
   reader.onload = () => {
     const image = new Image()
     image.onload = () => {
-      const maxSize = 1200
+      const maxSize = 1000
       const scale = Math.min(1, maxSize / Math.max(image.width, image.height))
       const canvas = document.createElement('canvas')
       canvas.width = Math.max(1, Math.round(image.width * scale))
       canvas.height = Math.max(1, Math.round(image.height * scale))
-      canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height)
-      resolve(canvas.toDataURL('image/jpeg', 0.82))
+      const ctx = canvas.getContext('2d')
+      ctx.drawImage(image, 0, 0, canvas.width, canvas.height)
+      resolve(canvas.toDataURL('image/jpeg', 0.8))
     }
     image.onerror = () => reject(new Error('That image could not be read'))
     image.src = reader.result
@@ -61,8 +73,6 @@ const AdminProducts = () => {
   const [editingId, setEditingId] = useState(null)
   const [form, setForm] = useState(EMPTY)
   const [saving, setSaving] = useState(false)
-  const [newCat, setNewCat] = useState('')
-  const [addingCat, setAddingCat] = useState(false)
 
   const load = () => {
     setLoading(true)
@@ -81,7 +91,7 @@ const AdminProducts = () => {
 
   const openCreate = () => {
     setEditingId(null)
-    setForm({ ...EMPTY, categoryId: categories[0]?.id || '' })
+    setForm({ ...EMPTY, images: [], categoryId: categories[0]?.id || '' })
     setError('')
     setModalOpen(true)
   }
@@ -95,39 +105,68 @@ const AdminProducts = () => {
 
   const update = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }))
 
-  const addCategory = async () => {
-    const name = newCat.trim()
-    if (!name) return
-    setAddingCat(true)
-    setError('')
-    try {
-      const { category } = await api.createCategory(name)
-      const next = [...categories, category].sort((a, b) => a.name.localeCompare(b.name))
-      setCategories(next)
-      setForm((f) => ({ ...f, categoryId: category.id }))
-      setNewCat('')
-    } catch (err) {
-      setError(errorMessage(err))
-    } finally {
-      setAddingCat(false)
+  const chooseImage = async (e) => {
+    const files = Array.from(e.target.files || [])
+    if (files.length === 0) return
+    e.target.value = ''
+
+    const validFiles = files.filter((f) => f.type.startsWith('image/'))
+    if (validFiles.length === 0) {
+      setError('Please choose valid image files')
+      return
+    }
+
+    const newItems = []
+    for (const file of validFiles) {
+      try {
+        const dataUrl = await readImage(file)
+        const tempId = Math.random().toString(36).slice(2)
+        newItems.push({
+          id: tempId,
+          url: '',
+          preview: dataUrl,
+          status: 'uploading',
+        })
+      } catch (err) {
+        setError(err.message)
+      }
+    }
+
+    if (newItems.length === 0) return
+
+    // Append to existing images so admin can select 1 pic and click Choose from gallery again to add another!
+    setForm((f) => ({
+      ...f,
+      images: [...f.images, ...newItems],
+    }))
+
+    // Pre-upload immediately in the background so "Create product" is practically instant!
+    for (const item of newItems) {
+      api.uploadImage(item.preview)
+        .then((uploaded) => {
+          setForm((f) => ({
+            ...f,
+            images: f.images.map((img) =>
+              img.id === item.id ? { ...img, url: uploaded.url, status: 'done' } : img,
+            ),
+          }))
+        })
+        .catch((err) => {
+          setForm((f) => ({
+            ...f,
+            images: f.images.map((img) =>
+              img.id === item.id ? { ...img, status: 'error', errorMsg: errorMessage(err) } : img,
+            ),
+          }))
+        })
     }
   }
 
-  const chooseImage = async (e) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    if (!file.type.startsWith('image/')) {
-      setError('Please choose an image file')
-      return
-    }
-    try {
-      const dataUrl = await readImage(file)
-      setForm((f) => ({ ...f, image: dataUrl }))
-      setError('')
-    } catch (err) {
-      setError(err.message)
-    }
-    e.target.value = ''
+  const removeImage = (idToRemove) => {
+    setForm((f) => ({
+      ...f,
+      images: f.images.filter((img) => img.id !== idToRemove),
+    }))
   }
 
   const submit = async (e) => {
@@ -139,11 +178,18 @@ const AdminProducts = () => {
     setSaving(true)
     setError('')
     try {
-      let imageUrl = form.image
-      if (imageUrl.startsWith('data:image/')) {
-        const uploaded = await api.uploadImage(imageUrl)
-        imageUrl = uploaded.url
-      }
+      // Ensure all images are uploaded (if user clicked submit immediately after picking)
+      const uploadPromises = form.images.map(async (img) => {
+        if (img.url) return img.url
+        if (img.preview && img.preview.startsWith('data:image/')) {
+          const uploaded = await api.uploadImage(img.preview)
+          return uploaded.url
+        }
+        return null
+      })
+      const resolvedUrls = await Promise.all(uploadPromises)
+      const finalImages = resolvedUrls.filter(Boolean)
+
       const payload = {
         name: form.name.trim(),
         price: Number(form.price),
@@ -152,7 +198,7 @@ const AdminProducts = () => {
         reviewCount: Math.max(0, Math.round(Number(form.reviewCount) || 0)),
         stock: Number(form.stock) || 0,
         categoryId: form.categoryId || null,
-        images: imageUrl ? [imageUrl] : [],
+        images: finalImages,
         variants: form.variants
           .split(',')
           .map((s) => s.trim())
@@ -220,7 +266,14 @@ const AdminProducts = () => {
                   <td>
                     <div className="admin-cell-product">
                       <img src={p.images?.[0] || '/honey-jar.jpg'} alt={p.name} />
-                      <span>{p.name}</span>
+                      <div>
+                        <span>{p.name}</span>
+                        {p.images && p.images.length > 1 && (
+                          <div style={{ fontSize: '0.72rem', color: '#6b7280', marginTop: '2px' }}>
+                            {p.images.length} photos
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </td>
                   <td>{p.category?.name || catName(p.categoryId)}</td>
@@ -275,7 +328,7 @@ const AdminProducts = () => {
                 <input type="text" value={form.name} onChange={update('name')} required placeholder="Wildflower Raw Honey" />
               </label>
 
-              <div className="admin-input-group admin-col-full">
+              <label className="admin-input-group admin-col-full">
                 <span>Category</span>
                 <select value={form.categoryId} onChange={update('categoryId')}>
                   <option value="">— none —</option>
@@ -283,28 +336,51 @@ const AdminProducts = () => {
                     <option key={c.id} value={c.id}>{c.name}</option>
                   ))}
                 </select>
-                <div className="admin-inline-add">
-                  <input
-                    type="text"
-                    value={newCat}
-                    onChange={(e) => setNewCat(e.target.value)}
-                    placeholder="…or type a new category name"
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') { e.preventDefault(); addCategory() }
-                    }}
-                  />
-                  <button type="button" className="admin-btn" onClick={addCategory} disabled={addingCat || !newCat.trim()}>
-                    <Plus size={14} /> Add
-                  </button>
-                </div>
-              </div>
-
-              <label className="admin-input-group admin-image-picker">
-                <span>Product image</span>
-                <span className="admin-file-btn"><ImagePlus size={16} /> Choose from gallery</span>
-                <input type="file" accept="image/*" onChange={chooseImage} />
-                {form.image && <img className="admin-image-preview" src={form.image} alt="Selected product" />}
               </label>
+
+              <div className="admin-input-group admin-col-full">
+                <span>Product photos {form.images.length > 0 && `(${form.images.length})`}</span>
+                <div className="admin-media-controls">
+                  <label className="admin-file-btn">
+                    <ImagePlus size={16} /> Choose from gallery
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={chooseImage}
+                      style={{ display: 'none' }}
+                    />
+                  </label>
+                  <span className="admin-file-tip">Choose 1 or more photos. Click again anytime to add more.</span>
+                </div>
+
+                {form.images.length > 0 && (
+                  <div className="admin-gallery-preview-grid">
+                    {form.images.map((img, idx) => (
+                      <div key={img.id || idx} className={`admin-gallery-item ${img.status === 'uploading' ? 'is-uploading' : ''}`}>
+                        <img src={img.preview || img.url} alt={`Product ${idx + 1}`} />
+                        <div className="admin-gallery-item-badge">
+                          {idx === 0 ? 'Cover' : `#${idx + 1}`}
+                        </div>
+                        {img.status === 'uploading' && (
+                          <div className="admin-gallery-item-loading">
+                            <div className="admin-gallery-spinner" />
+                          </div>
+                        )}
+                        <button
+                          type="button"
+                          className="admin-gallery-remove-btn"
+                          onClick={() => removeImage(img.id)}
+                          title="Remove photo"
+                          aria-label="Remove photo"
+                        >
+                          <X size={12} strokeWidth={2.5} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
 
               <label className="admin-input-group">
                 <span>Price (Rs.) *</span>
@@ -338,8 +414,18 @@ const AdminProducts = () => {
 
               <div className="admin-col-full admin-modal-actions">
                 <button type="button" className="admin-btn" onClick={() => setModalOpen(false)}>Cancel</button>
-                <button type="submit" className="admin-btn admin-btn-primary" disabled={saving}>
-                  {saving ? (form.image.startsWith('data:image/') ? 'Uploading…' : 'Saving…') : editingId ? 'Save changes' : 'Create product'}
+                <button
+                  type="submit"
+                  className="admin-btn admin-btn-primary"
+                  disabled={saving || form.images.some((i) => i.status === 'uploading')}
+                >
+                  {saving
+                    ? 'Saving product…'
+                    : form.images.some((i) => i.status === 'uploading')
+                    ? 'Uploading photos…'
+                    : editingId
+                    ? 'Save changes'
+                    : 'Create product'}
                 </button>
               </div>
             </form>

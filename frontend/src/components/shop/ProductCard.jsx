@@ -44,7 +44,20 @@ const ProductCard = ({ product }) => {
           <Heart size={17} fill={isWishlisted ? 'currentColor' : 'none'} strokeWidth={1.8} />
         </button>
 
-        <img src={product.image} alt={product.title} loading="lazy" />
+        <img
+          src={product.images?.[0] || product.image || '/honey-jar.jpg'}
+          alt={product.title}
+          loading="lazy"
+          className="product-card-img-primary"
+        />
+        {product.images?.[1] && (
+          <img
+            src={product.images[1]}
+            alt=""
+            loading="lazy"
+            className="product-card-img-secondary"
+          />
+        )}
 
         <div className="product-card-overlay">
           <button

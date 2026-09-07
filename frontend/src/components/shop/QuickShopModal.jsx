@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
-import { X, Heart, Minus, Plus } from 'lucide-react'
+import { X, Heart, Minus, Plus, ChevronLeft, ChevronRight } from 'lucide-react'
 import { discountPercent, formatPrice, originalPrice, salePrice } from '../../data/products'
 import { useShop } from './ShopContext'
 import './QuickShopModal.css'
@@ -20,19 +20,35 @@ const QuickShopModal = ({ product, isOpen, onClose }) => {
   const navigate = useNavigate()
   const [variantIndex, setVariantIndex] = useState(0)
   const [quantity, setQuantity] = useState(1)
+  const [activeImageIndex, setActiveImageIndex] = useState(0)
+
+  const images = product
+    ? Array.isArray(product.images) && product.images.length > 0
+      ? product.images
+      : [product.image || '/honey-jar.jpg']
+    : []
 
   // Reset selections whenever a new product is opened
   useEffect(() => {
     if (isOpen) {
       setVariantIndex(0)
       setQuantity(1)
+      setActiveImageIndex(0)
     }
   }, [isOpen, product])
 
-  // Lock body scroll + close on Escape while the modal is open
+  // Lock body scroll + close on Escape + arrow navigation while modal is open
   useEffect(() => {
     if (!isOpen) return
-    const onKey = (e) => e.key === 'Escape' && onClose()
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose()
+      if (e.key === 'ArrowLeft' && images.length > 1) {
+        setActiveImageIndex((curr) => (curr === 0 ? images.length - 1 : curr - 1))
+      }
+      if (e.key === 'ArrowRight' && images.length > 1) {
+        setActiveImageIndex((curr) => (curr === images.length - 1 ? 0 : curr + 1))
+      }
+    }
     document.body.classList.add('auth-drawer-open')
     document.documentElement.classList.add('auth-drawer-open')
     window.addEventListener('keydown', onKey)
@@ -41,7 +57,7 @@ const QuickShopModal = ({ product, isOpen, onClose }) => {
       document.documentElement.classList.remove('auth-drawer-open')
       window.removeEventListener('keydown', onKey)
     }
-  }, [isOpen, onClose])
+  }, [isOpen, onClose, images.length])
 
   if (!isOpen || !product) return null
 
@@ -64,84 +80,148 @@ const QuickShopModal = ({ product, isOpen, onClose }) => {
     navigate('/checkout')
   }
 
+  const handlePrevImage = (e) => {
+    e.stopPropagation()
+    setActiveImageIndex((curr) => (curr === 0 ? images.length - 1 : curr - 1))
+  }
+
+  const handleNextImage = (e) => {
+    e.stopPropagation()
+    setActiveImageIndex((curr) => (curr === images.length - 1 ? 0 : curr + 1))
+  }
+
   return createPortal(
     <>
       <div className="quick-shop-backdrop" onClick={onClose}></div>
       <div className="quick-shop-modal" role="dialog" aria-modal="true" aria-label={`Quick shop ${product.title}`}>
         <button type="button" className="quick-shop-close" onClick={onClose} aria-label="Close">
-          <X size={22} strokeWidth={2} />
+          <X size={20} strokeWidth={2} />
         </button>
 
-        <div className="quick-shop-body">
-          <h2 className="quick-shop-title">{product.title}</h2>
-          <p className="quick-shop-price">
-            {discount > 0 && <span className="quick-shop-price-compare">{formatPrice(original)}</span>}
-            <span>{formatPrice(price)}</span>
-            {discount > 0 && <small>{discount}% off</small>}
-          </p>
+        <div className="quick-shop-layout">
+          <div className="quick-shop-gallery">
+            <div className="quick-shop-image-frame">
+              <img
+                src={images[activeImageIndex] || images[0]}
+                alt={`${product.title} - photo ${activeImageIndex + 1}`}
+                className="quick-shop-main-img"
+              />
 
-          <p className="quick-shop-size-label">
-            SIZE: <strong>{variants[variantIndex]}</strong>
-          </p>
+              {images.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    className="quick-shop-nav-btn quick-shop-nav-prev"
+                    onClick={handlePrevImage}
+                    aria-label="Previous photo"
+                  >
+                    <ChevronLeft size={20} strokeWidth={2.4} />
+                  </button>
 
-          <div className="quick-shop-variants">
-            {variants.map((variant, i) => (
-              <button
-                key={variant}
-                type="button"
-                className={`quick-shop-variant ${i === variantIndex ? 'is-active' : ''}`}
-                onClick={() => setVariantIndex(i)}
-              >
-                {variant.toUpperCase()}
-              </button>
-            ))}
+                  <button
+                    type="button"
+                    className="quick-shop-nav-btn quick-shop-nav-next"
+                    onClick={handleNextImage}
+                    aria-label="Next photo"
+                  >
+                    <ChevronRight size={20} strokeWidth={2.4} />
+                  </button>
+
+                  <div className="quick-shop-counter">
+                    {activeImageIndex + 1} / {images.length}
+                  </div>
+                </>
+              )}
+            </div>
+
+            {images.length > 1 && (
+              <div className="quick-shop-thumbnails">
+                {images.map((img, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    className={`quick-shop-thumb-btn ${idx === activeImageIndex ? 'is-active' : ''}`}
+                    onClick={() => setActiveImageIndex(idx)}
+                    aria-label={`View photo ${idx + 1}`}
+                  >
+                    <img src={img} alt="" />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
-          <div className="quick-shop-actions-row">
-            <div className="quick-shop-qty">
+          <div className="quick-shop-body">
+            <h2 className="quick-shop-title">{product.title}</h2>
+            <p className="quick-shop-price">
+              {discount > 0 && <span className="quick-shop-price-compare">{formatPrice(original)}</span>}
+              <span>{formatPrice(price)}</span>
+              {discount > 0 && <small>{discount}% off</small>}
+            </p>
+
+            <p className="quick-shop-size-label">
+              SIZE: <strong>{variants[variantIndex]}</strong>
+            </p>
+
+            <div className="quick-shop-variants">
+              {variants.map((variant, i) => (
+                <button
+                  key={variant}
+                  type="button"
+                  className={`quick-shop-variant ${i === variantIndex ? 'is-active' : ''}`}
+                  onClick={() => setVariantIndex(i)}
+                >
+                  {variant.toUpperCase()}
+                </button>
+              ))}
+            </div>
+
+            <div className="quick-shop-actions-row">
+              <div className="quick-shop-qty">
+                <button
+                  type="button"
+                  aria-label="Decrease quantity"
+                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                >
+                  <Minus size={16} strokeWidth={2} />
+                </button>
+                <span>{quantity}</span>
+                <button
+                  type="button"
+                  aria-label="Increase quantity"
+                  onClick={() => setQuantity((q) => q + 1)}
+                >
+                  <Plus size={16} strokeWidth={2} />
+                </button>
+              </div>
+
               <button
                 type="button"
-                aria-label="Decrease quantity"
-                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                className={`quick-shop-circle ${isWishlisted ? 'is-active' : ''}`}
+                aria-label="Toggle wishlist"
+                onClick={() => toggleWishlist(product.id)}
               >
-                <Minus size={16} strokeWidth={2} />
-              </button>
-              <span>{quantity}</span>
-              <button
-                type="button"
-                aria-label="Increase quantity"
-                onClick={() => setQuantity((q) => q + 1)}
-              >
-                <Plus size={16} strokeWidth={2} />
+                <Heart size={18} fill={isWishlisted ? 'currentColor' : 'none'} strokeWidth={1.8} />
               </button>
             </div>
 
             <button
               type="button"
-              className={`quick-shop-circle ${isWishlisted ? 'is-active' : ''}`}
-              aria-label="Toggle wishlist"
-              onClick={() => toggleWishlist(product.id)}
+              className="quick-shop-btn quick-shop-btn-cart"
+              onClick={handleAddToCart}
+              disabled={!product.available}
             >
-              <Heart size={18} fill={isWishlisted ? 'currentColor' : 'none'} strokeWidth={1.8} />
+              {product.available ? 'ADD TO CART' : 'SOLD OUT'}
+            </button>
+            <button
+              type="button"
+              className="quick-shop-btn quick-shop-btn-buy"
+              onClick={handleBuyNow}
+              disabled={!product.available}
+            >
+              BUY IT NOW
             </button>
           </div>
-
-          <button
-            type="button"
-            className="quick-shop-btn quick-shop-btn-cart"
-            onClick={handleAddToCart}
-            disabled={!product.available}
-          >
-            {product.available ? 'ADD TO CART' : 'SOLD OUT'}
-          </button>
-          <button
-            type="button"
-            className="quick-shop-btn quick-shop-btn-buy"
-            onClick={handleBuyNow}
-            disabled={!product.available}
-          >
-            BUY IT NOW
-          </button>
         </div>
       </div>
     </>,

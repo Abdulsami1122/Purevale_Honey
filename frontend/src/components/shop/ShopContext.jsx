@@ -40,12 +40,14 @@ const toCollectionKey = (name = '') => {
 const adaptProduct = (p) => {
   const variantObjs = Array.isArray(p.variants) ? p.variants : []
   const categoryName = p.category?.name || ''
+  const rawImages = Array.isArray(p.images) && p.images.length > 0 ? p.images : (p.image ? [p.image] : [])
+  const images = rawImages.length > 0 ? rawImages : ['/honey-jar.jpg']
   return {
     id: p.id,
     title: p.name,
     description: p.description || '',
-    image: (p.images && p.images[0]) || '/honey-jar.jpg',
-    images: Array.isArray(p.images) ? p.images : [],
+    image: images[0],
+    images,
     priceMin: Number(p.price) || 0,
     priceMax: null,
     compareAt: null,
