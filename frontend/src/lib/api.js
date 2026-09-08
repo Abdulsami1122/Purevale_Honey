@@ -127,7 +127,7 @@ export const api = {
   deleteTestimonial: (id) => request(`/api/testimonials/${id}`, { method: 'DELETE' }),
 
   // ---- admin ----
-  adminStats: () => request('/api/admin/stats'),
+  adminStats: (params) => request(`/api/admin/stats${qs(params)}`),
   adminListUsers: (params) => request(`/api/admin/users${qs(params)}`),
   adminGetUser: (id) => request(`/api/admin/users/${id}`),
   adminUpdateUserRole: (id, role) =>
