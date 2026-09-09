@@ -1,6 +1,5 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { RotateCcw, ShieldCheck } from 'lucide-react'
 import './Pages.css'
 
 const ReturnPolicyPage = () => {
@@ -8,9 +7,9 @@ const ReturnPolicyPage = () => {
     <div className="page-container">
       <div className="page-hero-banner">
         <div className="page-breadcrumbs">
-          <Link to="/">Home</Link> / <span>Return & Refund Policy</span>
+          <Link to="/">Home</Link> / <span>Return &amp; Refund Policy</span>
         </div>
-        <h1 className="page-hero-title">Return & Refund Policy</h1>
+        <h1 className="page-hero-title">Return &amp; Refund Policy</h1>
         <p className="page-hero-subtitle">
           Transparent, fair, and backed by our 100% purity and customer satisfaction guarantee.
         </p>
@@ -18,32 +17,90 @@ const ReturnPolicyPage = () => {
 
       <div className="page-content-wrapper">
         <div className="info-section-card">
-          <h2>1. 7-Day Replacement & Return Guarantee</h2>
           <p>
-            At Durrani Harvest, we take great pride in our carefully packed glass jars and vacuum-sealed products. If your parcel arrives damaged, leaking, broken in transit, or if you receive an incorrect product, you are eligible for an immediate replacement or full refund within <strong>7 days</strong> of delivery.
+            At Durrani Harvest, we strive to provide our customers with the highest quality honey and
+            natural products. Your satisfaction is our priority, and we understand that sometimes you
+            may need to return a product. Please review our return policy below.
           </p>
 
-          <h2>2. 100% Purity & Lab Test Guarantee</h2>
-          <p>
-            We stand unreservedly behind the authentic purity of our raw honey and natural products. If you test our honey in any accredited government laboratory and find artificial adulteration (such as corn syrup, invert sugar, or chemical additives), Durrani Harvest will issue a <strong>100% full refund</strong> including reimbursement for your testing fees.
-          </p>
-
-          <h2>3. Simple 3-Step Claim Process</h2>
+          <h2>Return Eligibility</h2>
           <ul className="info-list-styled">
             <li>
-              <strong>Step 1:</strong> Take a photo or short video showing the issue along with your order ID / invoice.
+              <strong>Timeframe:</strong> Returns must be requested within <strong>24 hours</strong> of
+              your order being delivered.
             </li>
             <li>
-              <strong>Step 2:</strong> Send the details via WhatsApp to <strong>0333 9300672</strong> or email <strong>support@durraniharvest.com</strong>.
+              <strong>Condition:</strong> Products must be unopened, unused, and in their original
+              packaging. Opened or used products are not eligible for return.
             </li>
             <li>
-              <strong>Step 3:</strong> Our customer support desk in Hayatabad, Peshawar will process your replacement or refund within 24 business hours.
+              <strong>Receipt:</strong> A valid proof of purchase (receipt or order confirmation) is
+              required for all returns.
             </li>
           </ul>
 
-          <h2>4. Refund Methods</h2>
+          <h2>Non-Returnable Items</h2>
+          <p>The following items cannot be returned:</p>
+          <ul className="info-list-styled">
+            <li>Opened or used products.</li>
+            <li>Products purchased on sale or with promotional discounts.</li>
+            <li>Custom or personalized products.</li>
+            <li>Perishable items (including any products with a limited shelf life).</li>
+          </ul>
+
+          <h2>Return Process</h2>
+          <ul className="info-list-styled">
+            <li>
+              <strong>Step 1:</strong> Contact our customer service team at{' '}
+              <strong>support@durraniharvest.com</strong> or on WhatsApp at{' '}
+              <strong>+92 333 9300672</strong> to initiate the return. Please provide your order
+              number and the reason for the return.
+            </li>
+            <li>
+              <strong>Step 2:</strong> If your return is approved, you will receive instructions on
+              how to return the product. You are responsible for the shipping costs associated with
+              returning the product.
+            </li>
+            <li>
+              <strong>Step 3:</strong> Once we receive the returned product, it will be inspected to
+              ensure it meets our return eligibility criteria.
+            </li>
+            <li>
+              <strong>Step 4:</strong> If approved, a refund will be issued to your original method of
+              payment within 7–10 business days. Shipping costs are non-refundable.
+            </li>
+          </ul>
+
+          <h2>Damaged or Defective Products</h2>
           <p>
-            Refunds can be disbursed immediately via JazzCash, EasyPaisa, or direct Bank Transfer to any Pakistani bank account.
+            If you receive a damaged or defective product, please contact us immediately at{' '}
+            <strong>support@durraniharvest.com</strong> or <strong>+92 333 9300672</strong>. We will
+            arrange for a replacement or refund as quickly as possible. Please provide photos of the
+            damaged or defective product to help us resolve the issue.
+          </p>
+
+          <h2>Exchanges</h2>
+          <p>
+            We do not offer direct exchanges. If you wish to exchange a product, please return the
+            original item following the return process above and place a new order for the desired
+            product.
+          </p>
+
+          <h2>Refunds</h2>
+          <ul className="info-list-styled">
+            <li>Refunds will be processed to the original payment method used during the purchase.</li>
+            <li>
+              Shipping costs are non-refundable unless the return is due to our error (e.g., wrong
+              item sent, defective product).
+            </li>
+            <li>Please allow up to 14 business days for the refund to appear in your account.</li>
+          </ul>
+
+          <h2>Customer Service</h2>
+          <p>
+            For any questions or concerns regarding returns, please contact our customer service team
+            at <strong>support@durraniharvest.com</strong> or <strong>+92 333 9300672</strong>. Our
+            support desk in Hayatabad, Peshawar, Khyber Pakhtunkhwa, Pakistan is here to help.
           </p>
         </div>
       </div>

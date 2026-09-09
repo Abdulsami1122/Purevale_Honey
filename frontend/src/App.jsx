@@ -24,6 +24,7 @@ import ResetPasswordPage from './pages/ResetPasswordPage'
 import CategoryPage from './pages/CategoryPage'
 import FaqPage from './pages/FaqPage'
 import ReturnPolicyPage from './pages/ReturnPolicyPage'
+import ShippingPolicyPage from './pages/ShippingPolicyPage'
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage'
 import TermsPage from './pages/TermsPage'
 import CosmeticsPage from './pages/CosmeticsPage'
@@ -80,6 +81,7 @@ function Shell() {
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/faq" element={<FaqPage />} />
           <Route path="/return-policy" element={<ReturnPolicyPage />} />
+          <Route path="/shipping-policy" element={<ShippingPolicyPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/cosmetics" element={<CosmeticsPage />} />

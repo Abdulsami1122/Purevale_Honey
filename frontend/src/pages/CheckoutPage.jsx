@@ -4,6 +4,7 @@ import { ShoppingBag, HelpCircle, CheckCircle2, Lock } from 'lucide-react'
 import { formatPrice } from '../data/products'
 import { useShop } from '../components/shop/ShopContext'
 import { useAdminAuth } from '../admin/AdminAuthContext'
+import { POLICIES } from '../data/policies'
 import api, { errorMessage } from '../lib/api'
 import './CheckoutPage.css'
 
@@ -23,10 +24,12 @@ const CheckoutPage = () => {
   const { cart, cartTotal, cartCount, clearCart, siteSettings } = useShop()
   const bank = siteSettings?.bankDeposit || {}
   const hasBankDetails = Boolean(bank.bankName || bank.accountNumber || bank.iban)
+  const contact = siteSettings?.contact || {}
   const { isAuthed, user, login, register } = useAdminAuth()
   const navigate = useNavigate()
 
   const [payment, setPayment] = useState('cod')
+  const [policyKey, setPolicyKey] = useState(null) // which footer pop-up is open
   const [placedOrder, setPlacedOrder] = useState(null)
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -63,6 +66,14 @@ const CheckoutPage = () => {
       clearTimeout(handle)
     }
   }, [country, city])
+
+  // Close the footer policy pop-up on Escape
+  useEffect(() => {
+    if (!policyKey) return
+    const onKey = (e) => e.key === 'Escape' && setPolicyKey(null)
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [policyKey])
 
   const selectedMethod = methods.find((m) => m.id === methodId) || methods[0] || FALLBACK_METHOD
   const shippingCost = Number(selectedMethod?.price || 0)
@@ -214,6 +225,33 @@ const CheckoutPage = () => {
       </div>
     </aside>
   )
+
+  // Footer pop-ups. "contact" is built here so it always reflects live settings.
+  const activePolicy =
+    policyKey === 'contact'
+      ? {
+          title: 'Contact Us',
+          body: (
+            <ul>
+              {contact.phone && <li><strong>Phone:</strong> {contact.phone}</li>}
+              {contact.whatsapp && (
+                <li>
+                  <strong>WhatsApp:</strong>{' '}
+                  <a href={waLink(contact.whatsapp)} target="_blank" rel="noreferrer">
+                    {contact.whatsapp}
+                  </a>
+                </li>
+              )}
+              {contact.email && (
+                <li><strong>Email:</strong> <a href={`mailto:${contact.email}`}>{contact.email}</a></li>
+              )}
+              {contact.address && <li><strong>Address:</strong> {contact.address}</li>}
+            </ul>
+          ),
+        }
+      : policyKey
+      ? POLICIES[policyKey]
+      : null
 
   return (
     <div className="ck-page">
@@ -424,11 +462,11 @@ const CheckoutPage = () => {
               <p className="ck-secure"><Lock size={13} strokeWidth={2} /> Secure checkout</p>
 
               <footer className="ck-footer">
-                <Link to="/return-policy">Refund policy</Link>
-                <Link to="/return-policy">Shipping</Link>
-                <Link to="/privacy-policy">Privacy policy</Link>
-                <Link to="/terms">Terms of service</Link>
-                <Link to="/contact">Contact</Link>
+                <button type="button" onClick={() => setPolicyKey('refund')}>Refund policy</button>
+                <button type="button" onClick={() => setPolicyKey('shipping')}>Shipping</button>
+                <button type="button" onClick={() => setPolicyKey('privacy')}>Privacy policy</button>
+                <button type="button" onClick={() => setPolicyKey('terms')}>Terms of service</button>
+                <button type="button" onClick={() => setPolicyKey('contact')}>Contact</button>
               </footer>
             </form>
           )}
@@ -436,6 +474,20 @@ const CheckoutPage = () => {
           {orderSummary}
         </div>
       </div>
+
+      {policyKey && (
+        <div className="ck-policy-backdrop" onClick={() => setPolicyKey(null)}>
+          <div className="ck-policy-modal" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
+            <div className="ck-policy-head">
+              <h3>{activePolicy?.title}</h3>
+              <button type="button" className="ck-policy-close" onClick={() => setPolicyKey(null)} aria-label="Close">
+                &times;
+              </button>
+            </div>
+            <div className="ck-policy-body">{activePolicy?.body}</div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

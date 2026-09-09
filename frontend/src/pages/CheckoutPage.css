@@ -365,9 +365,93 @@
   border-top: 1px solid #e6e6e6;
 }
 
-.ck-footer a {
+.ck-footer a,
+.ck-footer button {
   color: var(--ck-blue);
   font-size: 0.8rem;
+  text-decoration: underline;
+}
+
+.ck-footer button {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* ---- Footer policy pop-up ---- */
+.ck-policy-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  z-index: 1000;
+}
+
+.ck-policy-modal {
+  background: #fff;
+  border-radius: 12px;
+  width: min(680px, 100%);
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+.ck-policy-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.4rem;
+  border-bottom: 1px solid #ececec;
+}
+
+.ck-policy-head h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--color-green, #133827);
+}
+
+.ck-policy-close {
+  background: none;
+  border: 0;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #6b7280;
+}
+.ck-policy-close:hover { color: #111; }
+
+.ck-policy-body {
+  padding: 1.2rem 1.4rem 1.6rem;
+  overflow-y: auto;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #333;
+}
+
+.ck-policy-body h4 {
+  margin: 1.1rem 0 0.35rem;
+  font-size: 0.95rem;
+  color: var(--color-green, #133827);
+}
+.ck-policy-body h4:first-child { margin-top: 0; }
+
+.ck-policy-body p { margin: 0 0 0.7rem; }
+
+.ck-policy-body ul {
+  margin: 0 0 0.8rem;
+  padding-left: 1.15rem;
+}
+.ck-policy-body li { margin-bottom: 0.35rem; }
+
+.ck-policy-body a {
+  color: var(--ck-blue);
   text-decoration: underline;
 }
 
