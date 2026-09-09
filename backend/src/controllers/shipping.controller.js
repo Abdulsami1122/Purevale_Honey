@@ -16,9 +16,17 @@ const listMethods = asyncHandler(async (req, res) => {
   })
 
   const matches = rates.filter((r) => {
-    const countryOk = r.country === '*' || (country && eq(r.country, country))
-    const cityOk = r.city === '*' || (city && eq(r.city, city))
-    return countryOk && cityOk
+    // Country: "*" always applies; otherwise it must match the chosen country.
+    // (If the customer hasn't picked a country yet, only "*" rates apply.)
+    const countryOk = r.country === '*' || (country ? eq(r.country, country) : false)
+    if (!countryOk) return false
+
+    // City only *narrows* the list — and only once we actually know the city.
+    // A city-specific rate is still offered while the city field is blank, so a
+    // method the admin just created always shows up at checkout.
+    if (r.city === '*') return true
+    if (!city) return true
+    return eq(r.city, city)
   })
 
   // If several rates share a name, keep the most specific (city > country > any).
