@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ShoppingBag, HelpCircle, CheckCircle2, Lock } from 'lucide-react'
 import { formatPrice } from '../data/products'
@@ -7,16 +7,56 @@ import { useAdminAuth } from '../admin/AdminAuthContext'
 import api, { errorMessage } from '../lib/api'
 import './CheckoutPage.css'
 
+// Shown when the admin has not defined any rate for the destination yet, so
+// checkout is never blocked.
+const FALLBACK_METHOD = { id: '', name: 'Standard Shipping', price: 0 }
+
 const CheckoutPage = () => {
   const { cart, cartTotal, cartCount, clearCart } = useShop()
   const { isAuthed, user, login, register } = useAdminAuth()
   const navigate = useNavigate()
 
   const [payment, setPayment] = useState('cod')
-  const [billing, setBilling] = useState('same')
   const [placedOrder, setPlacedOrder] = useState(null)
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
+
+  // Destination — controlled so shipping methods can re-fetch when it changes.
+  const [country, setCountry] = useState('Pakistan')
+  const [city, setCity] = useState('')
+
+  // Shipping methods for the current destination.
+  const [methods, setMethods] = useState([FALLBACK_METHOD])
+  const [methodId, setMethodId] = useState('')
+  const [methodsLoading, setMethodsLoading] = useState(false)
+
+  useEffect(() => {
+    let alive = true
+    setMethodsLoading(true)
+    const handle = setTimeout(async () => {
+      try {
+        const data = await api.listShippingMethods({ country, city: city.trim() })
+        if (!alive) return
+        const list = data?.methods?.length ? data.methods : [FALLBACK_METHOD]
+        setMethods(list)
+        setMethodId((cur) => (list.some((m) => m.id === cur) ? cur : list[0].id))
+      } catch {
+        if (!alive) return
+        setMethods([FALLBACK_METHOD])
+        setMethodId('')
+      } finally {
+        if (alive) setMethodsLoading(false)
+      }
+    }, 350)
+    return () => {
+      alive = false
+      clearTimeout(handle)
+    }
+  }, [country, city])
+
+  const selectedMethod = methods.find((m) => m.id === methodId) || methods[0] || FALLBACK_METHOD
+  const shippingCost = Number(selectedMethod?.price || 0)
+  const grandTotal = cartTotal + shippingCost
 
   // Inline auth gate (checkout requires an account)
   const [authMode, setAuthMode] = useState('login')
@@ -65,8 +105,8 @@ const CheckoutPage = () => {
       name: `${first} ${last}`.trim() || user?.name || 'Customer',
       phone: f.get('phone')?.trim() || '',
       address: [f.get('address')?.trim() || '', apartment].filter(Boolean).join(', '),
-      city: f.get('city')?.trim() || '',
-      country: f.get('country') || 'Pakistan',
+      city: city.trim() || f.get('city')?.trim() || '',
+      country: country || 'Pakistan',
     }
 
     try {
@@ -79,7 +119,10 @@ const CheckoutPage = () => {
           quantity: it.quantity,
         })
       }
-      const { order } = await api.createOrder({ shipping, shippingCost: 0 })
+      const payload = { shipping }
+      if (selectedMethod?.id) payload.shippingMethodId = selectedMethod.id
+      else payload.shippingCost = shippingCost
+      const { order } = await api.createOrder(payload)
       setPlacedOrder({ ...order, email: user?.email })
       clearCart()
       window.scrollTo(0, 0)
@@ -148,13 +191,13 @@ const CheckoutPage = () => {
               </div>
               <div className="ck-summary-row">
                 <span>Shipping <HelpCircle size={14} strokeWidth={1.8} /></span>
-                <span>FREE</span>
+                <span>{shippingCost > 0 ? formatPrice(shippingCost) : 'FREE'}</span>
               </div>
             </div>
 
             <div className="ck-summary-total">
               <span>Total</span>
-              <span><span className="ck-total-currency">PKR</span> {formatPrice(cartTotal)}</span>
+              <span><span className="ck-total-currency">PKR</span> {formatPrice(grandTotal)}</span>
             </div>
           </>
         )}
@@ -242,7 +285,7 @@ const CheckoutPage = () => {
                 <h2>Delivery</h2>
                 <label className="ck-field ck-select">
                   <span className="ck-select-label">Country/Region</span>
-                  <select name="country" defaultValue="Pakistan">
+                  <select name="country" value={country} onChange={(e) => setCountry(e.target.value)}>
                     <option>Pakistan</option>
                     <option>United States</option>
                     <option>United Kingdom</option>
@@ -269,7 +312,14 @@ const CheckoutPage = () => {
 
                 <div className="ck-row">
                   <label className="ck-field">
-                    <input type="text" name="city" placeholder="City" required />
+                    <input
+                      type="text"
+                      name="city"
+                      placeholder="City"
+                      required
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                    />
                   </label>
                   <label className="ck-field">
                     <input type="text" name="postalCode" placeholder="Postal code (optional)" />
@@ -283,10 +333,22 @@ const CheckoutPage = () => {
 
               <section className="ck-section">
                 <h2>Shipping method</h2>
-                <div className="ck-radio-card is-selected ck-shipping-row">
-                  <span>Free Shipping</span>
-                  <span className="ck-free">FREE</span>
-                </div>
+                <label className="ck-field ck-select">
+                  <span className="ck-select-label">
+                    {methodsLoading ? 'Loading options…' : 'Choose a shipping method'}
+                  </span>
+                  <select
+                    value={methodId}
+                    onChange={(e) => setMethodId(e.target.value)}
+                    disabled={methodsLoading || methods.length === 0}
+                  >
+                    {methods.map((m) => (
+                      <option key={m.id || 'fallback'} value={m.id}>
+                        {m.name} — {Number(m.price) > 0 ? formatPrice(Number(m.price)) : 'FREE'}
+                      </option>
+                    ))}
+                  </select>
+                </label>
               </section>
 
               <section className="ck-section">
@@ -299,18 +361,6 @@ const CheckoutPage = () => {
                 <label className={`ck-radio-card ${payment === 'bank' ? 'is-selected' : ''}`}>
                   <input type="radio" name="payment" checked={payment === 'bank'} onChange={() => setPayment('bank')} />
                   <span>Bank Deposit</span>
-                </label>
-              </section>
-
-              <section className="ck-section">
-                <h2>Billing address</h2>
-                <label className={`ck-radio-card ${billing === 'same' ? 'is-selected' : ''}`}>
-                  <input type="radio" name="billing" checked={billing === 'same'} onChange={() => setBilling('same')} />
-                  <span>Same as shipping address</span>
-                </label>
-                <label className={`ck-radio-card ${billing === 'diff' ? 'is-selected' : ''}`}>
-                  <input type="radio" name="billing" checked={billing === 'diff'} onChange={() => setBilling('diff')} />
-                  <span>Use a different billing address</span>
                 </label>
               </section>
 

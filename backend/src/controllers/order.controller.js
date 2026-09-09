@@ -21,7 +21,7 @@ async function resolveCoupon(code) {
 
 // POST /api/orders  — creates an order from the caller's cart
 const createOrder = asyncHandler(async (req, res) => {
-  const { shipping, couponCode, shippingCost } = req.body
+  const { shipping, couponCode, shippingMethodId, shippingCost } = req.body
 
   const cart = await prisma.cart.findUnique({
     where: { userId: req.user.id },
@@ -32,6 +32,16 @@ const createOrder = asyncHandler(async (req, res) => {
   }
 
   const coupon = await resolveCoupon(couponCode)
+
+  // Resolve the chosen shipping method server-side so the price can't be spoofed.
+  let shippingMethodName = null
+  let resolvedShippingCost = Number(shippingCost || 0)
+  if (shippingMethodId) {
+    const rate = await prisma.shippingRate.findUnique({ where: { id: shippingMethodId } })
+    if (!rate || !rate.active) throw ApiError.badRequest('Selected shipping method is unavailable')
+    shippingMethodName = rate.name
+    resolvedShippingCost = Number(rate.price)
+  }
 
   const order = await prisma.$transaction(async (tx) => {
     let subtotal = 0
@@ -65,7 +75,7 @@ const createOrder = asyncHandler(async (req, res) => {
     const discount = coupon
       ? Number(((subtotal * coupon.discountPercent) / 100).toFixed(2))
       : 0
-    const total = Number((subtotal - discount + Number(shippingCost || 0)).toFixed(2))
+    const total = Number((subtotal - discount + resolvedShippingCost).toFixed(2))
 
     const created = await tx.order.create({
       data: {
@@ -73,13 +83,14 @@ const createOrder = asyncHandler(async (req, res) => {
         status: 'pending',
         subtotal,
         discount,
-        shippingCost: Number(shippingCost || 0),
+        shippingCost: resolvedShippingCost,
         total,
         shippingName: shipping.name,
         shippingPhone: shipping.phone,
         shippingAddress: shipping.address,
         shippingCity: shipping.city,
         shippingCountry: shipping.country,
+        shippingMethod: shippingMethodName,
         couponCode: coupon?.code ?? null,
         items: { create: itemsData },
       },

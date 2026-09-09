@@ -113,6 +113,13 @@ export const api = {
   updateOrderStatus: (id, status) =>
     request(`/api/orders/${id}/status`, { method: 'PATCH', body: { status } }),
 
+  // ---- shipping ----
+  listShippingMethods: (params) => request(`/api/shipping/methods${qs(params)}`),
+  adminListShipping: () => request('/api/shipping'),
+  createShipping: (payload) => request('/api/shipping', { method: 'POST', body: payload }),
+  updateShipping: (id, payload) => request(`/api/shipping/${id}`, { method: 'PATCH', body: payload }),
+  deleteShipping: (id) => request(`/api/shipping/${id}`, { method: 'DELETE' }),
+
   // ---- reviews ----
   listProductReviews: (productId) => request(`/api/reviews/product/${productId}`),
   upsertReview: (productId, payload) =>

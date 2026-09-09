@@ -13,6 +13,7 @@ const createOrderSchema = z.object({
       country: z.string().trim().min(2).max(120),
     }),
     couponCode: z.string().trim().max(40).optional(),
+    shippingMethodId: uuid.optional(),
     shippingCost: z.coerce.number().nonnegative().default(0),
   }),
 })

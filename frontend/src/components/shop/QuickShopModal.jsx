@@ -16,7 +16,7 @@ const variantPrice = (product, index) => {
 }
 
 const QuickShopModal = ({ product, isOpen, onClose }) => {
-  const { wishlist, toggleWishlist, addToCart } = useShop()
+  const { wishlist, toggleWishlist, addToCart, openCartDrawer } = useShop()
   const navigate = useNavigate()
   const [variantIndex, setVariantIndex] = useState(0)
   const [quantity, setQuantity] = useState(1)
@@ -72,6 +72,7 @@ const QuickShopModal = ({ product, isOpen, onClose }) => {
   const handleAddToCart = () => {
     addToCart(product, { variant: variants[variantIndex], price, quantity })
     onClose()
+    openCartDrawer()
   }
 
   const handleBuyNow = () => {

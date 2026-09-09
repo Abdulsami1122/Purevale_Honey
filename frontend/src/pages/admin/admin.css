@@ -674,6 +674,16 @@
 .admin-badge-shipped { background: #e0e7ff; color: #4338ca; }
 .admin-badge-delivered { background: #dcfce7; color: #15803d; }
 .admin-badge-cancelled { background: #fee2e2; color: #b91c1c; }
+.admin-badge-ok { background: #dcfce7; color: #15803d; cursor: pointer; border: none; }
+.admin-badge-muted { background: #e5e7eb; color: #6b7280; cursor: pointer; border: none; }
+
+/* checkbox + label row inside a modal form */
+.admin-checkbox-row {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+.admin-checkbox-row input { width: auto; }
 
 /* compact status dropdown inside the orders table */
 .admin-status-select {
@@ -836,11 +846,31 @@
   .admin-order-cols { grid-template-columns: 1fr; }
 }
 
+@media (max-width: 768px) {
+  /* Let wide data tables scroll sideways instead of getting clipped,
+     so every column and its full text stays reachable on a phone. */
+  .admin-panel:has(> .admin-table) {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .admin-panel > .admin-table { min-width: 640px; }
+
+  .admin-scroll-table { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .admin-scroll-table > .admin-table { min-width: 640px; }
+
+  .admin-table th,
+  .admin-table td { white-space: nowrap; }
+  /* free-text cells keep wrapping, just within a sensible width */
+  .admin-table td.admin-submission-message {
+    white-space: pre-wrap;
+    min-width: 200px;
+    max-width: 260px;
+  }
+}
+
 @media (max-width: 520px) {
   .admin-stat-grid { grid-template-columns: 1fr; }
   .admin-table { font-size: 0.82rem; }
-  .admin-table th:nth-child(2),
-  .admin-table td:nth-child(2) { display: none; }
 }
 
 /* ---------- Site Content editor ---------- */

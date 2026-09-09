@@ -92,7 +92,6 @@ const Footer = () => {
                 <li><Link to="/shilajit">Himalayan Shilajit</Link></li>
                 <li><Link to="/cosmetics">Natural Cosmetics</Link></li>
                 <li><Link to="/wholesale">Wholesale & Bulk</Link></li>
-                <li><Link to="/shop">All Products</Link></li>
               </ul>
             </div>
 

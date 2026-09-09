@@ -51,9 +51,21 @@ const ShopHeader = () => {
   const [currentMsgIndex, setCurrentMsgIndex] = useState(0)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
-  const [cartOpen, setCartOpen] = useState(false)
   const [scrollState, setScrollState] = useState('top') // 'top' | 'down' | 'up'
-  const { wishlist, cartCount, siteSettings, authDrawerOpen, openAuthDrawer, closeAuthDrawer } = useShop()
+  const {
+    wishlist,
+    cartCount,
+    siteSettings,
+    authDrawerOpen,
+    openAuthDrawer,
+    closeAuthDrawer,
+    cartDrawerOpen,
+    openCartDrawer,
+    closeCartDrawer,
+  } = useShop()
+  // header still triggers the drawer locally too; keep a stable alias
+  const cartOpen = cartDrawerOpen
+  const setCartOpen = (v) => (v ? openCartDrawer() : closeCartDrawer())
   const { isAuthed, user, logout } = useAdminAuth()
   const [accountMenuOpen, setAccountMenuOpen] = useState(false)
   const accountRef = useRef(null)

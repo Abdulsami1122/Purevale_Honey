@@ -6,6 +6,18 @@ const variant = z.object({
   price: z.coerce.number().nonnegative().optional(),
 })
 
+// An image reference can be a hosted URL (Cloudinary), an inline data URI, or a
+// site-relative asset path like "/honey-jar.jpg" that ships with the frontend.
+const imageRef = z
+  .string()
+  .trim()
+  .min(1)
+  .max(2000)
+  .refine(
+    (s) => /^https?:\/\//i.test(s) || s.startsWith('/') || s.startsWith('data:image/'),
+    { message: 'Each image must be a URL or an uploaded file path' },
+  )
+
 const productBody = z.object({
   name: z.string().trim().min(2).max(160),
   description: z.string().trim().max(5000).default(''),
@@ -15,7 +27,7 @@ const productBody = z.object({
   reviewCount: z.coerce.number().int().min(0).default(0),
   stock: z.coerce.number().int().nonnegative().default(0),
   categoryId: uuid.nullish(),
-  images: z.array(z.string().url()).max(12).default([]),
+  images: z.array(imageRef).max(12).default([]),
   variants: z.array(variant).max(20).default([]),
 })
 

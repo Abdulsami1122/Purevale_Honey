@@ -130,6 +130,12 @@ export const ShopProvider = ({ children }) => {
   const openAuthDrawer = useCallback(() => setAuthDrawerOpen(true), [])
   const closeAuthDrawer = useCallback(() => setAuthDrawerOpen(false), [])
 
+  // Same idea for the cart drawer, so "Add to cart" anywhere (e.g. the quick-shop
+  // modal) can pop the cart open without prop-drilling through the header.
+  const [cartDrawerOpen, setCartDrawerOpen] = useState(false)
+  const openCartDrawer = useCallback(() => setCartDrawerOpen(true), [])
+  const closeCartDrawer = useCallback(() => setCartDrawerOpen(false), [])
+
   // Keep the wishlist so it survives a page reload
   useEffect(() => {
     try {
@@ -303,6 +309,9 @@ export const ShopProvider = ({ children }) => {
       authDrawerOpen,
       openAuthDrawer,
       closeAuthDrawer,
+      cartDrawerOpen,
+      openCartDrawer,
+      closeCartDrawer,
     }),
     [
       wishlist,
@@ -324,6 +333,9 @@ export const ShopProvider = ({ children }) => {
       authDrawerOpen,
       openAuthDrawer,
       closeAuthDrawer,
+      cartDrawerOpen,
+      openCartDrawer,
+      closeCartDrawer,
     ],
   )
 

@@ -136,6 +136,7 @@ model Order {
   shippingAddress String
   shippingCity    String
   shippingCountry String
+  shippingMethod  String?
   couponCode      String?
 
   createdAt DateTime @default(now())
@@ -143,6 +144,21 @@ model Order {
 
   @@index([userId])
   @@index([status])
+}
+
+// Admin-defined delivery options. "*" in country/city means "any".
+model ShippingRate {
+  id        String   @id @default(uuid())
+  name      String
+  country   String   @default("*")
+  city      String   @default("*")
+  price     Decimal  @default(0) @db.Decimal(10, 2)
+  active    Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([country, city])
 }
 
 model OrderItem {
