@@ -265,6 +265,58 @@
   font-weight: 600;
 }
 
+/* ---- Bank deposit details ---- */
+.ck-bank {
+  margin-top: 0.85rem;
+  border: 1px solid var(--ck-border);
+  border-radius: 6px;
+  padding: 1rem;
+  background: #fbfbfa;
+}
+
+.ck-bank-rows {
+  list-style: none;
+  margin: 0 0 0.75rem;
+  padding: 0;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.ck-bank-rows li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.88rem;
+}
+
+.ck-bank-rows li span {
+  color: var(--ck-muted);
+}
+
+.ck-bank-rows li strong {
+  font-weight: 600;
+  text-align: right;
+  word-break: break-word;
+}
+
+.ck-bank-note {
+  font-size: 0.85rem;
+  color: var(--ck-muted);
+  margin: 0 0 0.75rem;
+  line-height: 1.5;
+}
+
+.ck-bank-wa {
+  display: inline-block;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #128c7e;
+  text-decoration: none;
+  word-break: break-word;
+}
+
+.ck-bank-wa:hover { text-decoration: underline; }
+
 /* ---- Submit ---- */
 .ck-submit {
   width: 100%;

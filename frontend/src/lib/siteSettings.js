@@ -39,6 +39,17 @@ export const DEFAULT_SITE_SETTINGS = {
     youtube: 'https://youtube.com',
     tiktok: 'https://tiktok.com',
   },
+  // Shown on checkout when the customer chooses "Bank Deposit".
+  bankDeposit: {
+    bankName: '',
+    accountTitle: '',
+    accountNumber: '',
+    iban: '',
+    branch: '',
+    whatsapp: '03339285792',
+    instructions:
+      'After placing your order, transfer the total to the account above and send a screenshot of the payment receipt to our WhatsApp number.',
+  },
 }
 
 // Digits-only phone, usable in a tel: href.

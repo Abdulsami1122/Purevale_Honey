@@ -11,8 +11,18 @@ import './CheckoutPage.css'
 // checkout is never blocked.
 const FALLBACK_METHOD = { id: '', name: 'Standard Shipping', price: 0 }
 
+// wa.me needs an international number. A local Pakistani number like "0333…"
+// becomes "92333…"; anything already in international form is left alone.
+const waLink = (raw) => {
+  let digits = String(raw || '').replace(/\D/g, '')
+  if (digits.startsWith('0')) digits = `92${digits.slice(1)}`
+  return `https://wa.me/${digits}`
+}
+
 const CheckoutPage = () => {
-  const { cart, cartTotal, cartCount, clearCart } = useShop()
+  const { cart, cartTotal, cartCount, clearCart, siteSettings } = useShop()
+  const bank = siteSettings?.bankDeposit || {}
+  const hasBankDetails = Boolean(bank.bankName || bank.accountNumber || bank.iban)
   const { isAuthed, user, login, register } = useAdminAuth()
   const navigate = useNavigate()
 
@@ -362,6 +372,47 @@ const CheckoutPage = () => {
                   <input type="radio" name="payment" checked={payment === 'bank'} onChange={() => setPayment('bank')} />
                   <span>Bank Deposit</span>
                 </label>
+
+                {payment === 'bank' && (
+                  <div className="ck-bank">
+                    {hasBankDetails ? (
+                      <>
+                        <ul className="ck-bank-rows">
+                          {bank.bankName && (
+                            <li><span>Bank</span><strong>{bank.bankName}</strong></li>
+                          )}
+                          {bank.accountTitle && (
+                            <li><span>Account title</span><strong>{bank.accountTitle}</strong></li>
+                          )}
+                          {bank.accountNumber && (
+                            <li><span>Account number</span><strong>{bank.accountNumber}</strong></li>
+                          )}
+                          {bank.iban && (
+                            <li><span>IBAN</span><strong>{bank.iban}</strong></li>
+                          )}
+                          {bank.branch && (
+                            <li><span>Branch</span><strong>{bank.branch}</strong></li>
+                          )}
+                        </ul>
+                        {bank.instructions && <p className="ck-bank-note">{bank.instructions}</p>}
+                        {bank.whatsapp && (
+                          <a
+                            className="ck-bank-wa"
+                            href={waLink(bank.whatsapp)}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            Send payment screenshot on WhatsApp: {bank.whatsapp}
+                          </a>
+                        )}
+                      </>
+                    ) : (
+                      <p className="ck-bank-note">
+                        Bank details will be shared with you after you place the order.
+                      </p>
+                    )}
+                  </div>
+                )}
               </section>
 
               {error && <p className="ck-error">{error}</p>}

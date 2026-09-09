@@ -35,6 +35,15 @@ const updateSettingsSchema = z.object({
         youtube: z.string().max(300),
         tiktok: z.string().max(300),
       }).partial(),
+      bankDeposit: z.object({
+        bankName: z.string().max(120),
+        accountTitle: z.string().max(120),
+        accountNumber: z.string().max(60),
+        iban: z.string().max(60),
+        branch: z.string().max(120),
+        whatsapp: z.string().max(40),
+        instructions: z.string().max(600),
+      }).partial(),
     })
     .partial()
     .refine((v) => Object.keys(v).length > 0, { message: 'No settings provided' }),
