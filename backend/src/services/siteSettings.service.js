@@ -28,6 +28,8 @@ const DEFAULTS = {
     youtube: 'https://youtube.com',
     tiktok: 'https://tiktok.com',
   },
+  // Certification images shown on the home page (admin-managed gallery).
+  certifications: [],
   // Shown on checkout when the customer picks "Bank Deposit".
   bankDeposit: {
     bankName: '',

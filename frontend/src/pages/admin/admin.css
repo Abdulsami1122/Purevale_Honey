@@ -677,6 +677,32 @@
 .admin-badge-ok { background: #dcfce7; color: #15803d; cursor: pointer; border: none; }
 .admin-badge-muted { background: #e5e7eb; color: #6b7280; cursor: pointer; border: none; }
 
+/* certifications gallery */
+.admin-cert-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+.admin-cert-card {
+  border: 1px solid var(--a-border);
+  border-radius: 10px;
+  padding: 0.5rem;
+  background: #fff;
+}
+.admin-cert-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: contain;
+  border-radius: 6px;
+  display: block;
+}
+.admin-cert-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.3rem;
+  margin-top: 0.5rem;
+}
+
 /* checkbox + label row inside a modal form */
 .admin-checkbox-row {
   flex-direction: row;

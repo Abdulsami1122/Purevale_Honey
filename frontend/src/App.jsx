@@ -39,6 +39,7 @@ import AdminSettings from './pages/admin/AdminSettings'
 import AdminSubmissions from './pages/admin/AdminSubmissions'
 import AdminTestimonials from './pages/admin/AdminTestimonials'
 import AdminShipping from './pages/admin/AdminShipping'
+import AdminCertifications from './pages/admin/AdminCertifications'
 import AdminCategories from './pages/admin/AdminCategories'
 import AdminLogin from './pages/admin/AdminLogin'
 
@@ -103,6 +104,7 @@ function Shell() {
             <Route path="orders" element={<AdminOrders />} />
             <Route path="shipping" element={<AdminShipping />} />
             <Route path="testimonials" element={<AdminTestimonials />} />
+            <Route path="certifications" element={<AdminCertifications />} />
             <Route path="settings" element={<AdminSettings />} />
             <Route path="submissions" element={<AdminSubmissions />} />
           </Route>

@@ -12,6 +12,7 @@ import {
   Inbox,
   Quote,
   Truck,
+  BadgeCheck,
 } from 'lucide-react'
 import { useAdminAuth } from '../../admin/AdminAuthContext'
 import './admin.css'
@@ -22,6 +23,7 @@ const NAV = [
   { to: '/admin/orders', label: 'Orders', icon: ShoppingCart },
   { to: '/admin/shipping', label: 'Shipping', icon: Truck },
   { to: '/admin/testimonials', label: 'Testimonials', icon: Quote },
+  { to: '/admin/certifications', label: 'Certifications', icon: BadgeCheck },
   { to: '/admin/settings', label: 'Settings', icon: Settings },
   { to: '/admin/submissions', label: 'Submissions', icon: Inbox },
 ]

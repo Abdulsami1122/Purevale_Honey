@@ -3,6 +3,7 @@ import HeroSection from '../components/HeroSection'
 import PageBanner from '../components/shop/PageBanner'
 import FeaturedMixSection from '../components/shop/FeaturedMixSection'
 import QualitySection from '../components/QualitySection'
+import CertificationsSection from '../components/CertificationsSection'
 import WholesaleExport from '../components/WholesaleExport'
 import AboutOrigin from '../components/AboutOrigin'
 import NetworkSection from '../components/NetworkSection'
@@ -17,6 +18,7 @@ const HomePage = () => {
       <Reveal><FeaturedMixSection /></Reveal>
       <Reveal><AboutOrigin /></Reveal>
       <Reveal><QualitySection /></Reveal>
+      <Reveal><CertificationsSection /></Reveal>
       <Reveal><TestimonialsSection /></Reveal>
       <Reveal><WholesaleExport /></Reveal>
 

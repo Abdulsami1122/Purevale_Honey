@@ -23,6 +23,7 @@ const updateSettingsSchema = z.object({
       extraNavCategories: z.array(navCategory).max(30),
       disabledCategories: z.array(z.string().max(200)).max(30),
       story: z.object({ image: z.string().max(2000) }).partial(),
+      certifications: z.array(z.string().max(2000)).max(60),
       contact: z.object({
         phone: z.string().max(60),
         whatsapp: z.string().max(40),

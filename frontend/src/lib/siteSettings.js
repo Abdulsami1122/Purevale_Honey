@@ -39,6 +39,8 @@ export const DEFAULT_SITE_SETTINGS = {
     youtube: 'https://youtube.com',
     tiktok: 'https://tiktok.com',
   },
+  // Certification images shown on the home page (admin-managed).
+  certifications: [],
   // Shown on checkout when the customer chooses "Bank Deposit".
   bankDeposit: {
     bankName: '',
