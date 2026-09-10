@@ -115,6 +115,7 @@ export const api = {
 
   // ---- shipping ----
   listShippingMethods: (params) => request(`/api/shipping/methods${qs(params)}`),
+  listShippingLocations: () => request('/api/shipping/locations'),
   adminListShipping: () => request('/api/shipping'),
   createShipping: (payload) => request('/api/shipping', { method: 'POST', body: payload }),
   updateShipping: (id, payload) => request(`/api/shipping/${id}`, { method: 'PATCH', body: payload }),

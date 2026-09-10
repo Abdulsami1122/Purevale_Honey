@@ -10,8 +10,9 @@ const {
 } = require('../validators/shipping.validator')
 const ctrl = require('../controllers/shipping.controller')
 
-// Public — options for the checkout dropdown
+// Public — options for the checkout dropdowns
 router.get('/methods', validate(listRatesQuerySchema), ctrl.listMethods)
+router.get('/locations', ctrl.listLocations)
 
 // Admin CRUD
 router.get('/', isAuthenticated, isAdmin, ctrl.adminList)

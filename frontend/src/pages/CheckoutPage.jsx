@@ -12,6 +12,13 @@ import './CheckoutPage.css'
 // checkout is never blocked.
 const FALLBACK_METHOD = { id: '', name: 'Standard Shipping', price: 0 }
 
+// Always offered in the Country dropdown; any country the admin adds a rate for
+// is merged in on top of these.
+const DEFAULT_COUNTRIES = [
+  'Pakistan',
+  
+]
+
 // wa.me needs an international number. A local Pakistani number like "0333…"
 // becomes "92333…"; anything already in international form is left alone.
 const waLink = (raw) => {
@@ -38,10 +45,47 @@ const CheckoutPage = () => {
   const [country, setCountry] = useState('Pakistan')
   const [city, setCity] = useState('')
 
+  // Countries + cities the admin has configured shipping rates for.
+  const [locations, setLocations] = useState({ countries: [], citiesByCountry: {} })
+
+  // Merge admin-configured countries into the defaults, case-insensitively —
+  // a default's spelling wins so a stray "pakistan" from the DB shows as "Pakistan".
+  const countryOptions = (() => {
+    const seen = new Map()
+    for (const c of DEFAULT_COUNTRIES) seen.set(c.toLowerCase(), c)
+    for (const c of locations.countries || []) {
+      if (!seen.has(c.toLowerCase())) seen.set(c.toLowerCase(), c)
+    }
+    return [...seen.values()]
+  })()
+
+  // Cities the admin set up for the chosen country (matched case-insensitively).
+  const cityOptions = (() => {
+    const map = locations.citiesByCountry || {}
+    const key = Object.keys(map).find((k) => k.toLowerCase() === country.toLowerCase())
+    return key ? map[key] : []
+  })()
+
   // Shipping methods for the current destination.
   const [methods, setMethods] = useState([FALLBACK_METHOD])
   const [methodId, setMethodId] = useState('')
   const [methodsLoading, setMethodsLoading] = useState(false)
+
+  useEffect(() => {
+    let alive = true
+    api
+      .listShippingLocations()
+      .then((d) => alive && setLocations(d || { countries: [], citiesByCountry: {} }))
+      .catch(() => {})
+    return () => {
+      alive = false
+    }
+  }, [])
+
+  // When the country changes, clear the city so the new country's list applies.
+  useEffect(() => {
+    setCity('')
+  }, [country])
 
   useEffect(() => {
     let alive = true
@@ -334,11 +378,9 @@ const CheckoutPage = () => {
                 <label className="ck-field ck-select">
                   <span className="ck-select-label">Country/Region</span>
                   <select name="country" value={country} onChange={(e) => setCountry(e.target.value)}>
-                    <option>Pakistan</option>
-                    <option>United States</option>
-                    <option>United Kingdom</option>
-                    <option>United Arab Emirates</option>
-                    <option>Saudi Arabia</option>
+                    {countryOptions.map((c) => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
                   </select>
                 </label>
 
@@ -359,16 +401,35 @@ const CheckoutPage = () => {
                 </label>
 
                 <div className="ck-row">
-                  <label className="ck-field">
-                    <input
-                      type="text"
-                      name="city"
-                      placeholder="City"
-                      required
-                      value={city}
-                      onChange={(e) => setCity(e.target.value)}
-                    />
-                  </label>
+                  {cityOptions.length > 0 ? (
+                    <label className="ck-field ck-select">
+                      <span className="ck-select-label">City</span>
+                      <select
+                        name="city"
+                        required
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                      >
+                        <option value="">Select your city</option>
+                        {cityOptions.map((o) => (
+                          <option key={o.city} value={o.city}>
+                            {o.city} — {o.price > 0 ? formatPrice(o.price) : 'FREE'}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  ) : (
+                    <label className="ck-field">
+                      <input
+                        type="text"
+                        name="city"
+                        placeholder="City"
+                        required
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                      />
+                    </label>
+                  )}
                   <label className="ck-field">
                     <input type="text" name="postalCode" placeholder="Postal code (optional)" />
                   </label>
