@@ -35,11 +35,10 @@ const schema = z.object({
 const parsed = schema.safeParse(process.env)
 
 if (!parsed.success) {
-  // eslint-disable-next-line no-console
-  console.error('\n  Invalid environment configuration:\n')
-  // eslint-disable-next-line no-console
-  console.error(parsed.error.flatten().fieldErrors)
-  process.exit(1)
+  const details = JSON.stringify(parsed.error.flatten().fieldErrors, null, 2)
+  // Throw (don't process.exit) so the reason is visible in serverless logs
+  // instead of an opaque FUNCTION_INVOCATION_FAILED.
+  throw new Error(`Invalid environment configuration:\n${details}`)
 }
 
 const env = Object.freeze({

@@ -3,6 +3,9 @@
 
 generator client {
   provider = "prisma-client-js"
+  // "native" = local dev machine; "rhel-openssl-3.0.x" = Vercel / AWS Lambda
+  // Linux runtime. Without the second target the client fails to load on Vercel.
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
