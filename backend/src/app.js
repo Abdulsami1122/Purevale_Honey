@@ -11,7 +11,7 @@ const { apiLimiter } = require('./middlewares/rateLimiter')
 
 const app = express()
 
-// Behind a proxy (Heroku/Render/Nginx) so rate-limit + secure cookies see the real IP/proto.
+// Behiind a proxy (Heroku/Render/Nginx) so rate-limit + secure cookies see the real IP/proto.
 app.set('trust proxy', 1)
 app.disable('x-powered-by')
 
