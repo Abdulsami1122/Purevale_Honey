@@ -5,8 +5,8 @@ import { useAdminAuth } from '../../admin/AdminAuthContext';
 import api, { errorMessage } from '../../lib/api';
 import './AuthDrawer.css';
 
-const AuthDrawer = ({ isOpen, onClose }) => {
-  const [mode, setMode] = useState('login'); // 'login' | 'register' | 'forgot'
+const AuthDrawer = ({ isOpen, onClose, initialMode = 'login' }) => {
+  const [mode, setMode] = useState(initialMode); // 'login' | 'register' | 'forgot'
 
   // Login State
   const [email, setEmail] = useState('');
@@ -107,6 +107,7 @@ const AuthDrawer = ({ isOpen, onClose }) => {
     if (isOpen) {
       document.body.classList.add('auth-drawer-open');
       document.documentElement.classList.add('auth-drawer-open');
+      setMode(initialMode);
     } else {
       document.body.classList.remove('auth-drawer-open');
       document.documentElement.classList.remove('auth-drawer-open');
@@ -115,13 +116,13 @@ const AuthDrawer = ({ isOpen, onClose }) => {
       setSuccessMsg('');
       setPassword('');
       setRegPassword('');
-      setMode('login');
+      setMode(initialMode);
     }
     return () => {
       document.body.classList.remove('auth-drawer-open');
       document.documentElement.classList.remove('auth-drawer-open');
     };
-  }, [isOpen]);
+  }, [isOpen, initialMode]);
 
   if (!isOpen) return null;
 

@@ -4,6 +4,7 @@ import { ShoppingBag, HelpCircle, CheckCircle2, Lock, ChevronLeft } from 'lucide
 import { formatPrice } from '../data/products'
 import { useShop } from '../components/shop/ShopContext'
 import { useAdminAuth } from '../admin/AdminAuthContext'
+import AuthDrawer from '../components/shop/AuthDrawer'
 import { POLICIES } from '../data/policies'
 import api, { errorMessage } from '../lib/api'
 import './CheckoutPage.css'
@@ -54,7 +55,7 @@ const CheckoutPage = () => {
   const bank = siteSettings?.bankDeposit || {}
   const hasBankDetails = Boolean(bank.bankName || bank.accountNumber || bank.iban)
   const contact = siteSettings?.contact || {}
-  const { isAuthed, user, login, register } = useAdminAuth()
+  const { isAuthed, user, login } = useAdminAuth()
   const navigate = useNavigate()
 
   const [payment, setPayment] = useState('cod')
@@ -148,32 +149,19 @@ const CheckoutPage = () => {
   const shippingCost = Number(selectedMethod?.price || 0)
   const grandTotal = cartTotal + shippingCost
 
-  // Inline auth gate (checkout requires an account)
-  const [authMode, setAuthMode] = useState('login')
-  const [authForm, setAuthForm] = useState({ name: '', email: '', password: '' })
+  // Checkout requires an account: inline sign-in here, or the full register
+  // drawer (same one as the storefront header) when "Create account" is clicked.
+  const [authForm, setAuthForm] = useState({ email: '', password: '' })
   const [authBusy, setAuthBusy] = useState(false)
   const [authError, setAuthError] = useState('')
-  const [authNotice, setAuthNotice] = useState('')
+  const [authDrawerOpen, setAuthDrawerOpen] = useState(false)
 
   const handleAuth = async (e) => {
     e.preventDefault()
     setAuthError('')
-    setAuthNotice('')
     setAuthBusy(true)
     try {
-      if (authMode === 'login') {
-        await login(authForm.email.trim(), authForm.password)
-      } else {
-        await register({
-          name: authForm.name.trim(),
-          email: authForm.email.trim(),
-          password: authForm.password,
-        })
-        // Account created — switch to sign-in.
-        setAuthMode('login')
-        setAuthForm((f) => ({ ...f, password: '' }))
-        setAuthNotice('Account created — please sign in to finish your order.')
-      }
+      await login(authForm.email.trim(), authForm.password)
     } catch (err) {
       setAuthError(errorMessage(err) || 'Authentication failed')
     } finally {
@@ -368,27 +356,16 @@ const CheckoutPage = () => {
             <form className="ck-form" onSubmit={handleAuth}>
               <section className="ck-section">
                 <div className="ck-section-head">
-                  <h2>{authMode === 'login' ? 'Sign in to check out' : 'Create an account'}</h2>
+                  <h2>Sign in to check out</h2>
                   <button
                     type="button"
                     className="ck-link"
-                    onClick={() => { setAuthMode(authMode === 'login' ? 'register' : 'login'); setAuthError('') }}
+                    onClick={() => { setAuthError(''); setAuthDrawerOpen(true) }}
                   >
-                    {authMode === 'login' ? 'Create account' : 'Have an account? Sign in'}
+                    Create account
                   </button>
                 </div>
 
-                {authMode === 'register' && (
-                  <label className="ck-field">
-                    <input
-                      type="text"
-                      placeholder="Full name"
-                      required
-                      value={authForm.name}
-                      onChange={(e) => setAuthForm({ ...authForm, name: e.target.value })}
-                    />
-                  </label>
-                )}
                 <label className="ck-field">
                   <input
                     type="email"
@@ -401,20 +378,25 @@ const CheckoutPage = () => {
                 <label className="ck-field">
                   <input
                     type="password"
-                    placeholder="Password (min 8 characters)"
+                    placeholder="Password"
                     required
-                    minLength={8}
                     value={authForm.password}
                     onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
                   />
                 </label>
 
-                {authNotice && <p className="ck-muted" style={{ color: '#1c7a3f' }}>{authNotice}</p>}
                 {authError && <p className="ck-error">{authError}</p>}
 
                 <button type="submit" className="ck-submit" disabled={authBusy}>
-                  {authBusy ? 'Please wait…' : authMode === 'login' ? 'Sign in & continue' : 'Create account & continue'}
+                  {authBusy ? 'Please wait…' : 'Sign in & continue'}
                 </button>
+
+                <p className="ck-muted" style={{ marginTop: '0.85rem' }}>
+                  New customer?{' '}
+                  <button type="button" className="ck-link" onClick={() => { setAuthError(''); setAuthDrawerOpen(true) }}>
+                    Create your account
+                  </button>
+                </p>
               </section>
             </form>
           ) : (
@@ -630,6 +612,12 @@ const CheckoutPage = () => {
           </div>
         </div>
       )}
+
+      <AuthDrawer
+        isOpen={authDrawerOpen}
+        initialMode="register"
+        onClose={() => setAuthDrawerOpen(false)}
+      />
     </div>
   )
 }
