@@ -160,6 +160,9 @@ export const api = {
   // ---- uploads ----
   uploadImage: (dataUri) => request('/api/uploads', { method: 'POST', body: { file: dataUri } }),
   uploadSiteAsset: (dataUri) => request('/api/uploads', { method: 'POST', body: { file: dataUri } }),
+  // Customer-accessible: a bank-deposit payment screenshot at checkout.
+  uploadPaymentProof: (dataUri) =>
+    request('/api/uploads/payment-proof', { method: 'POST', body: { file: dataUri } }),
 }
 
 export default api

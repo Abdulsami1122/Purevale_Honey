@@ -15,6 +15,8 @@ const createOrderSchema = z.object({
     couponCode: z.string().trim().max(40).optional(),
     shippingMethodId: uuid.optional(),
     shippingCost: z.coerce.number().nonnegative().default(0),
+    paymentMethod: z.enum(['cod', 'bank']).default('cod'),
+    paymentProofUrl: z.string().url().max(2000).optional(),
   }),
 })
 

@@ -21,7 +21,8 @@ async function resolveCoupon(code) {
 
 // POST /api/orders  — creates an order from the caller's cart
 const createOrder = asyncHandler(async (req, res) => {
-  const { shipping, couponCode, shippingMethodId, shippingCost } = req.body
+  const { shipping, couponCode, shippingMethodId, shippingCost, paymentMethod, paymentProofUrl } =
+    req.body
 
   const cart = await prisma.cart.findUnique({
     where: { userId: req.user.id },
@@ -92,6 +93,8 @@ const createOrder = asyncHandler(async (req, res) => {
         shippingCountry: shipping.country,
         shippingMethod: shippingMethodName,
         couponCode: coupon?.code ?? null,
+        paymentMethod: paymentMethod === 'bank' ? 'bank' : 'cod',
+        paymentProofUrl: paymentMethod === 'bank' ? paymentProofUrl ?? null : null,
         items: { create: itemsData },
       },
       include: ORDER_INCLUDE,

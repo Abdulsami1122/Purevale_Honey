@@ -142,6 +142,11 @@ model Order {
   shippingMethod  String?
   couponCode      String?
 
+  // "cod" (cash on delivery) or "bank" (bank deposit). Bank orders may carry a
+  // customer-uploaded screenshot of the payment receipt.
+  paymentMethod   String  @default("cod")
+  paymentProofUrl String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

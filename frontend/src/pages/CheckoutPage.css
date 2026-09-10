@@ -28,6 +28,30 @@
   justify-content: space-between;
 }
 
+.ck-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.ck-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  background: none;
+  border: 0;
+  padding: 0.3rem 0.5rem 0.3rem 0;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #133827;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.ck-back:hover { text-decoration: underline; }
+
 .ck-brand {
   font-family: var(--font-heading, sans-serif);
   font-weight: 800;
@@ -35,6 +59,15 @@
   letter-spacing: 0.3px;
   color: #133827;
   text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 560px) {
+  .ck-header-inner { padding: 0.9rem 1rem; }
+  .ck-header-left { gap: 0.6rem; }
+  .ck-brand { font-size: 1rem; }
 }
 
 .ck-header-cart {
@@ -316,6 +349,59 @@
 }
 
 .ck-bank-wa:hover { text-decoration: underline; }
+
+/* ---- Payment screenshot upload ---- */
+.ck-proof {
+  margin-top: 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--ck-border);
+}
+
+.ck-proof-label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--ck-muted);
+  margin-bottom: 0.5rem;
+}
+
+.ck-proof-btn {
+  display: inline-block;
+  padding: 0.6rem 1rem;
+  border: 1px dashed var(--ck-border);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #fff;
+}
+
+.ck-proof-btn:hover { border-color: var(--ck-blue); color: var(--ck-blue); }
+
+.ck-proof-preview {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.ck-proof-preview img {
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--ck-border);
+}
+
+.ck-proof-remove {
+  background: none;
+  border: 0;
+  color: #b42318;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.2rem 0;
+}
+
+.ck-proof-remove:hover { text-decoration: underline; }
 
 /* ---- Submit ---- */
 .ck-submit {

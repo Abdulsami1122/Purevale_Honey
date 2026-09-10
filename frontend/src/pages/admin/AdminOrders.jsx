@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { X, Search } from 'lucide-react'
+import { X, Search, ZoomIn } from 'lucide-react'
 import api from '../../lib/api'
 import { formatPrice } from '../../data/products'
 import './admin.css'
@@ -12,6 +12,8 @@ const STATUS_LABEL = {
   delivered: 'Delivered',
   cancelled: 'Cancelled',
 }
+
+const paymentLabel = (m) => (m === 'bank' ? 'Bank Deposit' : 'Cash on Delivery')
 
 const fmtDate = (iso) =>
   new Date(iso).toLocaleString(undefined, {
@@ -30,6 +32,14 @@ const AdminOrders = () => {
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
   const [updating, setUpdating] = useState(false)
+  const [lightbox, setLightbox] = useState(null)
+
+  useEffect(() => {
+    if (!lightbox) return
+    const onKey = (e) => e.key === 'Escape' && setLightbox(null)
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [lightbox])
 
   const load = () => {
     setLoading(true)
@@ -105,6 +115,7 @@ const AdminOrders = () => {
                 <th>Date</th>
                 <th>Customer</th>
                 <th>Items</th>
+                <th>Payment</th>
                 <th>Status</th>
                 <th className="admin-ta-right">Total</th>
               </tr>
@@ -116,6 +127,10 @@ const AdminOrders = () => {
                   <td>{fmtDate(o.createdAt)}</td>
                   <td>{o.shippingName || o.user?.email || '—'}</td>
                   <td>{o.items?.reduce((n, it) => n + it.quantity, 0) ?? '—'}</td>
+                  <td>
+                    {paymentLabel(o.paymentMethod)}
+                    {o.paymentMethod === 'bank' && o.paymentProofUrl ? ' 📎' : ''}
+                  </td>
                   <td onClick={(e) => e.stopPropagation()}>
                     <select
                       className={`admin-status-select admin-badge-${o.status}`}
@@ -150,6 +165,26 @@ const AdminOrders = () => {
               <div>
                 <p className="admin-order-label">Placed</p>
                 <p>{fmtDate(selected.createdAt)}</p>
+              </div>
+              <div>
+                <p className="admin-order-label">Payment</p>
+                <p>{paymentLabel(selected.paymentMethod)}</p>
+                {selected.paymentMethod === 'bank' &&
+                  (selected.paymentProofUrl ? (
+                    <button
+                      type="button"
+                      className="admin-proof-thumb"
+                      onClick={() => setLightbox(selected.paymentProofUrl)}
+                      title="Click to enlarge"
+                    >
+                      <img src={selected.paymentProofUrl} alt="Payment screenshot" />
+                      <span className="admin-proof-zoom"><ZoomIn size={14} /></span>
+                    </button>
+                  ) : (
+                    <p className="admin-muted" style={{ fontSize: '0.78rem', margin: '0.3rem 0 0' }}>
+                      No screenshot uploaded
+                    </p>
+                  ))}
               </div>
               <div>
                 <p className="admin-order-label">Coupon</p>
@@ -229,6 +264,20 @@ const AdminOrders = () => {
               </tfoot>
             </table>
           </div>
+        </div>
+      )}
+
+      {lightbox && (
+        <div
+          className="admin-lightbox"
+          onClick={() => setLightbox(null)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <button type="button" className="admin-lightbox-close" aria-label="Close">
+            <X size={22} />
+          </button>
+          <img src={lightbox} alt="Payment screenshot" onClick={(e) => e.stopPropagation()} />
         </div>
       )}
     </div>

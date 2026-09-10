@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { ShoppingBag, HelpCircle, CheckCircle2, Lock } from 'lucide-react'
+import { ShoppingBag, HelpCircle, CheckCircle2, Lock, ChevronLeft } from 'lucide-react'
 import { formatPrice } from '../data/products'
 import { useShop } from '../components/shop/ShopContext'
 import { useAdminAuth } from '../admin/AdminAuthContext'
@@ -27,6 +27,28 @@ const waLink = (raw) => {
   return `https://wa.me/${digits}`
 }
 
+// Downscale an image file to a compact JPEG data URL before upload.
+const readImageFile = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => {
+      const img = new Image()
+      img.onload = () => {
+        const max = 1400
+        const scale = Math.min(1, max / Math.max(img.width, img.height))
+        const canvas = document.createElement('canvas')
+        canvas.width = Math.max(1, Math.round(img.width * scale))
+        canvas.height = Math.max(1, Math.round(img.height * scale))
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height)
+        resolve(canvas.toDataURL('image/jpeg', 0.82))
+      }
+      img.onerror = () => reject(new Error('That image could not be read'))
+      img.src = reader.result
+    }
+    reader.onerror = () => reject(new Error('That image could not be read'))
+    reader.readAsDataURL(file)
+  })
+
 const CheckoutPage = () => {
   const { cart, cartTotal, cartCount, clearCart, siteSettings } = useShop()
   const bank = siteSettings?.bankDeposit || {}
@@ -36,6 +58,9 @@ const CheckoutPage = () => {
   const navigate = useNavigate()
 
   const [payment, setPayment] = useState('cod')
+  const [proofUrl, setProofUrl] = useState('')
+  const [proofUploading, setProofUploading] = useState(false)
+  const [proofError, setProofError] = useState('')
   const [policyKey, setPolicyKey] = useState(null) // which footer pop-up is open
   const [placedOrder, setPlacedOrder] = useState(null)
   const [error, setError] = useState('')
@@ -156,6 +181,27 @@ const CheckoutPage = () => {
     }
   }
 
+  const handleProofChange = async (e) => {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    if (!file.type.startsWith('image/')) {
+      setProofError('Please choose an image file')
+      return
+    }
+    setProofError('')
+    setProofUploading(true)
+    try {
+      const dataUrl = await readImageFile(file)
+      const { url } = await api.uploadPaymentProof(dataUrl)
+      setProofUrl(url)
+    } catch (err) {
+      setProofError(errorMessage(err) || 'Could not upload the screenshot')
+    } finally {
+      setProofUploading(false)
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (cart.length === 0) return
@@ -184,9 +230,10 @@ const CheckoutPage = () => {
           quantity: it.quantity,
         })
       }
-      const payload = { shipping }
+      const payload = { shipping, paymentMethod: payment }
       if (selectedMethod?.id) payload.shippingMethodId = selectedMethod.id
       else payload.shippingCost = shippingCost
+      if (payment === 'bank' && proofUrl) payload.paymentProofUrl = proofUrl
       const { order } = await api.createOrder(payload)
       setPlacedOrder({ ...order, email: user?.email })
       clearCart()
@@ -301,7 +348,13 @@ const CheckoutPage = () => {
     <div className="ck-page">
       <header className="ck-header">
         <div className="ck-header-inner">
-          <Link to="/" className="ck-brand">Durrani Harvest</Link>
+          <div className="ck-header-left">
+            <button type="button" className="ck-back" onClick={() => navigate(-1)}>
+              <ChevronLeft size={18} strokeWidth={2.2} />
+              Back
+            </button>
+            <Link to="/" className="ck-brand">Durrani Harvest</Link>
+          </div>
           <Link to="/shop" className="ck-header-cart" aria-label="Cart">
             <ShoppingBag size={22} strokeWidth={1.7} />
             {cartCount > 0 && <span className="ck-header-cart-count">{cartCount}</span>}
@@ -510,6 +563,34 @@ const CheckoutPage = () => {
                         Bank details will be shared with you after you place the order.
                       </p>
                     )}
+
+                    <div className="ck-proof">
+                      <span className="ck-proof-label">Payment screenshot (optional)</span>
+                      {proofUrl ? (
+                        <div className="ck-proof-preview">
+                          <img src={proofUrl} alt="Payment screenshot" />
+                          <button
+                            type="button"
+                            className="ck-proof-remove"
+                            onClick={() => setProofUrl('')}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ) : (
+                        <label className="ck-proof-btn">
+                          {proofUploading ? 'Uploading…' : 'Upload screenshot'}
+                          <input
+                            type="file"
+                            accept="image/*"
+                            hidden
+                            disabled={proofUploading}
+                            onChange={handleProofChange}
+                          />
+                        </label>
+                      )}
+                      {proofError && <p className="ck-error">{proofError}</p>}
+                    </div>
                   </div>
                 )}
               </section>

@@ -7,4 +7,7 @@ const ctrl = require('../controllers/upload.controller')
 // limit (data-URI images / short videos).
 router.post('/', isAuthenticated, isAdmin, ctrl.upload)
 
+// Any signed-in customer can upload a bank-deposit payment screenshot at checkout.
+router.post('/payment-proof', isAuthenticated, ctrl.uploadPaymentProof)
+
 module.exports = router
