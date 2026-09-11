@@ -23,7 +23,7 @@ import {
 import { FacebookIcon, InstagramIcon, TiktokIcon, YoutubeIcon } from './BrandIcons'
 import { useShop } from './ShopContext'
 import { useAdminAuth } from '../../admin/AdminAuthContext'
-import { DEFAULT_SITE_SETTINGS, telHref } from '../../lib/siteSettings'
+import { DEFAULT_SITE_SETTINGS, telHref, logoSrc } from '../../lib/siteSettings'
 import AuthDrawer from './AuthDrawer'
 import SearchDrawer from './SearchDrawer'
 import CartDrawer from './CartDrawer'
@@ -242,7 +242,7 @@ const ShopHeader = () => {
         {/* 3. Main Navigation Bar */}
         <div className="nav-bar">
           <Link className="brand" to="/">
-            <img className="brand-seal" src="/logo.png" alt="Durrani Harvest" />
+            <img className="brand-seal" src={logoSrc(siteSettings)} alt="Durrani Harvest" />
             <span className="brand-word">
               <span className="brand-word-main">DURRANI</span>
               <span className="brand-word-sub">H A R V E S T</span>

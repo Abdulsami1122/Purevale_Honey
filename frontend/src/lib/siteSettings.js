@@ -2,6 +2,8 @@
 // paint (and when the API is unreachable) before GET /api/settings resolves.
 // The server owns the source of truth in backend/src/routes/settings.routes.js.
 export const DEFAULT_SITE_SETTINGS = {
+  // Brand mark used in the nav, footer, and admin sidebar/login.
+  logoUrl: '/logo.png',
   announcements: [
     'Welcome to Durrani Harvest',
     'Limited Time Offer Upto 25% Off',
@@ -53,6 +55,9 @@ export const DEFAULT_SITE_SETTINGS = {
       'After placing your order, transfer the total to the account above and send a screenshot of the payment receipt to our WhatsApp number.',
   },
 }
+
+// Guards against an accidentally-cleared logo falling back to a broken <img src="">.
+export const logoSrc = (settings) => settings?.logoUrl || DEFAULT_SITE_SETTINGS.logoUrl
 
 // Digits-only phone, usable in a tel: href.
 export const telHref = (value) => `tel:${String(value || '').replace(/[^\d+]/g, '')}`

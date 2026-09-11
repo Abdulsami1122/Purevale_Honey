@@ -340,8 +340,77 @@
   transition: filter 0.15s ease, opacity 0.15s ease;
 }
 
-.quick-shop-btn + .quick-shop-btn {
+.quick-shop-btn + .quick-shop-btn,
+.quick-shop-cart-btn-wrap + .quick-shop-btn {
   margin-top: 0.85rem;
+}
+
+/* ---- "box flies into the cart" add-to-cart animation ---- */
+.quick-shop-cart-btn-wrap {
+  position: relative;
+}
+
+.qs-fly-anim {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--color-gold, #e6a935);
+}
+
+.qs-fly-box {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  color: #fff;
+  display: inline-flex;
+  transform: translateY(-50%);
+  animation: qs-box-fly 0.85s cubic-bezier(0.45, 0, 0.2, 1) forwards;
+}
+
+.qs-fly-cart {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  color: #fff;
+  display: inline-flex;
+  transform: translateY(-50%);
+  animation: qs-cart-pulse 0.85s ease;
+}
+
+@keyframes qs-box-fly {
+  0% {
+    left: 16px;
+    transform: translateY(-50%) scale(1);
+    opacity: 0;
+  }
+  14% {
+    opacity: 1;
+  }
+  72% {
+    left: calc(100% - 42px);
+    transform: translateY(-50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    left: calc(100% - 30px);
+    transform: translateY(-50%) scale(0.35);
+    opacity: 0;
+  }
+}
+
+@keyframes qs-cart-pulse {
+  0%,
+  62% {
+    transform: translateY(-50%) scale(1);
+  }
+  78% {
+    transform: translateY(-50%) scale(1.35);
+  }
+  100% {
+    transform: translateY(-50%) scale(1);
+  }
 }
 
 .quick-shop-btn:disabled {

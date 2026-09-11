@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { MapPin, Mail, Phone } from 'lucide-react';
 import { FacebookIcon, InstagramIcon, YoutubeIcon, TiktokIcon } from './shop/BrandIcons';
 import { useShop } from './shop/ShopContext';
-import { DEFAULT_SITE_SETTINGS, telHref, waHref } from '../lib/siteSettings';
+import { DEFAULT_SITE_SETTINGS, telHref, waHref, logoSrc } from '../lib/siteSettings';
 import './Footer.css';
 
 const Footer = () => {
@@ -34,7 +34,7 @@ const Footer = () => {
             <div className="ih-footer-col ih-brand-col">
               <div className="ih-logo-wrapper">
                 <Link to="/" className="pv-footer-brand">
-                  <img src="/logo.png" alt="Durrani Harvest" className="pv-footer-logo-img" />
+                  <img src={logoSrc(siteSettings)} alt="Durrani Harvest" className="pv-footer-logo-img" />
                   <div className="pv-brand-meta">
                     <span className="pv-brand-name">DURRANI HARVEST</span>
                     <span className="pv-brand-sub">100% PURE & NATURAL</span>

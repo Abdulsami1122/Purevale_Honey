@@ -13,6 +13,7 @@ const navCategory = z.object({
 const updateSettingsSchema = z.object({
   body: z
     .object({
+      logoUrl: z.string().max(2000),
       announcements: z.array(z.string().max(200)).max(20),
       hero: z.object({
         videoUrl: z.string().max(2000),

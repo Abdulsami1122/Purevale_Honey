@@ -37,6 +37,31 @@ const readRaw = (file) => new Promise((resolve, reject) => {
   reader.readAsDataURL(file)
 })
 
+// Like readImage, but keeps PNG (so a transparent logo stays transparent) and
+// passes SVGs through untouched instead of rasterising them.
+const readLogo = (file) => {
+  if (file.type === 'image/svg+xml') return readRaw(file)
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => {
+      const img = new Image()
+      img.onload = () => {
+        const maxSize = 640
+        const scale = Math.min(1, maxSize / Math.max(img.width, img.height))
+        const canvas = document.createElement('canvas')
+        canvas.width = Math.max(1, Math.round(img.width * scale))
+        canvas.height = Math.max(1, Math.round(img.height * scale))
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height)
+        resolve(canvas.toDataURL('image/png'))
+      }
+      img.onerror = () => reject(new Error('That image could not be read'))
+      img.src = reader.result
+    }
+    reader.onerror = () => reject(new Error('That image could not be read'))
+    reader.readAsDataURL(file)
+  })
+}
+
 const AdminSettings = () => {
   const { admin } = useAdminAuth()
   const { refreshSiteSettings } = useShop()
@@ -47,6 +72,7 @@ const AdminSettings = () => {
   const [msg, setMsg] = useState(null)
   const storyInput = useRef(null)
   const videoInput = useRef(null)
+  const logoInput = useRef(null)
 
   useEffect(() => {
     api
@@ -112,6 +138,32 @@ const AdminSettings = () => {
       const dataUrl = await readImage(file)
       const { url } = await api.uploadSiteAsset(dataUrl)
       setSection('story', { image: url })
+    } catch (err) {
+      setMsg({ type: 'error', text: err.message })
+    } finally {
+      setBusy('')
+    }
+  }
+
+  const uploadLogo = async (e) => {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    if (!file.type.startsWith('image/')) {
+      setMsg({ type: 'error', text: 'Please choose an image file' })
+      return
+    }
+    setBusy('logo')
+    setMsg(null)
+    try {
+      const dataUrl = await readLogo(file)
+      const { url } = await api.uploadSiteAsset(dataUrl)
+      setForm((f) => ({ ...f, logoUrl: url }))
+      // Persist immediately — no need to hit "Save all changes" separately.
+      const saved = await api.updateSiteSettings({ logoUrl: url })
+      setForm((f) => ({ ...DEFAULT_SITE_SETTINGS, ...f, ...saved }))
+      await refreshSiteSettings?.()
+      setMsg({ type: 'ok', text: 'Logo updated — live on the storefront now.' })
     } catch (err) {
       setMsg({ type: 'error', text: err.message })
     } finally {
@@ -185,6 +237,29 @@ const AdminSettings = () => {
           {msg && <div className={msg.type === 'ok' ? 'admin-success' : 'admin-alert'}>{msg.text}</div>}
 
           <form onSubmit={save}>
+            {/* Brand logo */}
+            <div className="admin-panel">
+              <h2 className="admin-h2">Brand logo</h2>
+              <p className="admin-hint">Shown in the site header, footer, and the admin sign-in page/sidebar.</p>
+
+              {form.logoUrl && (
+                <div className="admin-logo-preview-wrap">
+                  <img className="admin-logo-preview" src={form.logoUrl} alt="Logo preview" />
+                </div>
+              )}
+
+              <button
+                type="button"
+                className="admin-file-btn"
+                style={{ marginTop: '0.85rem' }}
+                onClick={() => logoInput.current?.click()}
+                disabled={busy === 'logo'}
+              >
+                <ImagePlus size={16} /> {busy === 'logo' ? 'Uploading…' : 'Upload logo'}
+              </button>
+              <input ref={logoInput} type="file" accept="image/*" hidden onChange={uploadLogo} />
+            </div>
+
             {/* Announcement bar */}
             <div className="admin-panel">
               <h2 className="admin-h2">Announcement bar</h2>

@@ -5,6 +5,8 @@ const prisma = require('../config/db')
 const KEY = 'site'
 
 const DEFAULTS = {
+  // Brand mark used in the nav, footer, and admin sidebar/login.
+  logoUrl: '/logo.png',
   announcements: ['Welcome to Purevale Honey', 'Limited Time Offer Upto 25% Off'],
   hero: {
     videoUrl: '/banner-vedio.mp4',

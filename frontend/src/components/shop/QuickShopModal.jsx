@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
-import { X, Heart, Minus, Plus, ChevronLeft, ChevronRight } from 'lucide-react'
+import { X, Heart, Minus, Plus, ChevronLeft, ChevronRight, Package, ShoppingCart } from 'lucide-react'
 import { discountPercent, formatPrice, originalPrice, salePrice } from '../../data/products'
 import { useShop } from './ShopContext'
 import './QuickShopModal.css'
@@ -21,6 +21,7 @@ const QuickShopModal = ({ product, isOpen, onClose }) => {
   const [variantIndex, setVariantIndex] = useState(0)
   const [quantity, setQuantity] = useState(1)
   const [activeImageIndex, setActiveImageIndex] = useState(0)
+  const [flying, setFlying] = useState(false)
 
   const images = product
     ? Array.isArray(product.images) && product.images.length > 0
@@ -34,6 +35,7 @@ const QuickShopModal = ({ product, isOpen, onClose }) => {
       setVariantIndex(0)
       setQuantity(1)
       setActiveImageIndex(0)
+      setFlying(false)
     }
   }, [isOpen, product])
 
@@ -69,10 +71,17 @@ const QuickShopModal = ({ product, isOpen, onClose }) => {
     : originalPrice(product)
   const discount = discountPercent(product)
 
+  // Plays a short "box flies into the cart" animation on the button, then
+  // actually adds the item and opens the cart drawer once it lands.
   const handleAddToCart = () => {
-    addToCart(product, { variant: variants[variantIndex], price, quantity })
-    onClose()
-    openCartDrawer()
+    if (flying || !product.available) return
+    setFlying(true)
+    setTimeout(() => {
+      addToCart(product, { variant: variants[variantIndex], price, quantity })
+      setFlying(false)
+      onClose()
+      openCartDrawer()
+    }, 850)
   }
 
   const handleBuyNow = () => {
@@ -206,14 +215,26 @@ const QuickShopModal = ({ product, isOpen, onClose }) => {
               </button>
             </div>
 
-            <button
-              type="button"
-              className="quick-shop-btn quick-shop-btn-cart"
-              onClick={handleAddToCart}
-              disabled={!product.available}
-            >
-              {product.available ? 'ADD TO CART' : 'SOLD OUT'}
-            </button>
+            <div className="quick-shop-cart-btn-wrap">
+              <button
+                type="button"
+                className="quick-shop-btn quick-shop-btn-cart"
+                onClick={handleAddToCart}
+                disabled={!product.available || flying}
+              >
+                {product.available ? (flying ? 'ADDED' : 'ADD TO CART') : 'SOLD OUT'}
+              </button>
+              {flying && (
+                <div className="qs-fly-anim" aria-hidden="true">
+                  <span className="qs-fly-box">
+                    <Package size={16} strokeWidth={2.2} />
+                  </span>
+                  <span className="qs-fly-cart">
+                    <ShoppingCart size={20} strokeWidth={2} />
+                  </span>
+                </div>
+              )}
+            </div>
             <button
               type="button"
               className="quick-shop-btn quick-shop-btn-buy"

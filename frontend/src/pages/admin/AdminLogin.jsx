@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 import { useAdminAuth } from '../../admin/AdminAuthContext'
+import { useShop } from '../../components/shop/ShopContext'
+import { logoSrc } from '../../lib/siteSettings'
 import './admin.css'
 
 const AdminLogin = () => {
   const { login, logout, isAdmin } = useAdminAuth()
+  const { siteSettings } = useShop()
   const navigate = useNavigate()
   const location = useLocation()
   const dest = location.state?.from || '/admin'
@@ -42,7 +45,7 @@ const AdminLogin = () => {
   return (
     <div className="admin-login-wrap">
       <form className="admin-login-card" onSubmit={handleSubmit}>
-        <img src="/logo.png" alt="Durrani Harvest" className="admin-login-logo" />
+        <img src={logoSrc(siteSettings)} alt="Durrani Harvest" className="admin-login-logo" />
         <h1>Durrani Harvest</h1>
         <p className="admin-login-sub">Admin sign in</p>
 

@@ -15,6 +15,8 @@ import {
   BadgeCheck,
 } from 'lucide-react'
 import { useAdminAuth } from '../../admin/AdminAuthContext'
+import { useShop } from '../../components/shop/ShopContext'
+import { logoSrc } from '../../lib/siteSettings'
 import './admin.css'
 
 const NAV = [
@@ -30,6 +32,7 @@ const NAV = [
 
 const AdminLayout = () => {
   const { admin, logout } = useAdminAuth()
+  const { siteSettings } = useShop()
   const navigate = useNavigate()
   const [navOpen, setNavOpen] = useState(false)
 
@@ -43,7 +46,7 @@ const AdminLayout = () => {
       <aside className="admin-sidebar">
         <div className="admin-sidebar-brand">
           <span className="admin-brand-lockup">
-            <img src="/logo.png" alt="" className="admin-brand-logo" />
+            <img src={logoSrc(siteSettings)} alt="" className="admin-brand-logo" />
             Durrani Harvest
           </span>
           <button
