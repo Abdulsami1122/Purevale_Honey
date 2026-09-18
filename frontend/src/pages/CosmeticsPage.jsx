@@ -7,7 +7,7 @@ import { useShop } from '../components/shop/ShopContext'
 import './Pages.css'
 
 const CosmeticsPage = () => {
-  const { collections } = useShop()
+  const { collections, hiddenCollectionKeys } = useShop()
   return (
     <div className="page-container">
       {/* 1. Hero Banner */}
@@ -22,12 +22,14 @@ const CosmeticsPage = () => {
       </div>
 
       {/* 2. Collection Section (Store Grid with Filter, Toolbar, Sort & Cart) */}
-      <CollectionSection
-        id="cosmetics-collection"
-        title="Honey & Propolis Cosmetics"
-        subtitle="100% organic, chemical-free beeswax creams, serums, and botanical elixirs"
-        products={collections.cosmetics}
-      />
+      {!hiddenCollectionKeys.has('cosmetics') && (
+        <CollectionSection
+          id="cosmetics-collection"
+          title="Honey & Propolis Cosmetics"
+          subtitle="100% organic, chemical-free beeswax creams, serums, and botanical elixirs"
+          products={collections.cosmetics}
+        />
+      )}
 
       {/* 3. Product Benefits Info */}
       <div className="page-content-wrapper" style={{ marginTop: '3rem' }}>

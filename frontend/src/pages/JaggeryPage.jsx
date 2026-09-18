@@ -5,7 +5,7 @@ import { useShop } from '../components/shop/ShopContext'
 import './Pages.css'
 
 const JaggeryPage = () => {
-  const { collections } = useShop()
+  const { collections, hiddenCollectionKeys } = useShop()
   return (
     <div className="page-container">
       <div className="page-hero-banner">
@@ -18,12 +18,14 @@ const JaggeryPage = () => {
         </p>
       </div>
 
-      <CollectionSection
-        id="jaggery-section"
-        title="Jaggery (Gur) Collection"
-        subtitle="Traditional handmade Gur, Dry Fruit Masala Gur, and Organic Shakkar"
-        products={collections.jaggery}
-      />
+      {!hiddenCollectionKeys.has('jaggery') && (
+        <CollectionSection
+          id="jaggery-section"
+          title="Jaggery (Gur) Collection"
+          subtitle="Traditional handmade Gur, Dry Fruit Masala Gur, and Organic Shakkar"
+          products={collections.jaggery}
+        />
+      )}
     </div>
   )
 }

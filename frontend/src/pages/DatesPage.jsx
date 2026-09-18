@@ -5,7 +5,7 @@ import { useShop } from '../components/shop/ShopContext'
 import './Pages.css'
 
 const DatesPage = () => {
-  const { collections } = useShop()
+  const { collections, hiddenCollectionKeys } = useShop()
   return (
     <div className="page-container">
       <div className="page-hero-banner">
@@ -18,12 +18,14 @@ const DatesPage = () => {
         </p>
       </div>
 
-      <CollectionSection
-        id="dates-section"
-        title="Dates Collection"
-        subtitle="Hand-picked for optimal softness, rich minerals, and authentic flavor"
-        products={collections.dates}
-      />
+      {!hiddenCollectionKeys.has('dates') && (
+        <CollectionSection
+          id="dates-section"
+          title="Dates Collection"
+          subtitle="Hand-picked for optimal softness, rich minerals, and authentic flavor"
+          products={collections.dates}
+        />
+      )}
     </div>
   )
 }

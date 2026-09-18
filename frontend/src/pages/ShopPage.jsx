@@ -5,7 +5,7 @@ import { useShop } from '../components/shop/ShopContext'
 import './Pages.css'
 
 const ShopPage = () => {
-  const { collections } = useShop()
+  const { collections, hiddenCollectionKeys } = useShop()
   return (
     <div className="page-container">
       <div className="page-hero-banner">
@@ -18,40 +18,50 @@ const ShopPage = () => {
         </p>
       </div>
 
-      <CollectionSection
-        id="honey-collection"
-        title="Pure Honey Collection"
-        subtitle="100% pure raw honey varieties from pristine valleys"
-        products={collections.honey}
-      />
+      {!hiddenCollectionKeys.has('honey') && (
+        <CollectionSection
+          id="honey-collection"
+          title="Pure Honey Collection"
+          subtitle="100% pure raw honey varieties from pristine valleys"
+          products={collections.honey}
+        />
+      )}
 
-      <CollectionSection
-        id="dates-collection"
-        title="Organic Dates Collection"
-        subtitle="Hand-selected fresh premium dates from trusted orchards"
-        products={collections.dates}
-      />
+      {!hiddenCollectionKeys.has('dates') && (
+        <CollectionSection
+          id="dates-collection"
+          title="Organic Dates Collection"
+          subtitle="Hand-selected fresh premium dates from trusted orchards"
+          products={collections.dates}
+        />
+      )}
 
-      <CollectionSection
-        id="jaggery-collection"
-        title="Organic Jaggery (Gur) Collection"
-        subtitle="Pure unrefined desi jaggery cubes, dry fruit masala gur & shakkar"
-        products={collections.jaggery}
-      />
+      {!hiddenCollectionKeys.has('jaggery') && (
+        <CollectionSection
+          id="jaggery-collection"
+          title="Organic Jaggery (Gur) Collection"
+          subtitle="Pure unrefined desi jaggery cubes, dry fruit masala gur & shakkar"
+          products={collections.jaggery}
+        />
+      )}
 
-      <CollectionSection
-        id="shilajit-collection"
-        title="Pure Shilajit & Vitality"
-        subtitle="Gold-grade Himalayan shilajit for strength and health"
-        products={collections.shilajit}
-      />
+      {!hiddenCollectionKeys.has('shilajit') && (
+        <CollectionSection
+          id="shilajit-collection"
+          title="Pure Shilajit & Vitality"
+          subtitle="Gold-grade Himalayan shilajit for strength and health"
+          products={collections.shilajit}
+        />
+      )}
 
-      <CollectionSection
-        id="cosmetics-collection"
-        title="Natural Honey Cosmetics & Skincare"
-        subtitle="Organic royal jelly, beeswax, and propolis facial care"
-        products={collections.cosmetics}
-      />
+      {!hiddenCollectionKeys.has('cosmetics') && (
+        <CollectionSection
+          id="cosmetics-collection"
+          title="Natural Honey Cosmetics & Skincare"
+          subtitle="Organic royal jelly, beeswax, and propolis facial care"
+          products={collections.cosmetics}
+        />
+      )}
     </div>
   )
 }

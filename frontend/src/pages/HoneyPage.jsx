@@ -6,7 +6,7 @@ import { useShop } from '../components/shop/ShopContext'
 import './Pages.css'
 
 const HoneyPage = () => {
-  const { collections } = useShop()
+  const { collections, hiddenCollectionKeys } = useShop()
   return (
     <div className="page-container">
       <div className="page-hero-banner">
@@ -19,12 +19,14 @@ const HoneyPage = () => {
         </p>
       </div>
 
-      <CollectionSection
-        id="honey-collection"
-        title="Honey Collection"
-        subtitle="Explore our pure Sidr, Acacia, Multi-flower, and Wildflower honeys"
-        products={collections.honey}
-      />
+      {!hiddenCollectionKeys.has('honey') && (
+        <CollectionSection
+          id="honey-collection"
+          title="Honey Collection"
+          subtitle="Explore our pure Sidr, Acacia, Multi-flower, and Wildflower honeys"
+          products={collections.honey}
+        />
+      )}
 
       <QualitySection />
     </div>

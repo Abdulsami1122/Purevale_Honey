@@ -145,6 +145,41 @@ export const ShopProvider = ({ children }) => {
   const openCartDrawer = useCallback(() => setCartDrawerOpen(true), [])
   const closeCartDrawer = useCallback(() => setCartDrawerOpen(false), [])
 
+  // A category the admin switched off in Settings → Navigation categories
+  // already disappears from the nav (ShopHeader) — these mirror that same
+  // on/off state so its products also disappear from the storefront listings
+  // (Shop, Home "Our Collection", category pages, search), not just the menu.
+  const hiddenCollectionKeys = useMemo(
+    () =>
+      new Set(
+        (Array.isArray(siteSettings?.disabledCategories) ? siteSettings.disabledCategories : [])
+          .map((href) => String(href || '').replace(/^\//, '').toLowerCase()),
+      ),
+    [siteSettings],
+  )
+  const hiddenCategoryNames = useMemo(
+    () =>
+      new Set(
+        (Array.isArray(siteSettings?.extraNavCategories) ? siteSettings.extraNavCategories : [])
+          .filter((c) => c && c.enabled === false)
+          .map((c) => String(c.label || '').trim().toLowerCase()),
+      ),
+    [siteSettings],
+  )
+  // Uses the product's real category name, not the (lossy, fallback-to-honey)
+  // `collection` bucket, so an unrelated custom category is never swept up by
+  // a disabled built-in.
+  const isProductHidden = useCallback(
+    (p) => {
+      const name = String(p.categoryName || '').trim().toLowerCase()
+      if (!name) return false
+      if (hiddenCategoryNames.has(name)) return true
+      const matchedBuiltin = COLLECTION_KEYS.find((k) => name.includes(k))
+      return Boolean(matchedBuiltin && hiddenCollectionKeys.has(matchedBuiltin))
+    },
+    [hiddenCollectionKeys, hiddenCategoryNames],
+  )
+
   // Keep the wishlist so it survives a page reload
   useEffect(() => {
     try {
@@ -270,11 +305,12 @@ export const ShopProvider = ({ children }) => {
       return grouped
     }
     for (const p of adminProducts) {
+      if (isProductHidden(p)) continue
       const key = COLLECTION_KEYS.includes(p.collection) ? p.collection : 'honey'
       grouped[key].push(p)
     }
     return grouped
-  }, [adminProducts])
+  }, [adminProducts, isProductHidden])
 
   const allProducts = useMemo(
     () => COLLECTION_KEYS.flatMap((key) => collections[key]),
@@ -311,6 +347,7 @@ export const ShopProvider = ({ children }) => {
       clearCart,
       collections,
       allProducts,
+      hiddenCollectionKeys,
       adminProducts,
       refreshProducts,
       siteSettings,
@@ -335,6 +372,7 @@ export const ShopProvider = ({ children }) => {
       clearCart,
       collections,
       allProducts,
+      hiddenCollectionKeys,
       adminProducts,
       refreshProducts,
       siteSettings,
