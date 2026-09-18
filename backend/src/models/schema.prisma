@@ -80,6 +80,9 @@ model Product {
   name        String
   description String
   price       Decimal  @db.Decimal(10, 2)
+  // optional upper end of a displayed price range, e.g. "Rs.500 - Rs.1500"
+  // on the storefront card. Leave null for a single fixed price.
+  priceMax    Decimal? @db.Decimal(10, 2)
   // percentage off, 0 = no discount
   discountPercent Int   @default(0)
   // admin-set display rating + review count (independent of real Review rows)

@@ -8,13 +8,14 @@ import './admin.css'
 const EMPTY = {
   name: '',
   price: '',
+  priceMax: '', // optional "up to" price — shows as a range, e.g. Rs.500 - Rs.1500
   discountPercent: '0',
   rating: '0',
   reviewCount: '0',
   stock: '0',
   categoryId: '',
   images: [],
-  variants: '',
+  variants: [], // [{ label, price }] — blank price = use the base price above
 }
 
 const toForm = (p) => {
@@ -25,6 +26,7 @@ const toForm = (p) => {
   return {
     name: p.name || '',
     price: p.price ?? '',
+    priceMax: p.priceMax ?? '',
     discountPercent: p.discountPercent ?? 0,
     rating: p.rating ?? 0,
     reviewCount: p.reviewCount ?? 0,
@@ -37,8 +39,12 @@ const toForm = (p) => {
       status: 'done',
     })),
     variants: Array.isArray(p.variants)
-      ? p.variants.map((v) => (typeof v === 'string' ? v : v.label)).join(', ')
-      : '',
+      ? p.variants.map((v) =>
+          typeof v === 'string'
+            ? { label: v, price: '' }
+            : { label: v.label || '', price: v.price != null ? v.price : '' },
+        )
+      : [],
   }
 }
 
@@ -89,7 +95,15 @@ const AdminProducts = () => {
 
   const catName = (id) => categories.find((c) => c.id === id)?.name || '—'
 
+  // Re-fetch categories every time the modal opens, so a category deleted
+  // elsewhere (Categories page, or removed from Settings → Navigation) never
+  // lingers in an already-open Products tab.
+  const refreshCategories = () => {
+    api.listCategories().then((c) => setCategories(c.categories || [])).catch(() => {})
+  }
+
   const openCreate = () => {
+    refreshCategories()
     setEditingId(null)
     setForm({ ...EMPTY, images: [], categoryId: categories[0]?.id || '' })
     setError('')
@@ -97,6 +111,7 @@ const AdminProducts = () => {
   }
 
   const openEdit = (p) => {
+    refreshCategories()
     setEditingId(p.id)
     setForm(toForm(p))
     setError('')
@@ -104,6 +119,14 @@ const AdminProducts = () => {
   }
 
   const update = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }))
+
+  // ---- sizes / variants, each with its own optional price ----
+  const setVariant = (i, patch) =>
+    setForm((f) => ({ ...f, variants: f.variants.map((v, idx) => (idx === i ? { ...v, ...patch } : v)) }))
+  const addVariant = () =>
+    setForm((f) => ({ ...f, variants: [...f.variants, { label: '', price: '' }] }))
+  const removeVariant = (i) =>
+    setForm((f) => ({ ...f, variants: f.variants.filter((_, idx) => idx !== i) }))
 
   const chooseImage = async (e) => {
     const files = Array.from(e.target.files || [])
@@ -175,6 +198,10 @@ const AdminProducts = () => {
       setError('Name and price are required')
       return
     }
+    if (form.priceMax !== '' && Number(form.priceMax) < Number(form.price)) {
+      setError('"Price to" must be greater than or equal to the price')
+      return
+    }
     setSaving(true)
     setError('')
     try {
@@ -193,6 +220,7 @@ const AdminProducts = () => {
       const payload = {
         name: form.name.trim(),
         price: Number(form.price),
+        priceMax: form.priceMax === '' ? null : Number(form.priceMax),
         discountPercent: Math.max(0, Math.min(95, Math.round(Number(form.discountPercent) || 0))),
         rating: Math.max(0, Math.min(5, Number(form.rating) || 0)),
         reviewCount: Math.max(0, Math.round(Number(form.reviewCount) || 0)),
@@ -200,10 +228,13 @@ const AdminProducts = () => {
         categoryId: form.categoryId || null,
         images: finalImages,
         variants: form.variants
-          .split(',')
-          .map((s) => s.trim())
-          .filter(Boolean)
-          .map((label) => ({ label })),
+          .map((v) => ({
+            label: v.label.trim(),
+            // Blank price -> omitted entirely, so the backend/storefront
+            // fall back to the product's base price for that size.
+            price: v.price === '' ? undefined : Number(v.price),
+          }))
+          .filter((v) => v.label),
       }
       if (editingId) await api.updateProduct(editingId, payload)
       else await api.createProduct(payload)
@@ -388,6 +419,22 @@ const AdminProducts = () => {
               </label>
 
               <label className="admin-input-group">
+                <span>Price to (optional)</span>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={form.priceMax}
+                  onChange={update('priceMax')}
+                  placeholder="e.g. 1500 — shows as 500 - 1500"
+                />
+              </label>
+              <p className="admin-hint admin-col-full" style={{ margin: '-0.5rem 0 0.25rem' }}>
+                Leave "Price to" blank for a single price. Filled in, the storefront shows a range
+                (e.g. Rs.500 - Rs.1500). This is separate from the per-size prices below.
+              </p>
+
+              <label className="admin-input-group">
                 <span>Discount %</span>
                 <input type="number" min="0" max="95" step="1" value={form.discountPercent} onChange={update('discountPercent')} placeholder="0" />
               </label>
@@ -407,10 +454,42 @@ const AdminProducts = () => {
                 <input type="number" min="0" value={form.stock} onChange={update('stock')} placeholder="0" />
               </label>
 
-              <label className="admin-input-group admin-col-full">
-                <span>Sizes / variants (comma separated)</span>
-                <input type="text" value={form.variants} onChange={update('variants')} placeholder="250g, 500g, 1kg" />
-              </label>
+              <div className="admin-input-group admin-col-full">
+                <span>Sizes / variants</span>
+                <p className="admin-hint" style={{ margin: '0 0 0.5rem' }}>
+                  Leave a size's price blank to use the base price above. The customer's chosen size
+                  shows its own price on the storefront.
+                </p>
+                {form.variants.map((v, i) => (
+                  <div key={i} className="admin-repeat-row">
+                    <input
+                      type="text"
+                      value={v.label}
+                      onChange={(e) => setVariant(i, { label: e.target.value })}
+                      placeholder="Size, e.g. 500g"
+                    />
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={v.price}
+                      onChange={(e) => setVariant(i, { price: e.target.value })}
+                      placeholder={`Price (Rs.) — default ${form.price || 0}`}
+                    />
+                    <button
+                      type="button"
+                      className="admin-icon-btn admin-icon-danger"
+                      onClick={() => removeVariant(i)}
+                      aria-label="Remove size"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
+                ))}
+                <button type="button" className="admin-btn" onClick={addVariant}>
+                  <Plus size={15} /> Add size
+                </button>
+              </div>
 
               <div className="admin-col-full admin-modal-actions">
                 <button type="button" className="admin-btn" onClick={() => setModalOpen(false)}>Cancel</button>

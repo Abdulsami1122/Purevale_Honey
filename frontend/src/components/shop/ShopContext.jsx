@@ -42,14 +42,23 @@ const adaptProduct = (p) => {
   const categoryName = p.category?.name || ''
   const rawImages = Array.isArray(p.images) && p.images.length > 0 ? p.images : (p.image ? [p.image] : [])
   const images = rawImages.length > 0 ? rawImages : ['/honey-jar.jpg']
+  const basePrice = Number(p.price) || 0
+  // Per-size prices the admin set (blank = falls back to the base price).
+  const customPrices = variantObjs
+    .filter((v) => v && typeof v === 'object' && v.price != null)
+    .map((v) => Number(v.price))
+  // A range can come from either the product's own "Price to" field, or from
+  // its priciest size — whichever is higher wins.
+  const explicitMax = p.priceMax != null ? Number(p.priceMax) : null
+  const allMax = [explicitMax, ...customPrices].filter((n) => n != null)
   return {
     id: p.id,
     title: p.name,
     description: p.description || '',
     image: images[0],
     images,
-    priceMin: Number(p.price) || 0,
-    priceMax: null,
+    priceMin: basePrice,
+    priceMax: allMax.length ? Math.max(basePrice, ...allMax) : null,
     compareAt: null,
     discountPercent: Number(p.discountPercent) || 0,
     rating: Number(p.rating) || p.ratingAverage || 0,

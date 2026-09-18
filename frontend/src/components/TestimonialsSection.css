@@ -300,12 +300,36 @@
 
 /* ---------- responsive ---------- */
 @media (max-width: 640px) {
-  .testi-section { padding: 3.75rem 1rem 3.25rem; }
-  .testi-carousel { gap: 0.4rem; }
-  .testi-slide { padding: 2.75rem 1.4rem 2.25rem; min-height: 320px; border-radius: 20px; }
+  .testi-section { padding: 3.75rem 0.5rem 3.25rem; }
+  /* the global .container adds its own side padding on top of the section's —
+     trim it here so the card can use nearly the full screen width. */
+  .testi-section .container { padding: 0 0.35rem; }
+  .testi-carousel { gap: 0; }
+  .testi-slide { padding: 2.75rem 1.25rem 2.25rem; min-height: 320px; border-radius: 20px; }
   .testi-bigquote { font-size: 5rem; left: 1rem; }
-  .testi-message { font-size: 1.05rem; line-height: 1.7; }
-  .testi-nav { width: 36px; height: 36px; }
+
+  /* Nav arrows float over the card edges instead of sitting in the flex row,
+     so they no longer eat into the card's width. */
+  .testi-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; z-index: 2; }
+  .testi-nav-prev { left: -2px; }
+  .testi-nav-next { right: -2px; }
+  /* keep the vertical centering when the base rules' hover/active scale kicks in */
+  .testi-nav:hover { transform: translateY(-50%) scale(1.09); }
+  .testi-nav:active { transform: translateY(-50%) scale(0.97); }
+
+  /* Long testimonials scroll inside the card instead of stretching it taller. */
+  .testi-message {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    max-height: 8.5em;
+    overflow-y: auto;
+    padding-right: 0.4rem;
+    -webkit-overflow-scrolling: touch;
+  }
+  .testi-message::-webkit-scrollbar { width: 4px; }
+  .testi-message::-webkit-scrollbar-track { background: transparent; }
+  .testi-message::-webkit-scrollbar-thumb { background: rgba(19, 56, 39, 0.25); border-radius: 4px; }
+
   .testi-avatar { width: 50px; height: 50px; }
 }
 

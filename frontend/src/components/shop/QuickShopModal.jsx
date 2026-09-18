@@ -6,13 +6,12 @@ import { discountPercent, formatPrice, originalPrice, salePrice } from '../../da
 import { useShop } from './ShopContext'
 import './QuickShopModal.css'
 
-// Products only carry a min/max price, so spread it evenly across the
-// available variants: first variant -> priceMin, last -> priceMax.
-const variantPrice = (product, index) => {
-  const { priceMin, priceMax, variants = [] } = product
-  if (!priceMax || variants.length < 2) return salePrice(product, priceMin)
-  const step = (priceMax - priceMin) / (variants.length - 1)
-  return salePrice(product, Math.round(originalPrice(product, priceMin) + step * index))
+// The admin can set an exact price per size (variantPrices, keyed by label).
+// A size left blank there just uses the product's base price.
+const variantRawPrice = (product, index) => {
+  const label = product.variants?.[index]
+  const custom = label != null ? product.variantPrices?.[label] : undefined
+  return custom != null ? Number(custom) : Number(product.priceMin) || 0
 }
 
 const QuickShopModal = ({ product, isOpen, onClose }) => {
@@ -65,10 +64,9 @@ const QuickShopModal = ({ product, isOpen, onClose }) => {
 
   const variants = product.variants && product.variants.length ? product.variants : ['Default']
   const isWishlisted = wishlist.has(product.id)
-  const price = variantPrice(product, variantIndex)
-  const original = product.priceMax && variants.length > 1
-    ? Math.round(Number(product.priceMin) + ((Number(product.priceMax) - Number(product.priceMin)) / (variants.length - 1)) * variantIndex)
-    : originalPrice(product)
+  const rawPrice = variantRawPrice(product, variantIndex)
+  const price = salePrice(product, rawPrice)
+  const original = originalPrice(product, rawPrice)
   const discount = discountPercent(product)
 
   // Plays a short "box flies into the cart" animation on the button, then

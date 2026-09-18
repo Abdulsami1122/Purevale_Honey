@@ -69,9 +69,12 @@ async function getSettings() {
 // Nav categories are just links, but admins think of them as "creating a
 // category" — so make sure a real Category row exists for each one, which is
 // what the product-form dropdown and /:slug storefront pages read from.
-async function syncCategoriesFromNav(extraNavCategories) {
+// Removing a nav entry mirrors the deletion back onto that Category row, as
+// long as no product still uses it (same safety rule as /admin/categories).
+async function syncCategoriesFromNav(extraNavCategories, previousExtraNavCategories) {
   if (!Array.isArray(extraNavCategories)) return
   const names = [...new Set(extraNavCategories.map((c) => c?.label?.trim()).filter(Boolean))]
+
   // Sequential + case-insensitive lookup so "Jams" doesn't create a duplicate
   // of an existing "jams" (Postgres unique constraints are case-sensitive).
   for (const name of names) {
@@ -82,17 +85,36 @@ async function syncCategoriesFromNav(extraNavCategories) {
       await prisma.category.create({ data: { name } }).catch(() => {})
     }
   }
+
+  // Anything that dropped out of the list gets removed too, unless a product
+  // still references it — mirrors "Cannot delete: N product(s) still use
+  // this category" from the dedicated Categories page, just silent here.
+  const currentSet = new Set(names.map((n) => n.toLowerCase()))
+  const previousNames = Array.isArray(previousExtraNavCategories)
+    ? [...new Set(previousExtraNavCategories.map((c) => c?.label?.trim()).filter(Boolean))]
+    : []
+  for (const name of previousNames) {
+    if (currentSet.has(name.toLowerCase())) continue
+    const existing = await prisma.category.findFirst({
+      where: { name: { equals: name, mode: 'insensitive' } },
+      include: { _count: { select: { products: true } } },
+    })
+    if (existing && existing._count.products === 0) {
+      await prisma.category.delete({ where: { id: existing.id } }).catch(() => {})
+    }
+  }
 }
 
 async function updateSettings(patch) {
-  const next = deepMerge(await readStored(), patch && typeof patch === 'object' ? patch : {})
+  const previous = await readStored()
+  const next = deepMerge(previous, patch && typeof patch === 'object' ? patch : {})
   await prisma.siteSetting.upsert({
     where: { key: KEY },
     create: { key: KEY, data: next },
     update: { data: next },
   })
   if (patch && Array.isArray(patch.extraNavCategories)) {
-    await syncCategoriesFromNav(patch.extraNavCategories)
+    await syncCategoriesFromNav(patch.extraNavCategories, previous.extraNavCategories)
   }
   return deepMerge(DEFAULTS, next)
 }
