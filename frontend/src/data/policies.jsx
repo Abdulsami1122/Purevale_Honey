@@ -36,7 +36,7 @@ export const POLICIES = {
         <h4>Return Process</h4>
         <ul>
           <li>
-            <strong>Step 1:</strong> Email <strong>support@durraniharvest.com</strong> or WhatsApp{' '}
+            <strong>Step 1:</strong> Email <strong>durraniharvest@gmail.com</strong> or WhatsApp{' '}
             <strong>+92 333 9300672</strong> with your order number and the reason for the return.
           </li>
           <li>
@@ -52,7 +52,7 @@ export const POLICIES = {
 
         <h4>Damaged or Defective Products</h4>
         <p>
-          Contact us immediately at <strong>support@durraniharvest.com</strong> or{' '}
+          Contact us immediately at <strong>durraniharvest@gmail.com</strong> or{' '}
           <strong>+92 333 9300672</strong> with photos of the damaged item. We will arrange a
           replacement or refund as quickly as possible.
         </p>
@@ -115,7 +115,7 @@ export const POLICIES = {
         <h4>Damaged Packages</h4>
         <p>
           If your package arrives damaged, contact us within 24 hours with pictures/video at{' '}
-          <strong>support@durraniharvest.com</strong> or <strong>+92 333 9300672</strong>.
+          <strong>durraniharvest@gmail.com</strong> or <strong>+92 333 9300672</strong>.
         </p>
       </>
     ),
@@ -147,7 +147,7 @@ export const POLICIES = {
         <h4>Data Deletion &amp; Inquiries</h4>
         <p>
           You may request deletion of your account or contact data at any time by emailing{' '}
-          <strong>support@durraniharvest.com</strong> or calling <strong>+92 333 9300672</strong>.
+          <strong>durraniharvest@gmail.com</strong> or calling <strong>+92 333 9300672</strong>.
         </p>
       </>
     ),
@@ -180,7 +180,7 @@ export const POLICIES = {
         <h4>Contact &amp; Support</h4>
         <ul>
           <li><strong>Headquarters:</strong> Hayatabad, Peshawar, KP, Pakistan</li>
-          <li><strong>Email:</strong> support@durraniharvest.com</li>
+          <li><strong>Email:</strong> durraniharvest@gmail.com</li>
           <li><strong>Phone / WhatsApp:</strong> +92 333 9300672</li>
         </ul>
       </>

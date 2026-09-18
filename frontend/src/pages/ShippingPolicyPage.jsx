@@ -70,7 +70,7 @@ const ShippingPolicyPage = () => {
           <h2>Damaged Packages</h2>
           <p>
             If your package arrives damaged, please contact us within 24 hours with pictures/video at{' '}
-            <strong>support@durraniharvest.com</strong> or <strong>+92 333 9300672</strong> so we can
+            <strong>durraniharvest@gmail.com</strong> or <strong>+92 333 9300672</strong> so we can
             resolve the issue promptly.
           </p>
         </div>

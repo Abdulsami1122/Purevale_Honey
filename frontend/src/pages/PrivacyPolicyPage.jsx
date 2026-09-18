@@ -36,7 +36,7 @@ const PrivacyPolicyPage = () => {
 
           <h2>4. Data Deletion & Inquiries</h2>
           <p>
-            You may request the deletion of your account or contact data at any time by contacting our Hayatabad support desk at <strong>0333 9300672</strong> or emailing <strong>support@durraniharvest.com</strong>.
+            You may request the deletion of your account or contact data at any time by contacting our Hayatabad support desk at <strong>0333 9300672</strong> or emailing <strong>durraniharvest@gmail.com</strong>.
           </p>
         </div>
       </div>

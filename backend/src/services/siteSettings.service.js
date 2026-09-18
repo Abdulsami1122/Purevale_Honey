@@ -21,7 +21,7 @@ const DEFAULTS = {
   contact: {
     phone: '+92 333 9300672',
     whatsapp: '923339300672',
-    email: 'support@durraniharvest.com',
+    email: 'durraniharvest@gmail.com',
     address: 'Hayatabad, Peshawar, Khyber Pakhtunkhwa, Pakistan',
   },
   socials: {

@@ -52,7 +52,7 @@ const ReturnPolicyPage = () => {
           <ul className="info-list-styled">
             <li>
               <strong>Step 1:</strong> Contact our customer service team at{' '}
-              <strong>support@durraniharvest.com</strong> or on WhatsApp at{' '}
+              <strong>durraniharvest@gmail.com</strong> or on WhatsApp at{' '}
               <strong>+92 333 9300672</strong> to initiate the return. Please provide your order
               number and the reason for the return.
             </li>
@@ -74,7 +74,7 @@ const ReturnPolicyPage = () => {
           <h2>Damaged or Defective Products</h2>
           <p>
             If you receive a damaged or defective product, please contact us immediately at{' '}
-            <strong>support@durraniharvest.com</strong> or <strong>+92 333 9300672</strong>. We will
+            <strong>durraniharvest@gmail.com</strong> or <strong>+92 333 9300672</strong>. We will
             arrange for a replacement or refund as quickly as possible. Please provide photos of the
             damaged or defective product to help us resolve the issue.
           </p>
@@ -99,7 +99,7 @@ const ReturnPolicyPage = () => {
           <h2>Customer Service</h2>
           <p>
             For any questions or concerns regarding returns, please contact our customer service team
-            at <strong>support@durraniharvest.com</strong> or <strong>+92 333 9300672</strong>. Our
+            at <strong>durraniharvest@gmail.com</strong> or <strong>+92 333 9300672</strong>. Our
             support desk in Hayatabad, Peshawar, Khyber Pakhtunkhwa, Pakistan is here to help.
           </p>
         </div>

@@ -39,7 +39,7 @@ const TermsPage = () => {
           <ul className="info-list-styled">
             <li><strong>Headquarters:</strong> Hayatabad, Peshawar, KP, Pakistan</li>
             <li><strong>Support Phone & WhatsApp:</strong> <a href="tel:+923339300672" style={{color: '#EAA82C'}}>+92 333 9300672</a></li>
-            <li><strong>Email:</strong> <a href="mailto:support@durraniharvest.com" style={{color: '#EAA82C'}}>support@durraniharvest.com</a></li>
+            <li><strong>Email:</strong> <a href="mailto:durraniharvest@gmail.com" style={{color: '#EAA82C'}}>durraniharvest@gmail.com</a></li>
           </ul>
         </div>
       </div>
