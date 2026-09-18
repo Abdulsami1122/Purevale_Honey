@@ -30,6 +30,19 @@ const schema = z.object({
   CLOUDINARY_CLOUD_NAME: z.string().optional(),
   CLOUDINARY_API_KEY: z.string().optional(),
   CLOUDINARY_API_SECRET: z.string().optional(),
+
+  // Optional — order/account emails (order placed, status changed, password
+  // reset) are logged instead of sent if these are not set. Works with any
+  // SMTP provider, including Gmail (host smtp.gmail.com, port 587, an App
+  // Password as SMTP_PASS — not the normal account password).
+  SMTP_HOST: z.string().optional(),
+  SMTP_PORT: z.coerce.number().int().positive().default(587),
+  // z.coerce.boolean() would turn the *string* "false" into JS true (any
+  // non-empty string is truthy) — parse the literal word instead.
+  SMTP_SECURE: z.enum(['true', 'false']).default('false').transform((v) => v === 'true'),
+  SMTP_USER: z.string().optional(),
+  SMTP_PASS: z.string().optional(),
+  EMAIL_FROM: z.string().optional(),
 })
 
 const parsed = schema.safeParse(process.env)
@@ -54,6 +67,7 @@ const env = Object.freeze({
       parsed.data.CLOUDINARY_API_KEY &&
       parsed.data.CLOUDINARY_API_SECRET,
   ),
+  EMAIL_ENABLED: Boolean(parsed.data.SMTP_HOST && parsed.data.SMTP_USER && parsed.data.SMTP_PASS),
 })
 
 module.exports = env

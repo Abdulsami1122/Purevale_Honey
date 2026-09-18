@@ -2,7 +2,7 @@ const asyncHandler = require('../utils/asyncHandler')
 const ApiError = require('../utils/ApiError')
 const { sendSuccess } = require('../utils/apiResponse')
 const { prisma, paginate, paginatedResult } = require('../models')
-const { sendOrderConfirmationEmail } = require('../services/email.service')
+const { sendOrderConfirmationEmail, sendOrderStatusEmail } = require('../services/email.service')
 
 const ORDER_INCLUDE = {
   items: true,
@@ -151,6 +151,10 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
     data: { status: req.body.status },
     include: ORDER_INCLUDE,
   })
+  // Let the customer know — best-effort, never blocks the response.
+  if (order.user?.email) {
+    sendOrderStatusEmail(order.user, order, order.status).catch(() => {})
+  }
   sendSuccess(res, 200, 'Order status updated', { order })
 })
 
