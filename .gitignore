@@ -2,3 +2,8 @@
 backend/.env
 backend/.env.*
 !backend/.env.example
+
+# Frontend environment files
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
