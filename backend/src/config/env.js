@@ -21,7 +21,7 @@ const schema = z.object({
   CORS_ORIGINS: z
     .string()
     .default(
-      'http://localhost:5173,https://purevale-honey.vercel.app,https://purevale-honey-1b4u.vercel.app',
+      'http://localhost:5173,https://purevale-honey.vercel.app,https://purevale-honey-1b4u.vercel.app,https://purevale-honey-3fax.vercel.app',
     ),
   COOKIE_DOMAIN: z.string().optional(),
   // Public URL of the storefront — used to build password-reset links in emails.
@@ -62,7 +62,7 @@ const env = Object.freeze({
   ...parsed.data,
   isProd: parsed.data.NODE_ENV === 'production',
   CORS_ORIGIN_LIST: parsed.data.CORS_ORIGINS.split(',')
-    .map((o) => o.trim())
+    .map((o) => o.trim().replace(/\/+$/, ''))
     .filter(Boolean),
   ACCESS_COOKIE_MAX_AGE_MS: 15 * 60 * 1000,
   REFRESH_COOKIE_MAX_AGE_MS: parsed.data.REFRESH_TOKEN_TTL_DAYS * 24 * 60 * 60 * 1000,

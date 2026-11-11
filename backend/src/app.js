@@ -23,10 +23,19 @@ app.use(
   cors({
     origin(origin, callback) {
       // allow same-origin / curl / server-to-server (no Origin header)
-      if (!origin || env.CORS_ORIGIN_LIST.includes(origin)) return callback(null, true)
+      if (!origin) return callback(null, true)
+      const cleanOrigin = origin.replace(/\/+$/, '')
+      if (
+        env.CORS_ORIGIN_LIST.includes(cleanOrigin) ||
+        /^https:\/\/purevale-honey(-[a-z0-9]+)?\.vercel\.app$/.test(cleanOrigin)
+      ) {
+        return callback(null, true)
+      }
       return callback(new Error('Not allowed by CORS'))
     },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   }),
 )
 
