@@ -35,7 +35,7 @@ npm run dev        # http://localhost:5173
 `frontend/.env` points the app at the API:
 
 ```
-VITE_API_URL=http://localhost:5000
+VITE_API_BASE_URL=http://localhost:5000
 ```
 
 ## Admin panel
@@ -71,9 +71,10 @@ Auth = `Authorization: Bearer <token>`.
 
 ## Production notes
 
-- Set `VITE_API_URL` in the frontend deployment environment to the backend's
+- Set `VITE_API_BASE_URL` in the frontend deployment environment to the backend's
   public URL (for example, `https://<your-backend-domain>`). The localhost
-  fallback is available only in development.
+  fallback is available only in development. `VITE_API_URL` remains supported
+  as a legacy alias.
 - Set `CORS_ORIGINS` in the backend deployment environment to a comma-separated
   list of allowed frontend origins, without trailing slashes. The defaults
   include `https://purevale-honey.vercel.app` and

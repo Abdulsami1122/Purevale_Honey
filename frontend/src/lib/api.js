@@ -2,10 +2,12 @@
 // Auth is cookie-based (httpOnly) — every request sends credentials, and a 401
 // triggers one silent refresh-token attempt before giving up.
 const API_BASE =
-  import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000' : '')
+  import.meta.env.VITE_API_BASE_URL ||
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.DEV ? 'http://localhost:5000' : '')
 
 if (!API_BASE) {
-  throw new Error('VITE_API_URL must be set to the backend URL in production.')
+  throw new Error('VITE_API_BASE_URL must be set to the backend URL in production.')
 }
 
 let refreshPromise = null
