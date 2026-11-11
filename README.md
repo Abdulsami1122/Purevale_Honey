@@ -71,6 +71,13 @@ Auth = `Authorization: Bearer <token>`.
 
 ## Production notes
 
+- Set `VITE_API_URL` in the frontend deployment environment to the backend's
+  public URL (for example, `https://<your-backend-domain>`). The localhost
+  fallback is available only in development.
+- Set `CORS_ORIGINS` in the backend deployment environment to a comma-separated
+  list of allowed frontend origins, without trailing slashes. The defaults
+  include `https://purevale-honey.vercel.app` and
+  `https://purevale-honey-1b4u.vercel.app`; add any custom deployment domains.
 - Set a strong `JWT_SECRET` and change `ADMIN_PASSWORD` in `backend/.env`.
 - The JSON file store is fine for a single instance; swap `backend/src/store.js`
   for a real database to scale out.

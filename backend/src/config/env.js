@@ -18,7 +18,11 @@ const schema = z.object({
   REFRESH_TOKEN_TTL_DAYS: z.coerce.number().int().positive().default(7),
 
   // Comma-separated whitelist of allowed browser origins for CORS.
-  CORS_ORIGINS: z.string().default('http://localhost:5173'),
+  CORS_ORIGINS: z
+    .string()
+    .default(
+      'http://localhost:5173,https://purevale-honey.vercel.app,https://purevale-honey-1b4u.vercel.app',
+    ),
   COOKIE_DOMAIN: z.string().optional(),
   // Public URL of the storefront — used to build password-reset links in emails.
   APP_URL: z.string().url().default('http://localhost:5173'),
