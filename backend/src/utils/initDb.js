@@ -32,6 +32,14 @@ const SQL_STATEMENTS = [
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
   );`,
 
+  // Ensure User.role is the enum Role even if table was created previously
+  `DO $$ BEGIN
+    ALTER TABLE "User" ALTER COLUMN "role" DROP DEFAULT;
+    ALTER TABLE "User" ALTER COLUMN "role" TYPE "Role" USING "role"::text::"Role";
+    ALTER TABLE "User" ALTER COLUMN "role" SET DEFAULT 'customer';
+  EXCEPTION WHEN others THEN null;
+  END $$;`,
+
   // RefreshToken table
   `CREATE TABLE IF NOT EXISTS "RefreshToken" (
     "id" TEXT NOT NULL PRIMARY KEY,

@@ -62,11 +62,16 @@ let dbChecked = false
 app.use(async (req, res, next) => {
   if (!dbChecked && req.path.startsWith('/api') && !req.path.includes('/health') && !req.path.includes('/setup-db')) {
     try {
-      await prisma.user.findFirst()
+      // Check both a product query and a user role to ensure tables & enums are present
+      await prisma.product.findFirst()
       dbChecked = true
     } catch (err) {
-      if (err.code === 'P2021' || (err.message && err.message.includes('does not exist'))) {
-        logger.warn('Tables missing in database — auto initializing schema...')
+      if (
+        err.code === 'P2021' ||
+        err.code === '42704' ||
+        (err.message && (err.message.includes('does not exist') || err.message.includes('relation')))
+      ) {
+        logger.warn('Database schema incomplete — running initDb()...')
         try {
           await initDb()
           dbChecked = true
