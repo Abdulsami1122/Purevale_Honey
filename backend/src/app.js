@@ -1,7 +1,9 @@
+require('dotenv').config()
 const express = require('express')
 const helmet = require('helmet')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
+const { neon } = require('@neondatabase/serverless')
 
 const env = require('./config/env')
 const prisma = require('./config/db')
@@ -9,6 +11,8 @@ const routes = require('./routes')
 const notFound = require('./middlewares/notFound')
 const errorHandler = require('./middlewares/errorHandler')
 const { apiLimiter } = require('./middlewares/rateLimiter')
+
+const sql = process.env.DATABASE_URL ? neon(process.env.DATABASE_URL) : null
 
 const app = express()
 
@@ -50,6 +54,33 @@ app.use(cookieParser())
 
 // --- Rate limiting across the API surface ---
 app.use('/api', apiLimiter)
+
+// --- Database test API (Neon serverless) ---
+app.get('/api/db-test', async (req, res) => {
+  try {
+    if (!sql) {
+      return res.status(500).json({
+        success: false,
+        message: 'DATABASE_URL is not configured in environment variables',
+      })
+    }
+    const result = await sql`SELECT version()`
+
+    res.status(200).json({
+      success: true,
+      message: 'Neon Database Connected Successfully!',
+      database: result[0]?.version || result[0] || 'PostgreSQL',
+    })
+  } catch (error) {
+    console.error('Database Error:', error)
+
+    res.status(500).json({
+      success: false,
+      message: 'Database Connection Failed',
+      error: error.message,
+    })
+  }
+})
 
 // --- Health check with DB status ---
 app.get('/api/health', async (_req, res) => {
