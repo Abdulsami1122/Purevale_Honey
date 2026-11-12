@@ -2,6 +2,25 @@
 // Nothing in the codebase reads process.env directly — everything goes through here.
 require('dotenv').config()
 
+// Normalize DATABASE_URL across various Vercel / Neon integrations
+let rawDbUrl =
+  process.env.DATABASE_URL ||
+  process.env.POSTGRES_PRISMA_URL ||
+  process.env.POSTGRES_URL ||
+  process.env.NEON_DATABASE_URL ||
+  ''
+
+rawDbUrl = rawDbUrl.trim().replace(/^["']|["']$/g, '')
+
+if (rawDbUrl) {
+  // If connecting to Neon without sslmode specified, append it (Neon requires SSL)
+  if (rawDbUrl.includes('neon.tech') && !rawDbUrl.includes('sslmode=')) {
+    const sep = rawDbUrl.includes('?') ? '&' : '?'
+    rawDbUrl = `${rawDbUrl}${sep}sslmode=require`
+  }
+  process.env.DATABASE_URL = rawDbUrl
+}
+
 const { z } = require('zod')
 
 const schema = z.object({

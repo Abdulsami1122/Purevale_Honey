@@ -12,6 +12,7 @@ const globalForPrisma = globalThis
 const prisma =
   globalForPrisma.__purevalePrisma ||
   new PrismaClient({
+    datasourceUrl: env.DATABASE_URL,
     log: env.isProd ? ['error'] : ['warn', 'error'],
   })
 

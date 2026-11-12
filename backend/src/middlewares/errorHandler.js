@@ -40,7 +40,12 @@ module.exports = (err, req, res, next) => {
     message = 'Malformed JSON in request body'
   } else if (err instanceof Prisma.PrismaClientInitializationError) {
     statusCode = 503
-    message = 'Database connection failed: Please verify DATABASE_URL in Vercel settings and ensure your cloud database is accessible.'
+    const lines = (err.message || '')
+      .split('\n')
+      .map((l) => l.trim())
+      .filter((l) => l && !l.includes('invocation') && !l.startsWith('Please make sure'))
+    const detail = lines[0] || 'Database unreachable'
+    message = `Database connection failed: ${detail}`
   } else if (err instanceof Prisma.PrismaClientRustPanicError) {
     statusCode = 500
     message = 'Prisma engine error: Please ensure prisma client was generated during build.'

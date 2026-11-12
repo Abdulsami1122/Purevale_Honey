@@ -12,7 +12,7 @@ const notFound = require('./middlewares/notFound')
 const errorHandler = require('./middlewares/errorHandler')
 const { apiLimiter } = require('./middlewares/rateLimiter')
 
-const sql = process.env.DATABASE_URL ? neon(process.env.DATABASE_URL) : null
+const sql = env.DATABASE_URL ? neon(env.DATABASE_URL) : null
 
 const app = express()
 
@@ -101,7 +101,8 @@ app.get('/api/health', async (_req, res) => {
     uptime: process.uptime(),
     database: {
       status: dbStatus,
-      isLocalhost: (process.env.DATABASE_URL || '').includes('localhost'),
+      isLocalhost: (env.DATABASE_URL || '').includes('localhost'),
+      hasNeon: (env.DATABASE_URL || '').includes('neon.tech'),
       ...(dbError ? { error: dbError } : {}),
     },
   })
