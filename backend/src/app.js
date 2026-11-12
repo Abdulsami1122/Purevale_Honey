@@ -4,6 +4,7 @@ const cors = require('cors')
 const cookieParser = require('cookie-parser')
 
 const env = require('./config/env')
+const prisma = require('./config/db')
 const routes = require('./routes')
 const notFound = require('./middlewares/notFound')
 const errorHandler = require('./middlewares/errorHandler')
@@ -50,10 +51,30 @@ app.use(cookieParser())
 // --- Rate limiting across the API surface ---
 app.use('/api', apiLimiter)
 
-// --- Health check ---
-app.get('/api/health', (_req, res) =>
-  res.json({ success: true, message: 'ok', uptime: process.uptime() }),
-)
+// --- Health check with DB status ---
+app.get('/api/health', async (_req, res) => {
+  let dbStatus = 'connected'
+  let dbError = null
+
+  try {
+    await prisma.$queryRaw`SELECT 1`
+  } catch (err) {
+    dbStatus = 'disconnected'
+    dbError = err.message
+  }
+
+  const ok = dbStatus === 'connected'
+  res.status(ok ? 200 : 503).json({
+    success: ok,
+    message: ok ? 'healthy' : 'Database connection error',
+    uptime: process.uptime(),
+    database: {
+      status: dbStatus,
+      isLocalhost: (process.env.DATABASE_URL || '').includes('localhost'),
+      ...(dbError ? { error: dbError } : {}),
+    },
+  })
+})
 
 // --- Routes ---
 app.use('/api', routes)

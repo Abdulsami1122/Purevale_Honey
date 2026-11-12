@@ -38,6 +38,12 @@ module.exports = (err, req, res, next) => {
   } else if (err.type === 'entity.parse.failed') {
     statusCode = 400
     message = 'Malformed JSON in request body'
+  } else if (err instanceof Prisma.PrismaClientInitializationError) {
+    statusCode = 503
+    message = 'Database connection failed: Please verify DATABASE_URL in Vercel settings and ensure your cloud database is accessible.'
+  } else if (err instanceof Prisma.PrismaClientRustPanicError) {
+    statusCode = 500
+    message = 'Prisma engine error: Please ensure prisma client was generated during build.'
   } else if (err.message === 'Not allowed by CORS') {
     statusCode = 403
     message = 'Origin not allowed'
