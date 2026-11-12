@@ -11,6 +11,8 @@ const routes = require('./routes')
 const notFound = require('./middlewares/notFound')
 const errorHandler = require('./middlewares/errorHandler')
 const { apiLimiter } = require('./middlewares/rateLimiter')
+const { initDb } = require('./utils/initDb')
+const logger = require('./utils/logger')
 
 const sql = env.DATABASE_URL ? neon(env.DATABASE_URL) : null
 
@@ -54,6 +56,48 @@ app.use(cookieParser())
 
 // --- Rate limiting across the API surface ---
 app.use('/api', apiLimiter)
+
+// --- Auto-create missing tables middleware ---
+let dbChecked = false
+app.use(async (req, res, next) => {
+  if (!dbChecked && req.path.startsWith('/api') && !req.path.includes('/health') && !req.path.includes('/setup-db')) {
+    try {
+      await prisma.user.findFirst()
+      dbChecked = true
+    } catch (err) {
+      if (err.code === 'P2021' || (err.message && err.message.includes('does not exist'))) {
+        logger.warn('Tables missing in database — auto initializing schema...')
+        try {
+          await initDb()
+          dbChecked = true
+        } catch (e) {
+          logger.error('Auto init failed', e)
+        }
+      }
+    }
+  }
+  next()
+})
+
+// --- One-click Database Setup endpoint ---
+app.get('/api/setup-db', async (_req, res) => {
+  try {
+    await initDb()
+    res.status(200).json({
+      success: true,
+      message: 'Database tables, initial categories, and admin users created successfully in Neon!',
+      admins: ['admin@purevalehoney.com', 'samiam9087@gmail.com'],
+      defaultPassword: 'admin123456',
+    })
+  } catch (error) {
+    logger.error('Failed to setup database', error)
+    res.status(500).json({
+      success: false,
+      message: 'Failed to initialize database',
+      error: error.message,
+    })
+  }
+})
 
 // --- Database test API (Neon serverless) ---
 app.get('/api/db-test', async (req, res) => {

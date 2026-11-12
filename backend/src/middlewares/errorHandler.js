@@ -28,9 +28,12 @@ module.exports = (err, req, res, next) => {
     } else if (err.code === 'P2025') {
       statusCode = 404
       message = 'Resource not found'
+    } else if (err.code === 'P2021') {
+      statusCode = 400
+      message = `Database table ${err.meta?.table || ''} does not exist. Please visit /api/setup-db to initialize tables.`
     } else {
       statusCode = 400
-      message = 'Invalid database request'
+      message = `Invalid database request [${err.code}]`
     }
   } else if (err instanceof Prisma.PrismaClientValidationError) {
     statusCode = 400
