@@ -9,7 +9,7 @@ const env = require('../config/env')
 // eslint-disable-next-line no-unused-vars
 module.exports = (err, req, res, next) => {
   let statusCode = 500
-  let message = 'Internal server error'
+  let message = err.message || 'Internal server error'
   let errors
 
   if (err instanceof ApiError) {
@@ -67,6 +67,7 @@ module.exports = (err, req, res, next) => {
     success: false,
     message,
     ...(errors ? { errors } : {}),
+    details: err.message,
     ...(!env.isProd && statusCode >= 500 ? { stack: err.stack } : {}),
   })
 }

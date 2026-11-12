@@ -13,10 +13,19 @@ let rawDbUrl =
 rawDbUrl = rawDbUrl.trim().replace(/^["']|["']$/g, '')
 
 if (rawDbUrl) {
-  // If connecting to Neon without sslmode specified, append it (Neon requires SSL)
-  if (rawDbUrl.includes('neon.tech') && !rawDbUrl.includes('sslmode=')) {
-    const sep = rawDbUrl.includes('?') ? '&' : '?'
-    rawDbUrl = `${rawDbUrl}${sep}sslmode=require`
+  try {
+    if (rawDbUrl.startsWith('postgres://') || rawDbUrl.startsWith('postgresql://')) {
+      const parsedUrl = new URL(rawDbUrl)
+      // Prisma does not support channel_binding parameter
+      parsedUrl.searchParams.delete('channel_binding')
+      // If connecting to Neon without sslmode specified, append it (Neon requires SSL)
+      if (rawDbUrl.includes('neon.tech') && !parsedUrl.searchParams.has('sslmode')) {
+        parsedUrl.searchParams.set('sslmode', 'require')
+      }
+      rawDbUrl = parsedUrl.toString()
+    }
+  } catch {
+    rawDbUrl = rawDbUrl.replace(/([?&])channel_binding=[^&]+/g, '')
   }
   process.env.DATABASE_URL = rawDbUrl
 }
